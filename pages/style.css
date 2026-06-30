@@ -1,0 +1,167 @@
+@import url('../styles/globals.css');
+
+.hero {
+    background-image: url("../assets/images/foto-de-fundo-da-home.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+
+    padding-top: 21.7rem;
+    width: auto;
+    height: 81rem;
+}
+
+.hero h1 {
+    margin-bottom: 2.3rem;
+}
+
+.hero h2 {
+    margin-bottom: 5.4rem;
+}
+
+.hero h1, h2 {
+    width: 74.1rem;
+}
+
+.hero h1,h2,button {
+    margin-left: 18.1rem;
+}
+
+.hero-button{
+    width: 32.2783rem;
+    height: 6.4rem;
+    border: none;
+    border-radius: 5rem;
+
+    background: var(--burnt-orange);
+
+    color: var(--white);
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+
+}
+
+.hero-button a {
+    text-decoration: none;
+    color: var(--white);
+}
+
+.features {
+    width: 100%;
+    height: 40.1rem;
+    
+    background: var(--burnt-orange);
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-right: 2.3rem;
+    
+    gap: 4.6rem;
+}
+
+.feature-card h2 {
+    font-weight: 600;
+    width: 169.814px;
+    margin: auto;
+    
+}
+
+.feature-card p {
+   padding-bottom: 3.6rem;
+   margin-top: 0.676rem;
+}
+
+.feature-card{
+    background-color: var(--beige);
+
+    width: 21.7rem;
+    height: 29.2rem;
+
+    text-align: center;
+
+    display: flex;  
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    margin: 0 2.4rem 1.3rem 2.319rem;
+
+    border-radius: 2rem;
+    box-shadow: 0 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.25);
+}
+
+
+.feature-img{
+    display: flex;
+    width: 7.204rem;
+    height: 7.204rem;
+
+    
+    margin: auto;
+    margin-top: 4.8rem;
+    margin-bottom: 2.4rem;
+}
+
+.goal {
+    display: flex;
+    margin: auto;
+}
+
+.goal h3, p {
+    margin-left: 3.779rem;
+    justify-content: center;
+    text-align: start;
+}
+
+.goal-text {
+    margin-top: 12.2rem;
+}
+
+.goal h2 {
+    margin-bottom: 4.5rem;
+    margin-left: 12.7rem;
+    font-weight: 700;
+}
+
+.div-public, .div-goal {
+    background-color: var(--light-gray);
+
+    width: 43.9rem;
+    height: 21.0rem;
+    border-radius: 1.5rem;
+
+    margin-bottom: 4.5rem;
+    margin-left: 9.4rem;
+    padding-right: 3.327rem;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+}
+
+.goal-title{
+    display: flex;
+    
+    gap: 12.5rem;
+}
+
+.goal-title img{
+    margin-bottom: 1.117rem;
+    width: 3.9rem;
+    height: 3.9rem;
+}
+
+.goal-image  {
+    width: 53.4rem;
+    height: 71.9rem;
+    
+    margin-left: 18rem;
+    margin-top: 4.6rem;
+}
