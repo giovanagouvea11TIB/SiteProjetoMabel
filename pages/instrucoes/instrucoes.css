@@ -1,3 +1,24 @@
+body.dark-mode .hero{
+    background: conic-gradient(
+        from 90deg,
+        #424242 0deg,
+        #000000 62.8966deg,
+        #3E3E3E 259.615deg,
+        #666666 326.501deg,
+        #424242 360deg
+    );
+
+    border: 1px solid #000000;
+
+    filter: drop-shadow(
+        0 4px 4px rgba(0, 0, 0, 0.25)
+    );
+}
+
+body.dark-mode .hero h2{
+    color: var(--white);
+}
+
 .hero{
     background-color: var(--beige);
     width: auto;

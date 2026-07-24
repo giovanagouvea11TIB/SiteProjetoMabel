@@ -14,6 +14,8 @@
     --gray: #B8B8B8;
     --white: #FFFFFF;
     --light-beige: #DAD7D0;
+
+    --dark-background: #273038;
 }
 
 html{
@@ -73,6 +75,18 @@ button:hover {
     background-color: var(--apricot);
 }
 
+body.dark-mode {
+    background-color: var(--dark-background);
+}
+
+body.dark-mode .theme-toggle {
+    background-color: var(--white);
+}
+
+body.dark-mode .theme-icon {
+    color: var(--black);
+    transform: rotate(180deg);
+}
 
 .navbar{
     background-color: var(--dark-white);
@@ -94,12 +108,12 @@ button:hover {
 }
 
 .nav-links{
-    padding:0;
-    margin-left: 55.2rem; 
-    
+    padding: 0;
+    margin-left: auto;
+    margin-right: 3rem;
+
     list-style: none;
     display: flex;
-
     gap: 3.9rem;
 }
 
@@ -167,6 +181,15 @@ button:hover {
     line-height: 1;
 
     transition: transform 0.3s ease;
+}
+
+body.dark-mode .theme-toggle {
+    background-color: var(--white);
+}
+
+body.dark-mode .theme-icon {
+    color: var(--black);
+    transform: rotate(180deg);
 }
 
 .footer {

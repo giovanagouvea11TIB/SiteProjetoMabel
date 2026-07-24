@@ -1,5 +1,13 @@
 @import url('../styles/globals.css');
 
+body.dark-mode .hero {
+    background-image: url(../assets/images/modo\ escuro\ fundo\ home.png);
+}
+
+body.dark-mode .hero h2, body.dark-mode .goal-text h2{
+    color: var(--white);
+}
+
 .hero {
     background-image: url("../assets/images/foto-de-fundo-da-home.png");
     background-repeat: no-repeat;

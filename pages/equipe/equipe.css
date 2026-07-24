@@ -2,6 +2,19 @@ body {
     background-color: var(--beige);
 }
 
+body.dark-mode .hero-profile h3, body.dark-mode .hero-profile h4{
+    color: var(--white);
+}
+
+
+body.dark-mode .instagram {
+    content: url("../../assets/images/mdi_instagram.png");
+}
+
+body.dark-mode .linkedin {
+    content: url("../../assets/images/ri_linkedin-fill\ modo\ escuro.png");
+}
+
 .hero h1 {
     margin-left: 7.6rem;
     margin-top: 7.2rem;

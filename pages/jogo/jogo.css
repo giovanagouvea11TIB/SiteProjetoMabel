@@ -2,6 +2,15 @@ body{
     background-color: var(--light-beige);
 }
 
+body.dark-mode .hero p{
+    color: var(--white);
+    font-weight: 500;
+}
+
+body.dark-mode .game-image{
+    content: url(../../assets/images/fundo\ imagem\ do\ jogo\ modo\ escuro.png);
+}
+
 .hero{
     width: 80.6rem;
     margin-top: 10rem;
