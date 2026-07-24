@@ -19,11 +19,14 @@
     margin-bottom: 5.4rem;
 }
 
-.hero h1, h2 {
+.hero h1, 
+.hero h2 {
     width: 74.1rem;
 }
 
-.hero h1,h2,button {
+.hero h1,
+.hero h2,
+.hero button {
     margin-left: 18.1rem;
 }
 
@@ -40,7 +43,7 @@
     font-family: Montserrat;
     font-size: 2.4rem;
     font-style: normal;
-    font-weight: 700;
+    
     line-height: normal;
 
 }
@@ -48,6 +51,7 @@
 .hero-button a {
     text-decoration: none;
     color: var(--white);
+    font-weight: 700;
 }
 
 .features {
@@ -109,9 +113,13 @@
 .goal {
     display: flex;
     margin: auto;
+    justify-content:center;
+    align-items:center;
+    flex-wrap:wrap;
 }
 
-.goal h3, p {
+.goal h3, 
+.goal p {
     margin-left: 3.779rem;
     justify-content: center;
     text-align: start;

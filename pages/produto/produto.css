@@ -1,0 +1,283 @@
+.hero{
+    background-color: var(--beige);
+
+    width: auto;
+    height: 72.8rem;
+
+    display: flex;
+}
+
+.hero-text {
+    margin-top: 14.7rem;
+    margin-left: 18rem;
+
+    width: 52.9rem;
+}
+
+.hero-text h1 {
+    margin-bottom: 3.4rem;
+}
+
+.hero-text h2 {
+    margin-bottom: 2.7rem;
+
+    font-weight: 700;
+}
+
+.hero a {
+    display: inline-flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--burnt-orange);
+    color: var(--white);
+
+    margin-top: 6.3rem;
+    width: 32.3rem;
+    height: 6.4rem;
+
+    border-radius: 5rem;
+
+    text-decoration: none;
+
+    color: var(--white);
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-weight: 700;
+}
+
+.function {
+    position: relative;
+
+    width: 100%;
+    min-height: 70rem;
+
+    display: flex;
+    justify-content: center;
+}
+
+.explication {
+    position: relative;
+    z-index: 1;
+
+    background-color: var(--burnt-orange);
+
+    width: 71.2rem;
+    height: 43.1rem;
+
+    margin-top: 6.4rem;
+    margin-inline: auto;
+
+    border-radius: 2rem;
+
+    box-shadow: 0 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.25);
+}
+
+.explication h3 {
+    width: 63rem;
+
+    margin: 0 auto;
+
+    color: var(--white);
+
+    text-align: center;
+
+    font-family: Montserrat;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1.25;
+}
+
+.explication-title {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 7.8rem;
+
+    padding-top: 5.8rem;
+    padding-bottom: 3.91rem;
+}
+
+.explication-title h2 {
+    color: var(--white);
+
+    text-align: center;
+
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-weight: 700;
+}
+
+.explication-title img {
+    width: 4.4rem;
+    height: 4.4rem;
+}
+
+.dog {
+    position: absolute;
+
+    z-index: 2;
+
+    object-fit: contain;
+}
+
+.dog-left {
+    width: 50rem;
+
+    left: calc(50% - 70rem);
+    top: 15rem;
+}
+
+.dog-right {
+    width: 50rem;
+
+    right: calc(50% - 71rem);
+    top: 12rem;
+}
+
+
+.components {
+    width: 100%;
+    padding: 4rem 0 6rem 6.7rem;
+    overflow: hidden;
+}
+
+.components > h2 {
+    margin-bottom: 3.5rem;
+
+    color: var(--black);
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-weight: 700;
+}
+
+.components-carousel {
+    display: flex;
+    gap: 3.8rem;
+
+    overflow-x: auto;
+
+    cursor: grab;
+    user-select: none;
+
+    scrollbar-width: none;
+}
+
+.components-carousel:active {
+    cursor: grabbing;
+}
+
+.components-carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.components-card {
+    flex: 0 0 32.2rem;
+    height: 47.4rem;
+
+    padding: 3rem 3.5rem 2.5rem;
+
+    border-radius: 2rem;
+
+    background: var(--light-gray);
+
+    box-shadow: 0 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    text-align: center;
+}
+
+.components-card img {
+    width: 27.0707rem;
+    height: 15.2273rem;
+
+    aspect-ratio: 16 / 9;
+
+    object-fit: contain;
+
+    margin-bottom: 3rem;
+
+    pointer-events: none;
+}
+
+.components-card h3 {
+    width: 25.2rem;
+    height: 9rem;
+
+    margin-bottom: 1.5rem;
+
+    color: var(--black);
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.components-card p {
+    width: 25.2rem;
+    height: 9rem;
+
+    margin: 0;
+
+    color: var(--black);
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 1.6rem;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.components-card strong {
+    margin-top: auto;
+
+    color: var(--burnt-orange);
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.design {
+    display: flex;
+    margin-inline: auto;
+    margin-top: 17rem;
+    margin-bottom: 17.5rem;
+}
+
+.design-text {
+    margin-left: 18.3rem;   
+
+    justify-content: center;
+    align-items: center;
+}
+
+.design-text h1 {
+    color: var(--black);
+    font-family: Montserrat;
+    font-size: 3.2rem;
+    font-weight: 700;
+}
+
+.design-text h2 {
+    color: var(--black);
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-weight: 400;
+
+    margin-top: 2.8rem;
+
+    width: 54.5rem;
+    height: 14rem;
+    flex-direction: column;
+    justify-content: center;
+    flex-shrink: 0;
+}

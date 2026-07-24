@@ -13,11 +13,66 @@
     --dark-white: #FAFAFA;
     --gray: #B8B8B8;
     --white: #FFFFFF;
+    --light-beige: #DAD7D0;
 }
 
 html{
      font-size: 62.5%;
 }
+
+h1 {
+    color: var(--burnt-orange);
+    font-family: Montserrat;
+    font-size: 4.8rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+h2 {
+    color: var(--black);
+    font-family: Montserrat;
+    font-size: 2.4rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+h3 {
+    color: var(--black);
+    font-family: Montserrat;
+    font-size: 2.0rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+h4 {
+    color: var(--black);
+    text-align: center;
+    font-family: Montserrat;
+    font-size: 1.4rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+p{
+    color: var(--black);
+    font-family: Montserrat;
+    font-size: 1.6rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+button:hover {
+    transition: .3s ease;
+    cursor:pointer;
+
+    background-color: var(--apricot);
+}
+
 
 .navbar{
     background-color: var(--dark-white);
@@ -53,6 +108,15 @@ html{
     color: var(--black);
 }
 
+.nav-links a:hover {
+    color: var(--burnt-orange);
+}
+
+.nav-links a.active {
+    color: var(--burnt-orange);
+    font-weight: 700;
+}
+
 .logo img{
     width: 9.6rem;
     height: 5.3rem;
@@ -60,7 +124,6 @@ html{
 }
 
 .profile img{
-    
     margin-left: 4.8rem;
     width: 3.3rem;
     height: 3.3rem;
@@ -68,38 +131,96 @@ html{
     border-radius: 10.0rem;
 }
 
-h1 {
-    color: var(--burnt-orange);
-    font-family: Montserrat;
-    font-size: 4.8rem;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+.theme-toggle {
+    width: 3.6rem;
+    height: 3.6rem;
+
+    margin-left: 3rem;
+    padding: 0;
+
+    border: none;
+    border-radius: 50%;
+
+    background-color: var(--burnt-orange);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    cursor: pointer;
+
+    flex-shrink: 0;
+
+    transition:
+        background-color 0.3s ease,
+        transform 0.3s ease;
 }
 
-h2 {
-    color: var(--black);
-    font-family: Montserrat;
+.theme-toggle:hover {
+    transform: rotate(15deg) scale(1.05);
+}
+
+.theme-icon {
+    color: var(--white);
+
     font-size: 2.4rem;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
+    line-height: 1;
+
+    transition: transform 0.3s ease;
 }
 
-h3 {
-    color: var(--black);
-    font-family: Montserrat;
-    font-size: 2.0rem;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
+.footer {
+    background-color: var(--burnt-orange);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 13.2rem;
+  
+    width: 100%;
+    height: 20.5rem;
 }
 
-p{
-    color: var(--black);
+.footer p, .footer a  {
+    color: var(--white);
+    text-decoration: none;
+
     font-family: Montserrat;
     font-size: 1.6rem;
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+}
+
+.footer h2{
+    color: var(--white);
+    font-family: Montserrat;
+    font-size: 2.0rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    margin-bottom: 2.4rem;
+}
+
+.footerLogo{
+    width: 18.2rem;
+    height: 11.0rem;
+}
+
+.footerText{
+    display: flex;
+    flex-direction: row;
+    
+    gap: 4.3rem;
+}
+
+.footerEmail p{ 
+    margin-top: 1.2rem;
+}
+
+.socialLink{
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    margin-top: 2.4rem;
 }

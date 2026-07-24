@@ -1,0 +1,126 @@
+.hero{
+    background-color: var(--beige);
+    width: auto;
+    height: 63.1rem;
+}
+
+.hero-content{
+    display:flex;
+    align-items:center;
+}
+
+.hero-image{
+  height: 69.4rem;
+  margin-left: 8.3rem;
+}
+
+.hero-text{
+    margin-left: 13.2rem;
+}
+
+.hero-text h1{
+    margin-bottom: 4.2rem;
+    max-width: 74.1rem;
+}
+
+.hero-text h2{
+    max-width: 65.6rem;
+    margin-bottom: 11.9rem;
+}
+
+.hero-orange{
+    background: var(--burnt-orange);
+    width: auto;
+    height: 20.4rem;
+
+    margin-top: -10rem;
+}
+
+.steps{
+    margin: 30rem 8.3rem 9.3rem 12rem;
+}
+
+.step-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10.551rem;
+
+}
+
+.step-card{
+    position: relative;
+    width: 55.9488rem;
+    height: 28.3rem;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    border-radius: 1.5rem;
+    background: var(--beige);
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.12);
+
+}
+
+.step-number{
+    position: absolute;
+
+    top: -20px;
+    left: -20px;
+
+
+    width: 8.8rem;
+    height: 8.6rem;
+    border-radius: 50%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--burnt-orange);
+    color: var(--white);
+    opacity: 0.8;
+
+    font-family: Montserrat;
+    font-size: 4.8rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+
+
+.step-image {
+    width: 25.9rem;
+    height: 24.7rem;
+    gap: 1.6rem;
+}
+
+.step-text{
+    width: 22.4rem;
+    height: 9.9rem;
+    margin-bottom: 9rem;
+}
+
+.step-text h2{
+    margin-bottom: 3.4rem;
+}
+
+.video{
+    width: 68.1rem;
+    height: 38.2rem;
+
+    margin: 17.2rem auto;
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    background-color: var(--gray);
+    border-radius: 1.5rem;
+}
+
+.video img{
+    width: 6.2rem;
+    height: 6.2rem;
+}
