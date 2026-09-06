@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil do seu Pet</title>
+
+    <!-- Fonte Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="./perfil.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="./index.html" class="logo">
+            <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
+        </a>
+
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar modo escuro">
+            <span class="theme-icon" id="theme-icon">☾</span>
+        </button>
+
+        <ul class="nav-links">
+            <li>
+                <a href="">Órtese</a>
+            </li>
+            <li>
+                <a href="./pages/instrucoes/instrucoes.html">Instruções</a>
+            </li>
+            <li>
+                <a href="./pages/produto/produto.html">Produto</a>
+            </li>
+            <li>
+                <a href="./pages/equipe/equipe.html">Equipe</a>
+            </li>
+            <li>
+                <a href="./pages/referencias/referencias.html">Referências</a>
+            </li>
+            <li>
+                <a href="./pages/jogo/jogo.html">Jogo</a>
+            </li>
+        </ul>
+          
+        <div class="nav-actions">
+            <a href="./pages/login/login.html" class="profile">
+                <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Banner Superior em Laranja Gradiente Suave -->
+    <section class="user-hero">
+        <div class="user-hero-content">
+            <h1>Perfil do seu Pet</h1>
+        </div>
+    </section>
+
+    <!-- Conteúdo Principal (Cards Lado a Lado) -->
+    <main class="dashboard-main">
+        <div class="cards-container">
+
+            <!-- Card Esquerdo: Identificação do Pet -->
+            <section class="pet-card pet-profile-card">
+                <div class="pet-avatar-container">
+                    <img src="../../assets/images/FOTO PET.png" alt="Foto do Pet Mabel" class="pet-avatar">
+                </div>
+
+                <div class="pet-info">
+                    <h2 class="pet-name">Mabel</h2>
+                    <p class="pet-meta">NDF</p>
+                    <p class="pet-meta">8 Meses</p>
+                    <p class="pet-meta">Peso</p>
+                </div>
+
+                <button class="edit-btn">Editar</button>
+            </section>
+
+            <!-- Card Direito: Condição de Saúde e Histórico -->
+            <section class="pet-card pet-health-card">
+                <div class="health-content">
+                    
+                    <!-- Condição de Saúde -->
+                    <div class="health-section">
+                        <h3>Condição de Saúde:</h3>
+                        <p>Tremores musculares moderados nas patas traseiras, com necessidade de estimulação elétrica.</p>
+                    </div>
+
+                    <!-- Histórico Médico -->
+                    <div class="health-section">
+                        <h3>Histórico médico:</h3>
+                        <ul class="medical-history-list">
+                            <li><span class="date">05/02/2025</span> <span class="bullet">•</span> <span class="desc">Diagnóstico neurológico</span></li>
+                            <li><span class="date">20/02/2025</span> <span class="bullet">•</span> <span class="desc">Início da fisioterapia</span></li>
+                            <li><span class="date">15/03/2025</span> <span class="bullet">•</span> <span class="desc">Adaptação da órtese</span></li>
+                            <li><span class="date">10/04/2025</span> <span class="bullet">•</span> <span class="desc">Consulta de acompanhamento</span></li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <button class="edit-btn">Editar</button>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="../../assets/images/LOGO BRANCO.png" alt="Logo Mabel Branca" class="footerLogo">
+            </div>
+
+            <div class="footer-sections">
+                <div class="footer-col">
+                    <h3>CONTATO</h3>
+                    <a href="mailto:projetomabel@gmail.com">projetomabel@gmail.com</a>
+                    <p>UNASP - SP</p>
+                </div>
+                <div class="footer-col">
+                    <h3>REDES SOCIAIS</h3>
+                    <div class="social-link">
+                        <img src="../../assets/images/mdi_instagram.png" alt="Instagram" class="social-icon">
+                        <a href="https://www.instagram.com/projetomabel" target="_blank">@projetomabel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/script.js"></script>
+</body>
+</html>

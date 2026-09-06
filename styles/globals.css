@@ -247,3 +247,35 @@ body.dark-mode .theme-icon {
     gap: 1.2rem;
     margin-top: 2.4rem;
 }
+
+@media (max-width: 768px) {
+    .menu-hamburger {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        position: absolute;
+        top: 8rem;
+        left: 0;
+        width: 100%;
+        background-color: var(--dark-white);
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem 0;
+        gap: 2rem;
+        border-bottom: 1px solid var(--gray);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .nav-links li a {
+        text-decoration: none;
+        color: var(--black);
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+}

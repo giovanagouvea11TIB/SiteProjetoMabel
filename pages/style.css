@@ -181,3 +181,104 @@ body.dark-mode .hero h2, body.dark-mode .goal-text h2{
     margin-left: 18rem;
     margin-top: 4.6rem;
 }
+
+@media (max-width: 768px) {
+
+    .hero {
+        padding: 4rem 2rem 4rem;
+        min-height: auto;
+        text-align: left;
+        background-position: right 25% bottom 0%;
+        background-size: contain;
+    }
+
+    .hero-content {
+        max-width: 65%;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+    }
+
+    .hero h2 {
+        font-size: 1.3rem;
+        line-height: 1.4;
+        margin-bottom: 2.5rem;
+    }
+
+    .hero-button {
+        padding: 1.2rem 2rem;
+        font-size: 1.4rem;
+        border-radius: 3rem;
+    }
+
+    .features {
+        padding: 3.5rem 1.5rem;
+    }
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        max-width: 100%;
+        padding: 2rem 1.2rem;
+        border-radius: 1.8rem;
+    }
+
+    .feature-img {
+        width: 4.5rem;
+        height: 4.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .feature-card p {
+        font-size: 1.2rem;
+        line-height: 1.3;
+    }
+
+    .goal {
+        padding: 4rem 2rem 0;
+    }
+
+    .goal h2 {
+        font-size: 2.2rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .goal-container {
+        flex-direction: column;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .div-card {
+        padding: 2rem;
+    }
+
+    .goal-title h3 {
+        font-size: 1.6rem;
+    }
+
+    .goal-title img {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+
+    .div-card p {
+        font-size: 1.3rem;
+    }
+
+    .goal-image {
+        max-width: 100%;
+    }
+}

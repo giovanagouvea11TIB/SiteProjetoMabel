@@ -1,0 +1,453 @@
+@import url('../../styles/globals.css');
+
+* {
+    font-family: 'Montserrat', sans-serif !important;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #FFFFFF;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================
+   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA)
+   ========================================================== */
+.user-hero {
+    background: linear-gradient(180deg, #F9B288 0%, #F5965B 100%);
+    padding: 3rem 2rem 6.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.user-hero-content {
+    width: 100%;
+    max-width: 62rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.user-hero h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.search-bar {
+    background-color: #FAFAFA;
+    border-radius: 3rem;
+    height: 4.5rem;
+    display: flex;
+    align-items: center;
+    padding: 0 2rem;
+    gap: 1rem;
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.03);
+}
+
+.search-bar input {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 100%;
+    font-size: 1.4rem;
+    color: #333333;
+}
+
+.search-bar input::placeholder {
+    color: #B0B0B0;
+}
+
+/* ==========================================================
+   CONTEÚDO PRINCIPAL (DASHBOARD)
+   ========================================================== */
+.dashboard-main {
+    flex: 1;
+    background-color: #FFFFFF;
+    border-radius: 3.5rem 3.5rem 0 0;
+    margin-top: -3.5rem;
+    padding: 3.5rem 2rem 5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.8rem;
+}
+
+/* CARDS PADRÃO */
+.card {
+    background-color: #ECEAE6;
+    border-radius: 2.5rem;
+    width: 100%;
+    max-width: 62rem;
+    padding: 2.5rem 3rem;
+}
+
+/* --- CARD 1: STATUS DE CONEXÃO --- */
+.status-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-info h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+.status-info .subtitle {
+    font-size: 1.5rem;
+    color: #555555;
+    margin-top: 0.3rem;
+}
+
+.status-indicators {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.8rem;
+}
+
+.badge {
+    border-radius: 2rem;
+    padding: 0.5rem 1.6rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.badge-connected {
+    background-color: #E2F5EA;
+    color: #2BB673;
+    border: 0.1rem solid #B2E5C8;
+}
+
+.battery-status {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+.battery-icon {
+    width: 3rem;
+    height: 1.5rem;
+    border: 0.18rem solid #2BB673;
+    border-radius: 0.4rem;
+    padding: 0.15rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.battery-icon::after {
+    content: '';
+    position: absolute;
+    right: -0.35rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0.2rem;
+    height: 0.6rem;
+    background-color: #2BB673;
+    border-radius: 0 0.15rem 0.15rem 0;
+}
+
+.battery-fill {
+    width: 50%;
+    height: 100%;
+    background-color: #2BB673;
+    border-radius: 0.1rem;
+}
+
+/* --- CARD 2: ESTIMULAÇÃO --- */
+.stimulation-card h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 1.5rem;
+}
+
+.range-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+.range-group label {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #222222;
+}
+
+.range-container {
+    width: 100%;
+}
+
+/* Input Range customizado */
+.intensity-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 0.8rem;
+    border-radius: 1rem;
+    background: linear-gradient(to right, #D85707 0%, #D85707 35%, #F0BA98 35%, #F0BA98 100%);
+    outline: none;
+}
+
+.intensity-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 50%;
+    background: #D85707;
+    cursor: pointer;
+    box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+/* Sub-card do Timer */
+.timer-subcard {
+    background-color: #DDD9D2;
+    border-radius: 2rem;
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.timer-left h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #222222;
+}
+
+.timer-display {
+    font-size: 4.2rem;
+    font-weight: 700;
+    color: #D85707;
+    margin: 0.5rem 0 1.5rem;
+}
+
+.timer-options {
+    display: flex;
+    gap: 1rem;
+}
+
+.timer-btn {
+    background-color: #FFFFFF;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.7rem 1.8rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #D85707;
+    cursor: pointer;
+    box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.05);
+    transition: all 0.2s ease;
+}
+
+.timer-btn.active,
+.timer-btn:hover {
+    background-color: #D85707;
+    color: #FFFFFF;
+}
+
+.timer-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.8rem;
+}
+
+.pause-btn {
+    background-color: #FFFFFF;
+    border: none;
+    width: 8.5rem;
+    height: 8.5rem;
+    border-radius: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease;
+}
+
+.pause-btn:hover {
+    transform: scale(1.03);
+}
+
+.start-btn {
+    background-color: #D85707;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.8rem 3rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.start-btn:hover {
+    background-color: #b84703;
+}
+
+/* --- CARD 3: ÚLTIMA SESSÃO --- */
+.last-session-section {
+    width: 100%;
+    max-width: 62rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.section-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+.session-card {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.session-details p {
+    font-size: 1.5rem;
+    color: #333333;
+    margin-bottom: 0.4rem;
+}
+
+.session-details strong {
+    font-weight: 700;
+}
+
+.badge-moderate {
+    background-color: #FFF8E6;
+    color: #E5A813;
+    border: 0.1rem solid #F5E3B3;
+}
+
+.session-notes p {
+    font-size: 1.5rem;
+    color: #333333;
+    line-height: 1.4;
+}
+
+/* ==========================================================
+   RODAPÉ
+   ========================================================== */
+.footer {
+    background-color: #D85707;
+    padding: 3.5rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 62rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerLogo {
+    height: 5rem;
+    width: auto;
+}
+
+.footer-sections {
+    display: flex;
+    gap: 5rem;
+}
+
+.footer-col h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05rem;
+}
+
+.footer-col a,
+.footer-col p {
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    text-decoration: none;
+    line-height: 1.6;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.social-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+/* ==========================================================
+   RESPONSIVO / MOBILE (ATÉ 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 2rem;
+        height: 7rem;
+    }
+
+    .menu-hamburger {
+        display: block;
+    }
+
+    .nav-links,
+    .nav-actions {
+        display: none;
+    }
+
+    .timer-subcard {
+        flex-direction: column;
+        gap: 2.5rem;
+        align-items: center;
+        text-align: center;
+    }
+
+    .timer-right {
+        flex-direction: row-reverse;
+        gap: 1.5rem;
+    }
+
+    .pause-btn {
+        width: 6rem;
+        height: 6rem;
+        border-radius: 1.5rem;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 2.5rem;
+        text-align: center;
+    }
+
+    .footer-sections {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}

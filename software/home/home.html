@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Software</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="../home/home.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="./index.html" class="logo">
+            <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
+        </a>
+
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar modo escuro">
+            <span class="theme-icon" id="theme-icon">☾</span>
+        </button>
+
+        <ul class="nav-links">
+            <li>
+                <a href="">Órtese</a>
+            </li>
+            <li>
+                <a href="./pages/instrucoes/instrucoes.html">Instruções</a>
+            </li>
+            <li>
+                <a href="./pages/produto/produto.html">Produto</a>
+            </li>
+            <li>
+                <a href="./pages/equipe/equipe.html">Equipe</a>
+            </li>
+            <li>
+                <a href="./pages/referencias/referencias.html">Referências</a>
+            </li>
+            <li>
+                <a href="./pages/jogo/jogo.html">Jogo</a>
+            </li>
+        </ul>
+          
+        <div class="nav-actions">
+            <a href="./pages/login/login.html" class="profile">
+                <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
+            </a>
+        </div>
+    </nav>
+
+    <section class="user-hero">
+        <div class="user-hero-content">
+            <h1>Olá, Usuário!</h1>
+            <div class="search-bar">
+                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D85707" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="Faça uma pesquisa...">
+            </div>
+        </div>
+    </section>
+
+    <main class="dashboard-main">
+        
+        <section class="pet-card">
+            <div class="pet-info">
+                <h2 class="pet-title">Mabel</h2>
+
+                <div class="info-group">
+                    <p class="info-label">Próxima Vacina:</p>
+                    <p class="info-value">20/06/2026</p>
+                </div>
+
+                <div class="info-group">
+                    <p class="info-label">Próxima Sessão:</p>
+                    <p class="info-value">18/04/2026</p>
+                </div>
+
+                <div class="info-group">
+                    <p class="info-label">Última estimulação:</p>
+                    <p class="info-value">Hoje, 14:23h</p>
+                </div>
+
+                <div class="battery-status">
+                    <span>50%</span>
+                    <div class="battery-icon">
+                        <div class="battery-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="pet-image-container">
+                <img src="../../assets/images/FOTO PET.png" alt="Mabel" class="pet-image">
+            </div>
+        </section>
+
+        <section class="chart-card">
+            <div class="chart-wrapper">
+                <canvas id="tremorChart"></canvas>
+            </div>
+            <div class="chart-legend">
+                <span class="legend-dot"></span>
+                <span class="legend-text">Nível de Tremores</span>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <img src="../../assets/images/LOGO BRANCO.png" alt="Logo Mabel Branca" class="footerLogo">
+        
+        <div class="footerText">
+            <div class="footerEmail">
+                <h2>CONTATO</h2>
+                <a href="mailto:projetomabel@gmail.com">projetomabel@gmail.com</a>
+                <p>UNASP - SP</p>
+            </div>
+            <div class="footerSocial">
+                <h2>REDES SOCIAIS</h2>
+                <div class="socialLink">
+                    <img src="../../assets/images/mdi_instagram.png" alt="Instagram" class="footerSocialIcon">
+                    <a href="https://www.instagram.com/projetomabel" target="_blank">@projetomabel</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const ctx = document.getElementById('tremorChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
+                    datasets: [{
+                        data: [4, 5, 4, 3, 2, 0, 0, 0, 1, 0, 0, 2],
+                        borderColor: '#D85707',
+                        borderWidth: 2.5,
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: '#D85707',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        tension: 0.4,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                color: '#EEEEEE',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#333333',
+                                font: { family: 'Montserrat', size: 11, weight: '600' }
+                            }
+                        },
+                        y: {
+                            min: 0,
+                            max: 5,
+                            ticks: {
+                                stepSize: 1,
+                                color: '#333333',
+                                font: { family: 'Montserrat', size: 11, weight: '600' }
+                            },
+                            grid: {
+                                color: '#EEEEEE',
+                                drawBorder: false
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+    <script src="../../js/script.js"></script>
+</body>
+</html>

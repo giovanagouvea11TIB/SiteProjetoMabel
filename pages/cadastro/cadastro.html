@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar Conta - Projeto Mabel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="../cadastro/cadastro.css">
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="../../index.html" class="logo">
+            <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
+        </a>
+
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar modo escuro">
+            <span class="theme-icon" id="theme-icon">☾</span>
+        </button>
+
+        <ul class="nav-links">
+            <li>
+                <a href="">Órtese</a>
+            </li>
+            <li>
+                <a href="./pages/instrucoes/instrucoes.html">Instruções</a>
+            </li>
+            <li>
+                <a href="./pages/produto/produto.html">Produto</a>
+            </li>
+            <li>
+                <a href="./pages/equipe/equipe.html">Equipe</a>
+            </li>
+            <li>
+                <a href="./pages/referencias/referencias.html">Referências</a>
+            </li>
+            <li>
+                <a href="./pages/jogo/jogo.html">Jogo</a>
+            </li>
+        </ul>
+          
+        <div class="nav-actions">
+            <a href="./pages/login/login.html" class="profile">
+                <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
+            </a>
+        </div>
+    </nav>
+
+    <main class="main-container">
+        <section class="left-section">
+            <div class="headline-container">
+                <h1>Mais estabilidade, conforto e qualidade de vida.</h1>
+                <p class="subtitle">
+                    Porque cada movimento importa.
+                    <span class="paw-icon">🐾</span>
+                </p>
+            </div>
+
+            <div class="dog-image-container">
+                <img src="../../assets/images/lulu login.png" alt="Cão da raça Spitz Alemão utilizando órtese no pata" class="dog-image">
+            </div>
+        </section>
+
+        <section class="right-section">
+            <div class="register-card">
+                <h2>Criar Conta</h2>
+
+                <form class="register-form" action="#" method="POST">
+                    <div class="input-group">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="senha">Senha</label>
+                        <input type="password" id="senha" name="senha" placeholder="Crie uma senha" required>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Criar Conta</button>
+                </form>
+
+                <p class="login-footer">
+                    Já tem uma conta? <a href="../login/login.html">LOGIN</a>
+                </p>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>

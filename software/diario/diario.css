@@ -1,0 +1,298 @@
+@import url('../../styles/globals.css');
+
+* {
+    font-family: 'Montserrat', sans-serif !important;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #F8DFC8; /* Tom alinhado ao gradiente do fundo da tela */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================
+   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA SUAVE)
+   ========================================================== */
+.user-hero {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FCE8D8 100%);
+    padding: 4rem 2rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.user-hero-content {
+    width: 100%;
+    max-width: 68rem;
+}
+
+.user-hero h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+/* ==========================================================
+   CONTEÚDO PRINCIPAL (GRÁFICO + CARDS)
+   ========================================================== */
+.dashboard-main {
+    flex: 1;
+    background: linear-gradient(180deg, #FCE8D8 0%, #F5CEB6 100%);
+    padding: 2rem 2rem 6rem;
+    display: flex;
+    justify-content: center;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 68rem;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 2.5rem;
+    align-items: start;
+}
+
+/* --- CARD DO GRÁFICO (ESQUERDA) --- */
+.chart-card {
+    background-color: #FFFFFF;
+    border-radius: 2.2rem;
+    padding: 2.5rem 2rem 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+}
+
+.chart-wrapper {
+    width: 100%;
+    position: relative;
+}
+
+.chart-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Estilos de linhas do SVG */
+.grid-line {
+    stroke: #F2ECE7;
+    stroke-width: 1;
+    stroke-dasharray: 4 4;
+}
+
+.grid-line-light {
+    stroke: #F6F2EE;
+    stroke-width: 1;
+}
+
+.axis-label-y,
+.axis-label-x {
+    font-size: 13px;
+    font-weight: 600;
+    fill: #222222;
+}
+
+.chart-point {
+    fill: #FFFFFF;
+    stroke: #D85707;
+    stroke-width: 2.5;
+}
+
+/* Legenda do Gráfico */
+.chart-legend {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1rem;
+}
+
+.legend-circle {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    border: 0.2rem solid #888888;
+    background-color: #FFFFFF;
+}
+
+.legend-text {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #333333;
+}
+
+/* --- LISTA DE SESSÕES (DIREITA) --- */
+.sessions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.8rem;
+}
+
+.session-card {
+    background-color: #FFFFFF;
+    border-radius: 2rem;
+    padding: 2.2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+}
+
+.session-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.session-date {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #222222;
+}
+
+/* BADGES DE INTENSIDADE */
+.badge {
+    border-radius: 2rem;
+    padding: 0.4rem 1.6rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.03rem;
+    display: inline-block;
+}
+
+/* Badge Forte (Vermelho / Rosa) */
+.badge-strong {
+    background-color: #FFFFFF;
+    color: #D34553;
+    border: 0.1rem solid #F8C4C8;
+}
+
+/* Badge Moderada (Amarelo / Dourado) */
+.badge-moderate {
+    background-color: #FFFFFF;
+    color: #D29D12;
+    border: 0.1rem solid #F8E6B1;
+}
+
+/* Badge Leve (Verde) */
+.badge-light {
+    background-color: #FFFFFF;
+    color: #2BB673;
+    border: 0.1rem solid #B8E7CB;
+}
+
+/* Conteúdo da Sessão */
+.session-card-body h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 0.6rem;
+}
+
+.session-card-body h3 span {
+    font-weight: 500;
+}
+
+.session-card-body p {
+    font-size: 1.35rem;
+    color: #444444;
+    line-height: 1.45;
+}
+
+.session-card-body strong {
+    font-weight: 700;
+    color: #111111;
+}
+
+/* ==========================================================
+   RODAPÉ
+   ========================================================== */
+.footer {
+    background-color: #D85707;
+    padding: 3.5rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 68rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerLogo {
+    height: 5rem;
+    width: auto;
+}
+
+.footer-sections {
+    display: flex;
+    gap: 5rem;
+}
+
+.footer-col h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05rem;
+}
+
+.footer-col a,
+.footer-col p {
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    text-decoration: none;
+    line-height: 1.6;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.social-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+/* ==========================================================
+   RESPONSIVO (MOBILE / TABLET ATÉ 850px)
+   ========================================================== */
+@media (max-width: 850px) {
+    .navbar {
+        padding: 0 2rem;
+        height: 7rem;
+    }
+
+    .menu-hamburger {
+        display: block;
+    }
+
+    .nav-links,
+    .nav-actions {
+        display: none;
+    }
+
+    .main-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 2.5rem;
+        text-align: center;
+    }
+
+    .footer-sections {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}

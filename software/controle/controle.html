@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Sessão</title>
+
+    <!-- Fonte Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../../styles/globals.css">
+    <link rel="stylesheet" href="./controle.css">
+</head>
+<body>
+
+   <nav class="navbar">
+        <a href="./index.html" class="logo">
+            <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
+        </a>
+
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar modo escuro">
+            <span class="theme-icon" id="theme-icon">☾</span>
+        </button>
+
+        <ul class="nav-links">
+            <li>
+                <a href="">Órtese</a>
+            </li>
+            <li>
+                <a href="./pages/instrucoes/instrucoes.html">Instruções</a>
+            </li>
+            <li>
+                <a href="./pages/produto/produto.html">Produto</a>
+            </li>
+            <li>
+                <a href="./pages/equipe/equipe.html">Equipe</a>
+            </li>
+            <li>
+                <a href="./pages/referencias/referencias.html">Referências</a>
+            </li>
+            <li>
+                <a href="./pages/jogo/jogo.html">Jogo</a>
+            </li>
+        </ul>
+          
+        <div class="nav-actions">
+            <a href="./pages/login/login.html" class="profile">
+                <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
+            </a>
+        </div>
+    </nav>
+
+    <!-- Banner Superior em Laranja Gradiente -->
+    <section class="user-hero">
+        <div class="user-hero-content">
+            <h1>Configurar Sessão</h1>
+            <div class="search-bar">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#D85707" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" placeholder="Faça uma pesquisa...">
+            </div>
+        </div>
+    </section>
+
+    <!-- Conteúdo Principal sobre o fundo branco -->
+    <main class="dashboard-main">
+        
+        <!-- Card 1: Status de Conexão -->
+        <section class="card status-card">
+            <div class="status-info">
+                <h2>Status de Conexão</h2>
+                <p class="subtitle">ESP32</p>
+            </div>
+            
+            <div class="status-indicators">
+                <span class="badge badge-connected">CONECTADO</span>
+                <div class="battery-status">
+                    <span>50%</span>
+                    <div class="battery-icon">
+                        <div class="battery-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 2: Estimulação -->
+        <section class="card stimulation-card">
+            <h2>Estimulação</h2>
+            
+            <div class="range-group">
+                <label for="intensity">Intensidade</label>
+                <div class="range-container">
+                    <input type="range" id="intensity" min="0" max="100" value="35" class="intensity-slider">
+                </div>
+            </div>
+
+            <!-- Sub-card Timer -->
+            <div class="timer-subcard">
+                <div class="timer-left">
+                    <h3>Timer</h3>
+                    <div class="timer-display">10:00</div>
+                    
+                    <div class="timer-options">
+                        <button class="timer-btn active">10 min</button>
+                        <button class="timer-btn">15 min</button>
+                        <button class="timer-btn">20 min</button>
+                    </div>
+                </div>
+
+                <div class="timer-right">
+                    <button class="pause-btn" aria-label="Pausar">
+                        <svg width="20" height="28" viewBox="0 0 20 28" fill="#F59153" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="7" height="28" rx="3.5"/>
+                            <rect x="13" width="7" height="28" rx="3.5"/>
+                        </svg>
+                    </button>
+                    <button class="start-btn">Iniciar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Card 3: Última Sessão -->
+        <section class="last-session-section">
+            <h2 class="section-title">Última Sessão:</h2>
+
+            <div class="card session-card">
+                <div class="session-header">
+                    <div class="session-details">
+                        <p><strong>Duração:</strong> 15 minutos</p>
+                        <p><strong>Intensidade:</strong> Moderada</p>
+                    </div>
+                    <span class="badge badge-moderate">MODERADA</span>
+                </div>
+
+                <div class="session-notes">
+                    <p><strong>Observações:</strong> Redução visível dos tremores durante o repouso.</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Rodapé -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="../../assets/images/LOGO BRANCO.png" alt="Logo Mabel Branca" class="footerLogo">
+            </div>
+
+            <div class="footer-sections">
+                <div class="footer-col">
+                    <h3>CONTATO</h3>
+                    <a href="mailto:projetomabel@gmail.com">projetomabel@gmail.com</a>
+                    <p>UNASP - SP</p>
+                </div>
+                <div class="footer-col">
+                    <h3>REDES SOCIAIS</h3>
+                    <div class="social-link">
+                        <img src="../../assets/images/mdi_instagram.png" alt="Instagram" class="social-icon">
+                        <a href="https://www.instagram.com/projetomabel" target="_blank">@projetomabel</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../js/script.js"></script>
+</body>
+</html>

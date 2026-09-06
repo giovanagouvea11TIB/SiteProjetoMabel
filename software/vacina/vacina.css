@@ -1,0 +1,294 @@
+@import url('../../styles/globals.css');
+
+* {
+    font-family: 'Montserrat', sans-serif !important;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #FFFFFF;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ==========================================================
+   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA)
+   ========================================================== */
+.user-hero {
+    background: linear-gradient(180deg, #F9B288 0%, #F5965B 100%);
+    padding: 3.5rem 2rem 7rem;
+    display: flex;
+    justify-content: center;
+}
+
+.user-hero-content {
+    width: 100%;
+    max-width: 65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.hero-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hero-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+}
+
+.notification-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* CARDS DE DATAS (O1 MAIO, 12 JULHO, ETC.) */
+.date-cards-container {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.8rem;
+}
+
+.date-card {
+    background-color: #D95308;
+    border-radius: 1.8rem;
+    padding: 2.2rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #FFFFFF;
+    box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
+}
+
+.date-card .day {
+    font-size: 3.8rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 0.8rem;
+}
+
+.date-card .month {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+/* ==========================================================
+   CONTEÚDO PRINCIPAL (DASHBOARD)
+   ========================================================== */
+.dashboard-main {
+    flex: 1;
+    background-color: #FFFFFF;
+    border-radius: 3.5rem 3.5rem 0 0;
+    margin-top: -3.5rem;
+    padding: 3.5rem 2rem 5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.main-container {
+    width: 100%;
+    max-width: 65rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.section-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+/* GRID DE VACINAS (2 COLUNAS) */
+.vaccine-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.vaccine-card {
+    background-color: #ECEAE6;
+    border-radius: 2.2rem;
+    padding: 2.2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.vaccine-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.vaccine-header h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+/* BADGES DE STATUS */
+.badge {
+    border-radius: 2rem;
+    padding: 0.4rem 1.4rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 0.03rem;
+    display: inline-block;
+}
+
+/* Atrasada (Vermelho / Rosa Claro) */
+.badge-late {
+    background-color: #FDE8E8;
+    color: #D34553;
+    border: 0.1rem solid #F8C4C8;
+}
+
+/* Próxima (Amarelo / Dourado Claro) */
+.badge-next {
+    background-color: #FFF9E6;
+    color: #D29D12;
+    border: 0.1rem solid #F8E6B1;
+}
+
+/* Em dia (Verde Claro) */
+.badge-ontime {
+    background-color: #E6F5EC;
+    color: #2BB673;
+    border: 0.1rem solid #B8E7CB;
+}
+
+.vaccine-details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.vaccine-details p {
+    font-size: 1.45rem;
+    color: #333333;
+}
+
+.vaccine-details strong {
+    font-weight: 700;
+}
+
+/* ==========================================================
+   RODAPÉ
+   ========================================================== */
+.footer {
+    background-color: #D85707;
+    padding: 3.5rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 65rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerLogo {
+    height: 5rem;
+    width: auto;
+}
+
+.footer-sections {
+    display: flex;
+    gap: 5rem;
+}
+
+.footer-col h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05rem;
+}
+
+.footer-col a,
+.footer-col p {
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    text-decoration: none;
+    line-height: 1.6;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.social-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+/* ==========================================================
+   RESPONSIVO (MOBILE / TABLET ATÉ 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 2rem;
+        height: 7rem;
+    }
+
+    .menu-hamburger {
+        display: block;
+    }
+
+    .nav-links,
+    .nav-actions {
+        display: none;
+    }
+
+    .date-cards-container {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.2rem;
+    }
+
+    .date-card {
+        padding: 1.8rem 1rem;
+    }
+
+    .date-card .day {
+        font-size: 3rem;
+    }
+
+    .date-card .month {
+        font-size: 1.6rem;
+    }
+
+    .vaccine-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 2.5rem;
+        text-align: center;
+    }
+
+    .footer-sections {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}

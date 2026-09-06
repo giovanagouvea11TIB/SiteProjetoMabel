@@ -1,0 +1,284 @@
+@import url('../../styles/globals.css');
+
+* {
+    font-family: 'Montserrat', sans-serif !important;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #F9EBE1; /* Fundo alinhado ao gradiente da tela */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* ==========================================================
+   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA SUAVE)
+   ========================================================== */
+.user-hero {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FBECE2 100%);
+    padding: 4rem 2rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.user-hero-content {
+    width: 100%;
+    max-width: 65rem;
+}
+
+.user-hero h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    color: #111111;
+}
+
+/* ==========================================================
+   CONTEÚDO PRINCIPAL (DASHBOARD)
+   ========================================================== */
+.dashboard-main {
+    flex: 1;
+    background: linear-gradient(180deg, #FBECE2 0%, #F5D3BD 100%);
+    padding: 2rem 2rem 6rem;
+    display: flex;
+    justify-content: center;
+}
+
+.cards-container {
+    width: 100%;
+    max-width: 65rem;
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 2.5rem;
+    align-items: stretch;
+}
+
+/* CARDS BRANCOS ARREDONDADOS */
+.pet-card {
+    background-color: #FFFFFF;
+    border-radius: 2.2rem;
+    padding: 3.5rem 3rem 2.8rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+}
+
+/* --- CARD ESQUERDO: PERFIL DO PET --- */
+.pet-profile-card {
+    align-items: center;
+    text-align: center;
+}
+
+.pet-avatar-container {
+    width: 12rem;
+    height: 12rem;
+    border-radius: 50%;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.pet-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pet-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-bottom: 3rem;
+}
+
+.pet-name {
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 0.2rem;
+}
+
+.pet-meta {
+    font-size: 1.5rem;
+    color: #888888;
+    font-weight: 500;
+}
+
+/* --- CARD DIREITO: SAÚDE E HISTÓRICO --- */
+.pet-health-card {
+    align-items: flex-start;
+}
+
+.health-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+    width: 100%;
+    margin-bottom: 3rem;
+}
+
+.health-section h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #111111;
+    margin-bottom: 0.6rem;
+}
+
+.health-section p {
+    font-size: 1.35rem;
+    color: #444444;
+    line-height: 1.5;
+}
+
+.medical-history-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.medical-history-list li {
+    font-size: 1.35rem;
+    color: #444444;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.medical-history-list .date {
+    color: #444444;
+    font-weight: 500;
+}
+
+.medical-history-list .bullet {
+    color: #222222;
+}
+
+.medical-history-list .desc {
+    color: #444444;
+}
+
+/* BOTÃO DE EDITAR (PÍLULA LARANJA) */
+.edit-btn {
+    background-color: #D85707;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 2rem;
+    padding: 0.9rem 0;
+    width: 100%;
+    max-width: 18rem;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: center;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.edit-btn:hover {
+    background-color: #bd4a04;
+}
+
+.edit-btn:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================
+   RODAPÉ
+   ========================================================== */
+.footer {
+    background-color: #D85707;
+    padding: 3.5rem 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-container {
+    width: 100%;
+    max-width: 65rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.footerLogo {
+    height: 5rem;
+    width: auto;
+}
+
+.footer-sections {
+    display: flex;
+    gap: 5rem;
+}
+
+.footer-col h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin-bottom: 0.8rem;
+    letter-spacing: 0.05rem;
+}
+
+.footer-col a,
+.footer-col p {
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    text-decoration: none;
+    line-height: 1.6;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.social-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+}
+
+/* ==========================================================
+   RESPONSIVO (MOBILE / TABLET ATÉ 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 0 2rem;
+        height: 7rem;
+    }
+
+    .menu-hamburger {
+        display: block;
+    }
+
+    .nav-links,
+    .nav-actions {
+        display: none;
+    }
+
+    .cards-container {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .pet-card {
+        padding: 3rem 2rem 2.5rem;
+    }
+
+    .edit-btn {
+        max-width: 100%;
+    }
+
+    .footer-container {
+        flex-direction: column;
+        gap: 2.5rem;
+        text-align: center;
+    }
+
+    .footer-sections {
+        flex-direction: column;
+        gap: 2rem;
+    }
+}

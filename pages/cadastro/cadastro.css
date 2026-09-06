@@ -1,0 +1,180 @@
+@import url('../../styles/globals.css');
+
+body {
+    background-color: #EFEADE; 
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-container {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 128rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 6.4rem 4rem;
+    gap: 4rem;
+}
+
+.left-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: 58rem;
+}
+
+.headline-container {
+    margin-bottom: 2rem;
+}
+
+.left-section h1 {
+    font-size: 3.6rem;
+    font-weight: 600;
+    color: var(--black);
+    line-height: 1.25;
+    margin-bottom: 1rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.subtitle {
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #4A4A4A;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.paw-icon {
+    font-size: 1.8rem;
+    color: var(--burnt-orange);
+}
+
+.dog-image-container {
+    width: 100%;
+    max-width: 42rem;
+    margin-top: 1rem;
+}
+
+.dog-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+    filter: drop-shadow(0 1rem 1.5rem rgba(0, 0, 0, 0.1));
+}
+
+.right-section {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.register-card {
+    background-color: #DCD9D1;
+    width: 100%;
+    max-width: 46rem;
+    padding: 4.5rem 4rem;
+    border-radius: 3rem;
+    box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+}
+
+.register-card h2 {
+    font-size: 2.8rem;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 3rem;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.register-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.input-group label {
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: #555555;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.input-group input {
+    width: 100%;
+    height: 4.8rem;
+    padding: 0 1.8rem;
+    border-radius: 1.2rem;
+    border: none;
+    background-color: var(--white);
+    font-size: 1.4rem;
+    font-family: 'Montserrat', sans-serif;
+    color: var(--black);
+    outline: none;
+    transition: box-shadow 0.2s ease, border 0.2s ease;
+}
+
+.input-group input::placeholder {
+    color: #A0A0A0;
+}
+
+.input-group input:focus {
+    box-shadow: 0 0 0 0.2rem var(--burnt-orange);
+}
+
+.submit-btn {
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 22rem;
+    height: 4.8rem;
+    align-self: center;
+    background-color: var(--burnt-orange);
+    color: var(--white);
+    border: none;
+    border-radius: 2.5rem;
+    font-size: 1.6rem;
+    font-weight: 700;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.submit-btn:hover {
+    background-color: #C04B02;
+    transform: translateY(-0.1rem);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+.login-footer {
+    margin-top: 2rem;
+    text-align: center;
+    font-size: 1.3rem;
+    color: #666666;
+    font-weight: 500;
+}
+
+.login-footer a {
+    color: var(--burnt-orange);
+    font-weight: 700;
+    text-decoration: none;
+    margin-left: 0.3rem;
+}
+
+.login-footer a:hover {
+    text-decoration: underline;
+}
