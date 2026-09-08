@@ -265,3 +265,63 @@ body.dark-mode .sidebar-right .sidebar-nav a.active {
     background-color: rgba(255, 255, 255, 0.15);
     color: var(--burnt-orange);
 }
+
+body.dark-mode {
+    background-color: #273038;
+}
+
+body.dark-mode .user-hero {
+    background: #495863;
+}
+
+body.dark-mode .hero-header h1 {
+    color: #FFFFFF;
+}
+
+body.dark-mode .date-card {
+    background-color: #D9D9D9;
+    color: #111111;
+}
+
+body.dark-mode .date-card .day,
+body.dark-mode .date-card .month {
+    color: #111111;
+}
+
+body.dark-mode .dashboard-main {
+    background-color: #273038;
+}
+
+body.dark-mode .section-title {
+    color: #FFFFFF;
+}
+
+body.dark-mode .vaccine-card {
+    background-color: #E6E6E6;
+}
+
+body.dark-mode .vaccine-header h3 {
+    color: #111111;
+}
+
+body.dark-mode .vaccine-details p {
+    color: #222222;
+}
+
+body.dark-mode .badge-late {
+    background-color: #FFFFFF;
+    color: #D34553;
+    border-color: #F8C4C8;
+}
+
+body.dark-mode .badge-next {
+    background-color: #FFFFFF;
+    color: #D29D12;
+    border-color: #F8E6B1;
+}
+
+body.dark-mode .badge-ontime {
+    background-color: #FFFFFF;
+    color: #2BB673;
+    border-color: #B8E7CB;
+}

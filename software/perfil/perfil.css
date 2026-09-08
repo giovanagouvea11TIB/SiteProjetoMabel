@@ -266,3 +266,49 @@ body.dark-mode .sidebar-right .sidebar-nav a.active {
     background-color: rgba(255, 255, 255, 0.15);
     color: var(--burnt-orange);
 }
+
+body.dark-mode {
+    background-color: #495863;
+}
+
+body.dark-mode .user-hero {
+    background: transparent;
+}
+
+body.dark-mode .user-hero h1 {
+    color: #FFFFFF;
+}
+
+body.dark-mode .dashboard-main {
+    background: transparent;
+}
+
+body.dark-mode .pet-card {
+    background-color: #FFFFFF;
+}
+
+body.dark-mode .pet-name,
+body.dark-mode .health-section h3,
+body.dark-mode .medical-history-list .bullet {
+    color: #111111;
+}
+
+body.dark-mode .pet-meta {
+    color: #888888;
+}
+
+body.dark-mode .health-section p,
+body.dark-mode .medical-history-list li,
+body.dark-mode .medical-history-list .date,
+body.dark-mode .medical-history-list .desc {
+    color: #444444;
+}
+
+body.dark-mode .edit-btn {
+    background-color: #D85707;
+    color: #FFFFFF;
+}
+
+body.dark-mode .edit-btn:hover {
+    background-color: #bd4a04;
+}

@@ -284,3 +284,42 @@ body.dark-mode .sidebar-right .sidebar-nav a.active {
     background-color: rgba(255, 255, 255, 0.15);
     color: var(--burnt-orange);
 }
+
+
+body.dark-mode {
+    background-color: #273038;
+}
+
+body.dark-mode .user-hero {
+    background: linear-gradient(180deg, #3A454E 0%, #273038 100%);
+}
+
+body.dark-mode .user-hero h1 {
+    color: #FFFFFF;
+}
+
+body.dark-mode .dashboard-main {
+    background: #273038;
+}
+
+body.dark-mode .chart-card,
+body.dark-mode .session-card {
+    background-color: #FFFFFF;
+}
+
+body.dark-mode .legend-text {
+    color: #333333;
+}
+
+body.dark-mode .grid-line {
+    stroke: #EAEAEA;
+}
+
+body.dark-mode .grid-line-light {
+    stroke: #F0F0F0;
+}
+
+body.dark-mode .axis-label-y,
+body.dark-mode .axis-label-x {
+    fill: #333333;
+}

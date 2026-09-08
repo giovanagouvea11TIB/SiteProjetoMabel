@@ -337,51 +337,6 @@ body {
     line-height: 1.4;
 }
 
-@media (max-width: 768px) {
-    .navbar {
-        padding: 0 2rem;
-        height: 7rem;
-    }
-
-    .menu-hamburger {
-        display: block;
-    }
-
-    .nav-links,
-    .nav-actions {
-        display: none;
-    }
-
-    .timer-subcard {
-        flex-direction: column;
-        gap: 2.5rem;
-        align-items: center;
-        text-align: center;
-    }
-
-    .timer-right {
-        flex-direction: row-reverse;
-        gap: 1.5rem;
-    }
-
-    .pause-btn {
-        width: 6rem;
-        height: 6rem;
-        border-radius: 1.5rem;
-    }
-
-    .footer-container {
-        flex-direction: column;
-        gap: 2.5rem;
-        text-align: center;
-    }
-
-    .footer-sections {
-        flex-direction: column;
-        gap: 2rem;
-    }
-}
-
 body.dark-mode {
     background-color: #273038;
 }
@@ -392,6 +347,10 @@ body.dark-mode .user-hero {
 
 body.dark-mode .dashboard-main {
     background-color: #273038;
+}
+
+body.dark-mode .section-title {
+    color: #FFFFFF;
 }
 
 .sidebar-right {
