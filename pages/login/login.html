@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Projeto Mabel</title>
+    <title>Login</title>
 
+    <link rel="icon" type="image/x-icon" href="/assets/images/Logo Mabel 1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -28,24 +29,24 @@
                 <a href="">Órtese</a>
             </li>
             <li>
-                <a href="./pages/instrucoes/instrucoes.html">Instruções</a>
+                <a href="../instrucoes/instrucoes.html">Instruções</a>
             </li>
             <li>
-                <a href="./pages/produto/produto.html">Produto</a>
+                <a href="../produto/produto.html">Produto</a>
             </li>
             <li>
-                <a href="./pages/equipe/equipe.html">Equipe</a>
+                <a href="../equipe/equipe.html">Equipe</a>
             </li>
             <li>
-                <a href="./pages/referencias/referencias.html">Referências</a>
+                <a href="../referencias/referencias.html">Referências</a>
             </li>
             <li>
-                <a href="./pages/jogo/jogo.html">Jogo</a>
+                <a href="../jogo/jogo.html">Jogo</a>
             </li>
         </ul>
           
         <div class="nav-actions">
-            <a href="./pages/login/login.html" class="profile">
+            <a href="./login.html" class="profile">
                 <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
             </a>
         </div>
@@ -70,18 +71,18 @@
             <div class="auth-card">
                 <h2>Entrar na Conta</h2>
 
-                <form class="auth-form" action="#" method="POST">
-                    <div class="input-group">
-                        <label for="email">E-mail</label>
-                        <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
-                    </div>
+                <form class="auth-form" action="/software/home/home.html" method="GET">
+                <div class="input-group">
+                    <label for="email">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>
+                </div>
 
-                    <div class="input-group">
-                        <label for="senha">Senha</label>
-                        <input type="password" id="senha" name="senha" placeholder="Crie uma senha" required>
-                    </div>
+                <div class="input-group">
+                    <label for="senha">Senha</label>
+                    <input type="password" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </div>
 
-                    <button type="submit" class="submit-btn">Entrar</button>
+                <button type="submit" class="submit-btn">Entrar</button>
                 </form>
 
                 <p class="auth-footer">
@@ -89,6 +90,9 @@
                 </p>
             </div>
         </section>
+
+        <script src="../../js/script.js"></script>
+
     </main>
 
 </body>

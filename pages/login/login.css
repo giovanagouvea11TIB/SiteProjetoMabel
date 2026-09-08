@@ -178,3 +178,11 @@ body {
 .auth-footer a:hover {
     text-decoration: underline;
 }
+
+body.dark-mode .left-section h1 {
+    color: var(--white);
+}
+
+body.dark-mode .subtitle {
+    color: var(--dark-white);
+}

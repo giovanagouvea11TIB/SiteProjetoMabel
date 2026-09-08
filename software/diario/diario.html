@@ -5,12 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Diário de Evolução</title>
 
-    <!-- Fonte Montserrat -->
+    <link rel="icon" type="image/x-icon" href="/assets/images/Logo Mabel 1.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="../../styles/globals.css">
     <link rel="stylesheet" href="./diario.css">
 </head>
@@ -30,45 +29,41 @@
                 <a href="">Órtese</a>
             </li>
             <li>
-                <a href="./pages/instrucoes/instrucoes.html">Instruções</a>
+                <a href="/pages/instrucoes/instrucoes.html">Instruções</a>
             </li>
             <li>
-                <a href="./pages/produto/produto.html">Produto</a>
+                <a href="/pages/produto/produto.html">Produto</a>
             </li>
             <li>
-                <a href="./pages/equipe/equipe.html">Equipe</a>
+                <a href="/pages/equipe/equipe.html">Equipe</a>
             </li>
             <li>
-                <a href="./pages/referencias/referencias.html">Referências</a>
+                <a href="/pages/referencias/referencias.html">Referências</a>
             </li>
             <li>
-                <a href="./pages/jogo/jogo.html">Jogo</a>
+                <a href="/pages/jogo/jogo.html">Jogo</a>
             </li>
         </ul>
           
         <div class="nav-actions">
-            <a href="./pages/login/login.html" class="profile">
+            <a href="/pages/login/login.html" class="profile">
                 <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
             </a>
         </div>
     </nav>
 
-    <!-- Banner Superior em Gradiente Laranja Suave -->
     <section class="user-hero">
         <div class="user-hero-content">
             <h1>Diário de Evolução</h1>
         </div>
     </section>
 
-    <!-- Conteúdo Principal -->
     <main class="dashboard-main">
         <div class="main-container">
 
-            <!-- Coluna Esquerda: Gráfico de Evolução -->
             <section class="chart-card">
                 <div class="chart-wrapper">
                     <svg viewBox="0 0 500 320" class="chart-svg">
-                        <!-- Linhas de Grade Verticais (Grid Line X) -->
                         <line x1="80" y1="30" x2="80" y2="250" class="grid-line" />
                         <line x1="150" y1="30" x2="150" y2="250" class="grid-line" />
                         <line x1="220" y1="30" x2="220" y2="250" class="grid-line" />
@@ -76,19 +71,16 @@
                         <line x1="360" y1="30" x2="360" y2="250" class="grid-line" />
                         <line x1="430" y1="30" x2="430" y2="250" class="grid-line" />
 
-                        <!-- Linhas de Grade Horizontais (Grid Line Y) -->
                         <line x1="50" y1="40" x2="460" y2="40" class="grid-line-light" />
                         <line x1="50" y1="110" x2="460" y2="110" class="grid-line-light" />
                         <line x1="50" y1="180" x2="460" y2="180" class="grid-line-light" />
                         <line x1="50" y1="250" x2="460" y2="250" class="grid-line-light" />
 
-                        <!-- Rótulos Eixo Y -->
                         <text x="35" y="44" class="axis-label-y">3</text>
                         <text x="35" y="114" class="axis-label-y">2</text>
                         <text x="35" y="184" class="axis-label-y">1</text>
                         <text x="35" y="254" class="axis-label-y">0</text>
 
-                        <!-- Definição de Gradiente e Sombra para a Linha -->
                         <defs>
                             <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="0%" stop-color="#D85707" />
@@ -100,7 +92,6 @@
                             </filter>
                         </defs>
 
-                        <!-- Curva do Gráfico (Spline Smooth) -->
                         <path d="M 80 40 
                                  C 110 80, 130 110, 150 110 
                                  C 180 110, 200 110, 220 110 
@@ -113,7 +104,6 @@
                               stroke-linecap="round" 
                               filter="url(#glow)"/>
 
-                        <!-- Pontos/Marcadores no Gráfico -->
                         <circle cx="80" cy="40" r="4.5" class="chart-point" />
                         <circle cx="150" cy="110" r="4.5" class="chart-point" />
                         <circle cx="220" cy="110" r="4.5" class="chart-point" />
@@ -121,7 +111,6 @@
                         <circle cx="360" cy="180" r="4.5" class="chart-point" />
                         <circle cx="430" cy="220" r="4.5" class="chart-point" />
 
-                        <!-- Rótulos Eixo X (Datas) -->
                         <text x="80" y="275" class="axis-label-x" text-anchor="middle">02/06</text>
                         <text x="150" y="275" class="axis-label-x" text-anchor="middle">05/06</text>
                         <text x="220" y="275" class="axis-label-x" text-anchor="middle">09/06</text>
@@ -131,17 +120,14 @@
                     </svg>
                 </div>
 
-                <!-- Legenda do Gráfico -->
                 <div class="chart-legend">
                     <span class="legend-circle"></span>
                     <span class="legend-text">Intensidade</span>
                 </div>
             </section>
 
-            <!-- Coluna Direita: Cards das Sessões -->
             <section class="sessions-list">
                 
-                <!-- Sessão 1 -->
                 <div class="session-card">
                     <div class="session-card-header">
                         <span class="session-date">02/06/2026</span>
@@ -153,7 +139,6 @@
                     </div>
                 </div>
 
-                <!-- Sessão 2 -->
                 <div class="session-card">
                     <div class="session-card-header">
                         <span class="session-date">05/06/2026</span>
@@ -165,7 +150,6 @@
                     </div>
                 </div>
 
-                <!-- Sessão 3 -->
                 <div class="session-card">
                     <div class="session-card-header">
                         <span class="session-date">12/06/2026</span>
@@ -182,29 +166,23 @@
         </div>
     </main>
 
-    <!-- Rodapé -->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-brand">
-                <img src="../../assets/images/LOGO BRANCO.png" alt="Logo Mabel Branca" class="footerLogo">
-            </div>
-
-            <div class="footer-sections">
-                <div class="footer-col">
-                    <h3>CONTATO</h3>
+    <div class="footer">
+        <img src="../../assets/images/LOGO BRANCO.png" alt="logo do projeto Mabel" class="footerLogo">
+             <div class="footerText">
+                <div class="footerEmail">
+                    <h2>CONTATO</h2>
                     <a href="mailto:projetomabel@gmail.com">projetomabel@gmail.com</a>
                     <p>UNASP - SP</p>
                 </div>
-                <div class="footer-col">
-                    <h3>REDES SOCIAIS</h3>
-                    <div class="social-link">
-                        <img src="../../assets/images/mdi_instagram.png" alt="Instagram" class="social-icon">
-                        <a href="https://www.instagram.com/projetomabel" target="_blank">@projetomabel</a>
-                    </div>
+                <div class="footerSocial">
+                    <h2>REDES SOCIAIS</h2>
+                        <div class="socialLink">
+                            <img src="../../assets/images/mdi_instagram.png" alt="ícone do instagram" class="footerSocialIcon">
+                            <a href="https://www.instagram.com/projetomabel?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">@projetomabel</a>
+                        </div>
                 </div>
             </div>
-        </div>
-    </footer>
+    </div>
 
     <script src="../../js/script.js"></script>
 </body>

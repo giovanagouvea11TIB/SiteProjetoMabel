@@ -8,15 +8,12 @@
 }
 
 body {
-    background-color: #F8DFC8; /* Tom alinhado ao gradiente do fundo da tela */
+    background-color: #F8DFC8;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
-/* ==========================================================
-   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA SUAVE)
-   ========================================================== */
 .user-hero {
     background: linear-gradient(180deg, #FFFFFF 0%, #FCE8D8 100%);
     padding: 4rem 2rem 2rem;
