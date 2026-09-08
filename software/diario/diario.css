@@ -32,9 +32,6 @@ body {
     color: #111111;
 }
 
-/* ==========================================================
-   CONTEÚDO PRINCIPAL (GRÁFICO + CARDS)
-   ========================================================== */
 .dashboard-main {
     flex: 1;
     background: linear-gradient(180deg, #FCE8D8 0%, #F5CEB6 100%);
@@ -52,7 +49,6 @@ body {
     align-items: start;
 }
 
-/* --- CARD DO GRÁFICO (ESQUERDA) --- */
 .chart-card {
     background-color: #FFFFFF;
     border-radius: 2.2rem;
@@ -74,7 +70,6 @@ body {
     display: block;
 }
 
-/* Estilos de linhas do SVG */
 .grid-line {
     stroke: #F2ECE7;
     stroke-width: 1;
@@ -99,7 +94,6 @@ body {
     stroke-width: 2.5;
 }
 
-/* Legenda do Gráfico */
 .chart-legend {
     display: flex;
     align-items: center;
@@ -121,7 +115,6 @@ body {
     color: #333333;
 }
 
-/* --- LISTA DE SESSÕES (DIREITA) --- */
 .sessions-list {
     display: flex;
     flex-direction: column;
@@ -150,7 +143,6 @@ body {
     color: #222222;
 }
 
-/* BADGES DE INTENSIDADE */
 .badge {
     border-radius: 2rem;
     padding: 0.4rem 1.6rem;
@@ -160,28 +152,24 @@ body {
     display: inline-block;
 }
 
-/* Badge Forte (Vermelho / Rosa) */
 .badge-strong {
     background-color: #FFFFFF;
     color: #D34553;
     border: 0.1rem solid #F8C4C8;
 }
 
-/* Badge Moderada (Amarelo / Dourado) */
 .badge-moderate {
     background-color: #FFFFFF;
     color: #D29D12;
     border: 0.1rem solid #F8E6B1;
 }
 
-/* Badge Leve (Verde) */
 .badge-light {
     background-color: #FFFFFF;
     color: #2BB673;
     border: 0.1rem solid #B8E7CB;
 }
 
-/* Conteúdo da Sessão */
 .session-card-body h3 {
     font-size: 1.8rem;
     font-weight: 700;
@@ -204,92 +192,95 @@ body {
     color: #111111;
 }
 
-/* ==========================================================
-   RODAPÉ
-   ========================================================== */
-.footer {
-    background-color: #D85707;
-    padding: 3.5rem 2rem;
-    display: flex;
-    justify-content: center;
+.sidebar-right {
+    position: fixed;
+    right: 3rem;
+    top: 13rem;
+    z-index: 99;
+    
+    background-color: rgba(235, 235, 235, 0.85) !important;
+    
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    
+    border: 0.1rem solid rgba(200, 200, 200, 0.5);
+    border-radius: 2rem;
+    padding: 1.8rem 1.6rem;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.1);
 }
 
-.footer-container {
-    width: 100%;
-    max-width: 68rem;
+.sidebar-right .sidebar-nav ul {
+    list-style: none;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-right .sidebar-nav a {
+    display: flex;
     align-items: center;
-}
-
-.footerLogo {
-    height: 5rem;
-    width: auto;
-}
-
-.footer-sections {
-    display: flex;
-    gap: 5rem;
-}
-
-.footer-col h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.05rem;
-}
-
-.footer-col a,
-.footer-col p {
-    font-size: 1.2rem;
-    color: #FFFFFF;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 1.2rem;
+    
     text-decoration: none;
-    line-height: 1.6;
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    
+    padding: 0.8rem 1.4rem;
+    border-radius: 1.2rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
-.social-link {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+.sidebar-right .sidebar-nav .nav-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
 }
 
-.social-icon {
-    width: 1.6rem;
-    height: 1.6rem;
+.sidebar-right .sidebar-nav a:hover,
+.sidebar-right .sidebar-nav a.active {
+    background-color: var(--burnt-orange);
+    color: var(--white);
 }
 
-/* ==========================================================
-   RESPONSIVO (MOBILE / TABLET ATÉ 850px)
-   ========================================================== */
-@media (max-width: 850px) {
-    .navbar {
-        padding: 0 2rem;
-        height: 7rem;
-    }
+.sidebar-right .sidebar-nav a:hover .nav-icon,
+.sidebar-right .sidebar-nav a.active .nav-icon {
+    transform: scale(1.1);
+}
 
-    .menu-hamburger {
-        display: block;
-    }
+body.dark-mode .sidebar-right {
+    background-color: rgba(39, 48, 56, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.1);
+}
 
-    .nav-links,
-    .nav-actions {
-        display: none;
-    }
+body.dark-mode .sidebar-right .sidebar-nav a {
+    color: var(--white);
+}
 
-    .main-container {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-    }
+.sidebar-right .sidebar-nav a:hover,
+.sidebar-right .sidebar-nav a.active {
+    background-color: var(--white);
+    color: var(--burnt-orange);      
+    font-weight: 700;
+}
 
-    .footer-container {
-        flex-direction: column;
-        gap: 2.5rem;
-        text-align: center;
-    }
+.sidebar-right .sidebar-nav a:hover .nav-icon,
+.sidebar-right .sidebar-nav a.active .nav-icon {
+    transform: scale(1.1);
+    
+    filter: invert(41%) sepia(85%) saturate(2250%) hue-rotate(358deg) brightness(95%) contrast(98%);
+}
 
-    .footer-sections {
-        flex-direction: column;
-        gap: 2rem;
-    }
+body.dark-mode .sidebar-right .sidebar-nav a:hover,
+body.dark-mode .sidebar-right .sidebar-nav a.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--burnt-orange);
 }

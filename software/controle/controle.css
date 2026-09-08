@@ -14,9 +14,6 @@ body {
     flex-direction: column;
 }
 
-/* ==========================================================
-   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA)
-   ========================================================== */
 .user-hero {
     background: linear-gradient(180deg, #F9B288 0%, #F5965B 100%);
     padding: 3rem 2rem 6.5rem;
@@ -62,9 +59,6 @@ body {
     color: #B0B0B0;
 }
 
-/* ==========================================================
-   CONTEÚDO PRINCIPAL (DASHBOARD)
-   ========================================================== */
 .dashboard-main {
     flex: 1;
     background-color: #FFFFFF;
@@ -77,7 +71,6 @@ body {
     gap: 2.8rem;
 }
 
-/* CARDS PADRÃO */
 .card {
     background-color: #ECEAE6;
     border-radius: 2.5rem;
@@ -86,7 +79,6 @@ body {
     padding: 2.5rem 3rem;
 }
 
-/* --- CARD 1: STATUS DE CONEXÃO --- */
 .status-card {
     display: flex;
     justify-content: space-between;
@@ -165,7 +157,6 @@ body {
     border-radius: 0.1rem;
 }
 
-/* --- CARD 2: ESTIMULAÇÃO --- */
 .stimulation-card h2 {
     font-size: 2.2rem;
     font-weight: 700;
@@ -190,7 +181,6 @@ body {
     width: 100%;
 }
 
-/* Input Range customizado */
 .intensity-slider {
     -webkit-appearance: none;
     appearance: none;
@@ -212,7 +202,6 @@ body {
     box-shadow: 0 0.2rem 0.5rem rgba(0, 0, 0, 0.2);
 }
 
-/* Sub-card do Timer */
 .timer-subcard {
     background-color: #DDD9D2;
     border-radius: 2rem;
@@ -300,7 +289,6 @@ body {
     background-color: #b84703;
 }
 
-/* --- CARD 3: ÚLTIMA SESSÃO --- */
 .last-session-section {
     width: 100%;
     max-width: 62rem;
@@ -349,64 +337,6 @@ body {
     line-height: 1.4;
 }
 
-/* ==========================================================
-   RODAPÉ
-   ========================================================== */
-.footer {
-    background-color: #D85707;
-    padding: 3.5rem 2rem;
-    display: flex;
-    justify-content: center;
-}
-
-.footer-container {
-    width: 100%;
-    max-width: 62rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.footerLogo {
-    height: 5rem;
-    width: auto;
-}
-
-.footer-sections {
-    display: flex;
-    gap: 5rem;
-}
-
-.footer-col h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.05rem;
-}
-
-.footer-col a,
-.footer-col p {
-    font-size: 1.2rem;
-    color: #FFFFFF;
-    text-decoration: none;
-    line-height: 1.6;
-}
-
-.social-link {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-}
-
-.social-icon {
-    width: 1.6rem;
-    height: 1.6rem;
-}
-
-/* ==========================================================
-   RESPONSIVO / MOBILE (ATÉ 768px)
-   ========================================================== */
 @media (max-width: 768px) {
     .navbar {
         padding: 0 2rem;
@@ -450,4 +380,109 @@ body {
         flex-direction: column;
         gap: 2rem;
     }
+}
+
+body.dark-mode {
+    background-color: #273038;
+}
+
+body.dark-mode .user-hero {
+    background: linear-gradient(180deg, #55666E 0%, #273038 100%);
+}
+
+body.dark-mode .dashboard-main {
+    background-color: #273038;
+}
+
+.sidebar-right {
+    position: fixed;
+    right: 3rem;
+    top: 13rem;
+    z-index: 99;
+    
+    background-color: rgba(235, 235, 235, 0.85) !important;
+    
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    
+    border: 0.1rem solid rgba(200, 200, 200, 0.5);
+    border-radius: 2rem;
+    padding: 1.8rem 1.6rem;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-right .sidebar-nav ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-right .sidebar-nav a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 1.2rem;
+    
+    text-decoration: none;
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    
+    padding: 0.8rem 1.4rem;
+    border-radius: 1.2rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.sidebar-right .sidebar-nav .nav-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-right .sidebar-nav a:hover,
+.sidebar-right .sidebar-nav a.active {
+    background-color: var(--burnt-orange);
+    color: var(--white);
+}
+
+.sidebar-right .sidebar-nav a:hover .nav-icon,
+.sidebar-right .sidebar-nav a.active .nav-icon {
+    transform: scale(1.1);
+}
+
+body.dark-mode .sidebar-right {
+    background-color: rgba(39, 48, 56, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .sidebar-right .sidebar-nav a {
+    color: var(--white);
+}
+
+.sidebar-right .sidebar-nav a:hover,
+.sidebar-right .sidebar-nav a.active {
+    background-color: var(--white);
+    color: var(--burnt-orange);      
+    font-weight: 700;
+}
+
+.sidebar-right .sidebar-nav a:hover .nav-icon,
+.sidebar-right .sidebar-nav a.active .nav-icon {
+    transform: scale(1.1);
+    
+    filter: invert(41%) sepia(85%) saturate(2250%) hue-rotate(358deg) brightness(95%) contrast(98%);
+}
+
+body.dark-mode .sidebar-right .sidebar-nav a:hover,
+body.dark-mode .sidebar-right .sidebar-nav a.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--burnt-orange);
 }

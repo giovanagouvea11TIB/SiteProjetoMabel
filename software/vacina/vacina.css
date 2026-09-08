@@ -14,10 +14,6 @@ body {
     flex-direction: column;
 }
 
-
-/* ==========================================================
-   HERO / BANNER SUPERIOR (DEGRADÊ LARANJA)
-   ========================================================== */
 .user-hero {
     background: linear-gradient(180deg, #F9B288 0%, #F5965B 100%);
     padding: 3.5rem 2rem 7rem;
@@ -54,7 +50,6 @@ body {
     justify-content: center;
 }
 
-/* CARDS DE DATAS (O1 MAIO, 12 JULHO, ETC.) */
 .date-cards-container {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -85,9 +80,6 @@ body {
     font-weight: 500;
 }
 
-/* ==========================================================
-   CONTEÚDO PRINCIPAL (DASHBOARD)
-   ========================================================== */
 .dashboard-main {
     flex: 1;
     background-color: #FFFFFF;
@@ -112,7 +104,6 @@ body {
     color: #111111;
 }
 
-/* GRID DE VACINAS (2 COLUNAS) */
 .vaccine-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -140,7 +131,6 @@ body {
     color: #111111;
 }
 
-/* BADGES DE STATUS */
 .badge {
     border-radius: 2rem;
     padding: 0.4rem 1.4rem;
@@ -150,21 +140,18 @@ body {
     display: inline-block;
 }
 
-/* Atrasada (Vermelho / Rosa Claro) */
 .badge-late {
     background-color: #FDE8E8;
     color: #D34553;
     border: 0.1rem solid #F8C4C8;
 }
 
-/* Próxima (Amarelo / Dourado Claro) */
 .badge-next {
     background-color: #FFF9E6;
     color: #D29D12;
     border: 0.1rem solid #F8E6B1;
 }
 
-/* Em dia (Verde Claro) */
 .badge-ontime {
     background-color: #E6F5EC;
     color: #2BB673;
@@ -186,109 +173,95 @@ body {
     font-weight: 700;
 }
 
-/* ==========================================================
-   RODAPÉ
-   ========================================================== */
-.footer {
-    background-color: #D85707;
-    padding: 3.5rem 2rem;
-    display: flex;
-    justify-content: center;
+.sidebar-right {
+    position: fixed;
+    right: 3rem;
+    top: 13rem;
+    z-index: 99;
+    
+    background-color: rgba(235, 235, 235, 0.85) !important;
+    
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    
+    border: 0.1rem solid rgba(200, 200, 200, 0.5);
+    border-radius: 2rem;
+    padding: 1.8rem 1.6rem;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.1);
 }
 
-.footer-container {
-    width: 100%;
-    max-width: 65rem;
+.sidebar-right .sidebar-nav ul {
+    list-style: none;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-right .sidebar-nav a {
+    display: flex;
     align-items: center;
-}
-
-.footerLogo {
-    height: 5rem;
-    width: auto;
-}
-
-.footer-sections {
-    display: flex;
-    gap: 5rem;
-}
-
-.footer-col h3 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    margin-bottom: 0.8rem;
-    letter-spacing: 0.05rem;
-}
-
-.footer-col a,
-.footer-col p {
-    font-size: 1.2rem;
-    color: #FFFFFF;
+    justify-content: flex-start;
+    text-align: left;
+    gap: 1.2rem;
+    
     text-decoration: none;
-    line-height: 1.6;
+    color: var(--black);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    
+    padding: 0.8rem 1.4rem;
+    border-radius: 1.2rem;
+    white-space: nowrap;
+    transition: all 0.3s ease;
 }
 
-.social-link {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
+.sidebar-right .sidebar-nav .nav-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
 }
 
-.social-icon {
-    width: 1.6rem;
-    height: 1.6rem;
+.sidebar-right .sidebar-nav a:hover,
+.sidebar-right .sidebar-nav a.active {
+    background-color: var(--burnt-orange);
+    color: var(--white);
 }
 
-/* ==========================================================
-   RESPONSIVO (MOBILE / TABLET ATÉ 768px)
-   ========================================================== */
-@media (max-width: 768px) {
-    .navbar {
-        padding: 0 2rem;
-        height: 7rem;
-    }
+.sidebar-right .sidebar-nav a:hover .nav-icon,
+.sidebar-right .sidebar-nav a.active .nav-icon {
+    transform: scale(1.1);
+}
 
-    .menu-hamburger {
-        display: block;
-    }
+body.dark-mode .sidebar-right {
+    background-color: rgba(39, 48, 56, 0.85) !important;
+    border-color: rgba(255, 255, 255, 0.1);
+}
 
-    .nav-links,
-    .nav-actions {
-        display: none;
-    }
+body.dark-mode .sidebar-right .sidebar-nav a {
+    color: var(--white);
+}
 
-    .date-cards-container {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 1.2rem;
-    }
+.sidebar-right .sidebar-nav a:hover,
+.sidebar-right .sidebar-nav a.active {
+    background-color: var(--white);
+    color: var(--burnt-orange);      
+    font-weight: 700;
+}
 
-    .date-card {
-        padding: 1.8rem 1rem;
-    }
+.sidebar-right .sidebar-nav a:hover .nav-icon,
+.sidebar-right .sidebar-nav a.active .nav-icon {
+    transform: scale(1.1);
+    
+    filter: invert(41%) sepia(85%) saturate(2250%) hue-rotate(358deg) brightness(95%) contrast(98%);
+}
 
-    .date-card .day {
-        font-size: 3rem;
-    }
-
-    .date-card .month {
-        font-size: 1.6rem;
-    }
-
-    .vaccine-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-
-    .footer-container {
-        flex-direction: column;
-        gap: 2.5rem;
-        text-align: center;
-    }
-
-    .footer-sections {
-        flex-direction: column;
-        gap: 2rem;
-    }
+body.dark-mode .sidebar-right .sidebar-nav a:hover,
+body.dark-mode .sidebar-right .sidebar-nav a.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--burnt-orange);
 }

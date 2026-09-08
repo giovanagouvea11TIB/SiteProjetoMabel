@@ -18,7 +18,7 @@
 <body>
 
     <nav class="navbar">
-        <a href="./index.html" class="logo">
+        <a href="/index.html" class="logo">
             <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
         </a>
 
@@ -28,7 +28,7 @@
 
         <ul class="nav-links">
             <li>
-                <a href="">Órtese</a>
+                <a href="./home.html" class="active">Órtese</a>
             </li>
             <li>
                 <a href="/pages/instrucoes/instrucoes.html">Instruções</a>
@@ -54,65 +54,104 @@
         </div>
     </nav>
 
-    <section class="user-hero">
-        <div class="user-hero-content">
-            <h1>Olá, Usuário!</h1>
-            <div class="search-bar">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D85707" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="11" cy="11" r="8"></circle>
-                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-                <input type="text" placeholder="Faça uma pesquisa...">
+    <div class="layout-container">
+        <section class="user-hero">
+            <div class="user-hero-content">
+                <h1>Olá, Usuário!</h1>
+                <div class="search-bar">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D85707" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                    <input type="text" placeholder="Faça uma pesquisa...">
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <main class="dashboard-main">
-        
-        <section class="pet-card">
-            <div class="pet-info">
-                <h2 class="pet-title">Mabel</h2>
+        <aside class="sidebar-right">
+            <nav class="sidebar-nav">
+                <ul>
+                    <li>
+                        <a href="./home.html" class="active">
+                            <img src="/assets/images/ICON HOME.png" alt="Home" class="nav-icon">
+                            <span>Home</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../controle/controle.html">
+                            <img src="/assets/images/ICON ORTESE.png" alt="Controle" class="nav-icon">
+                            <span>Controle</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../diario/diario.html">
+                            <img src="/assets/images/ICON DIARIO.png" alt="Diário" class="nav-icon">
+                            <span>Diário</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../vacina/vacina.html">
+                            <img src="/assets/images/ICON VACINA.png" alt="Vacinas" class="nav-icon">
+                            <span>Vacinas</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../perfil/perfil.html">
+                            <img src="/assets/images/ICON PET.png" alt="Perfil Pet" class="nav-icon">
+                            <span>Perfil Pet</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+  
+        <main class="dashboard-main">
+            
+            <section class="pet-card">
+                <div class="pet-info">
+                    <h2 class="pet-title">Mabel</h2>
 
-                <div class="info-group">
-                    <p class="info-label">Próxima Vacina:</p>
-                    <p class="info-value">20/06/2026</p>
-                </div>
+                    <div class="info-group">
+                        <p class="info-label">Próxima Vacina:</p>
+                        <p class="info-value">20/06/2026</p>
+                    </div>
 
-                <div class="info-group">
-                    <p class="info-label">Próxima Sessão:</p>
-                    <p class="info-value">18/04/2026</p>
-                </div>
+                    <div class="info-group">
+                        <p class="info-label">Próxima Sessão:</p>
+                        <p class="info-value">18/04/2026</p>
+                    </div>
 
-                <div class="info-group">
-                    <p class="info-label">Última estimulação:</p>
-                    <p class="info-value">Hoje, 14:23h</p>
-                </div>
+                    <div class="info-group">
+                        <p class="info-label">Última estimulação:</p>
+                        <p class="info-value">Hoje, 14:23h</p>
+                    </div>
 
-                <div class="battery-status">
-                    <span>50%</span>
-                    <div class="battery-icon">
-                        <div class="battery-fill"></div>
+                    <div class="battery-status">
+                        <span>50%</span>
+                        <div class="battery-icon">
+                            <div class="battery-fill"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            
-            <div class="pet-image-container">
-                <img src="../../assets/images/FOTO PET.png" alt="Mabel" class="pet-image">
-            </div>
-        </section>
+                
+                <div class="pet-image-container">
+                    <img src="../../assets/images/FOTO PET.png" alt="Mabel" class="pet-image">
+                </div>
+            </section>
 
-        <section class="chart-card">
-            <div class="chart-wrapper">
-                <canvas id="tremorChart"></canvas>
-            </div>
-            <div class="chart-legend">
-                <span class="legend-dot"></span>
-                <span class="legend-text">Nível de Tremores</span>
-            </div>
-        </section>
+            <section class="chart-card">
+                <div class="chart-wrapper">
+                    <canvas id="tremorChart"></canvas>
+                </div>
+                <div class="chart-legend">
+                    <span class="legend-dot"></span>
+                    <span class="legend-text">Nível de Tremores</span>
+                </div>
+            </section>
 
-    </main>
+        </main>
+    </div>
 
     <div class="footer">
         <img src="../../assets/images/LOGO BRANCO.png" alt="logo do projeto Mabel" class="footerLogo">
