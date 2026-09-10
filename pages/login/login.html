@@ -24,33 +24,72 @@
             <span class="theme-icon" id="theme-icon">☾</span>
         </button>
 
-        <ul class="nav-links">
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir Menu">
+            <img src="../../assets/images/HAMBURGUER.png" alt="Ícone de menu" class="hamburger-icon">
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            
+            <li class="user-card-item">
+                <a href="../login/login.html" class="user-card-link">
+                    <div class="user-card">
+                        <div class="user-info">
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
+                            <span class="user-name">Marisa Ferreira</span>
+                        </div>
+                        <button type="button" class="notification-btn" aria-label="Notificações">
+                            <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
+                        </button>
+                    </div>
+                </a>
+            </li>
+
             <li>
-                <a href="./login.html">Órtese</a>
+                <a href="../login/login.html">
+                    <img src="../../assets/images/ICON ORTESE.png" alt="" class="nav-item-icon">
+                    <span>Órtese</span>
+                </a>
             </li>
             <li>
-                <a href="../instrucoes/instrucoes.html">Instruções</a>
+                <a href="../instrucoes/instrucoes.html">
+                    <img src="../../assets/images/instruções icon.png" alt="" class="nav-item-icon">
+                    <span>Instruções</span>
+                </a>
             </li>
             <li>
-                <a href="../produto/produto.html">Produto</a>
+                <a href="../produto/produto.html">
+                    <img src="../../assets/images/produto icon.png" alt="" class="nav-item-icon">
+                    <span>Produto</span>
+                </a>
             </li>
             <li>
-                <a href="../equipe/equipe.html">Equipe</a>
+                <a href="../equipe/equipe.html">
+                    <img src="../../assets/images/equipe icon.png" alt="" class="nav-item-icon">
+                    <span>Equipe</span>
+                </a>
             </li>
             <li>
-                <a href="../referencias/referencias.html">Referências</a>
+                <a href="../referencias/referencias.html">
+                    <img src="../../assets/images/referencias icon.png" alt="" class="nav-item-icon">
+                    <span>Referências</span>
+                </a>
             </li>
             <li>
-                <a href="../jogo/jogo.html">Jogo</a>
+                <a href="../jogo/jogo.html">
+                    <img src="../../assets/images/jogo icon.png" alt="" class="nav-item-icon">
+                    <span>Jogo</span>
+                </a>
             </li>
         </ul>
-          
+        
         <div class="nav-actions">
-            <a href="./login.html" class="profile">
+            <a href="../login/login.html" class="profile">
                 <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
             </a>
         </div>
     </nav>
+
+    <div class="menu-overlay" id="menu-overlay"></div>
 
     <main class="main-container">
         <section class="left-section">
@@ -63,6 +102,7 @@
             </div>
 
             <div class="dog-image-container">
+                <img src="../../assets/images/lulu login mobile.png" alt="" class="dog-image-mobile">
                 <img src="../../assets/images/lulu login.png" alt="Cão da raça Spitz Alemão com órtese na pata" class="dog-image">
             </div>
         </section>

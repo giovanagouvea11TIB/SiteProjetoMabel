@@ -7,39 +7,77 @@
 <script src="../js/script.js"></script>
 
 <nav class="navbar">
-    <a href="../../index.html" class="logo">
-        <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
-    </a>
-
-    <button class="theme-toggle" id="theme-toggle" aria-label="Alternar modo escuro">
-        <span class="theme-icon" id="theme-icon">☾</span>
-    </button>
-
-    <ul class="nav-links">
-        <li>
-            <a href="">Órtese</a>
-        </li>
-        <li>
-            <a href="/pages/instrucoes/instrucoes.html">Instruções</a>
-        </li>
-        <li>
-            <a href="/pages/produto/produto.html">Produto</a>
-        </li>
-        <li>
-            <a href="/pages/equipe/equipe.html">Equipe</a>
-        </li>
-        <li>
-            <a href="/pages/referencias/referencias.html">Referências</a>
-        </li>
-        <li>
-            <a href="/pages/jogo/jogo.html">Jogo</a>
-        </li>
-    </ul>
-
-    <div class="nav-actions">
-        <a href="" class="profile">
-            <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
+        <a href="../../index.html" class="logo">
+            <img src="../../assets/images/logo-laranja.png" alt="Logo Mabel" class="logo">
         </a>
-    </div>
-</nav>
 
+        <button class="theme-toggle" id="theme-toggle" aria-label="Alternar modo escuro">
+            <span class="theme-icon" id="theme-icon">☾</span>
+        </button>
+
+        <button class="hamburger-btn" id="hamburger-btn" aria-label="Abrir Menu">
+            <img src="../../assets/images/HAMBURGUER.png" alt="Ícone de menu" class="hamburger-icon">
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            
+            <li class="user-card-item">
+                <a href="../login/login.html" class="user-card-link">
+                    <div class="user-card">
+                        <div class="user-info">
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
+                            <span class="user-name">Marisa Ferreira</span>
+                        </div>
+                        <button type="button" class="notification-btn" aria-label="Notificações">
+                            <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
+                        </button>
+                    </div>
+                </a>
+            </li>
+
+            <li>
+                <a href="../login/login.html">
+                    <img src="../../assets/images/ICON ORTESE.png" alt="" class="nav-item-icon">
+                    <span>Órtese</span>
+                </a>
+            </li>
+            <li>
+                <a href="../instrucoes/instrucoes.html">
+                    <img src="../../assets/images/instruções icon.png" alt="" class="nav-item-icon">
+                    <span>Instruções</span>
+                </a>
+            </li>
+            <li>
+                <a href="../produto/produto.html">
+                    <img src="../../assets/images/produto icon.png" alt="" class="nav-item-icon">
+                    <span>Produto</span>
+                </a>
+            </li>
+            <li>
+                <a href="../equipe/equipe.html">
+                    <img src="../../assets/images/equipe icon.png" alt="" class="nav-item-icon">
+                    <span>Equipe</span>
+                </a>
+            </li>
+            <li>
+                <a href="../referencias/referencias.html">
+                    <img src="../../assets/images/referencias icon.png" alt="" class="nav-item-icon">
+                    <span>Referências</span>
+                </a>
+            </li>
+            <li>
+                <a href="../jogo/jogo.html">
+                    <img src="../../assets/images/jogo icon.png" alt="" class="nav-item-icon">
+                    <span>Jogo</span>
+                </a>
+            </li>
+        </ul>
+        
+        <div class="nav-actions">
+            <a href="../login/login.html" class="profile">
+                <img src="../../assets/images/foto-de-perfil.png" alt="foto-de-perfil" class="profile">
+            </a>
+        </div>
+    </nav>
+
+    <div class="menu-overlay" id="menu-overlay"></div>

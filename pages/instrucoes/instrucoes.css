@@ -145,3 +145,41 @@ body.dark-mode .hero h2{
     width: 6.2rem;
     height: 6.2rem;
 }
+
+.user-card-item,
+.nav-item-icon,
+.notification-icon,
+.menu-overlay {
+    display: none;
+}
+
+.user-card-link {
+    text-decoration: none;
+    display: block;
+    width: 100%;
+}
+
+.hamburger-btn {
+    display: none;
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.hamburger-btn:hover,
+.hamburger-btn:focus,
+.hamburger-btn:active,
+.hamburger-btn:visited,
+.hamburger-btn.active {
+    background: none !important;
+    background-color: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+}
