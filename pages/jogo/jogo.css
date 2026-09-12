@@ -115,3 +115,278 @@ body.dark-mode .game-image{
     outline: none !important;
     box-shadow: none !important;
 }
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .nav-actions .profile {
+        display: none;
+    }
+
+    .navbar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+    }
+
+    .hamburger-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .hamburger-icon {
+        width: 3rem;
+        height: auto;
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        right: -100%;
+        width: 85% !important;
+        max-width: 32rem !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 3rem 2rem;
+        gap: 2.2rem;
+        box-shadow: -0.5rem 0 1.5rem rgba(0, 0, 0, 0.15);
+        transition: right 0.35s ease-in-out;
+        z-index: 10000;
+        box-sizing: border-box !important;
+    }
+
+    .nav-links.active {
+        right: 0 !important;
+    }
+
+    .user-card-item {
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .user-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.4rem;
+        border: 1px solid #E0E0E0;
+        border-radius: 1.6rem;
+        background-color: #FFFFFF;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .user-avatar {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-name {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #2D2D2D;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .notification-btn {
+        background: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .notification-icon {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+    }
+
+    .nav-item-icon {
+        display: block;
+        width: 2.4rem;
+        height: 2.4rem;
+        object-fit: contain;
+    }
+
+    .nav-links li a {
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: #2D2D2D;
+        font-family: 'Montserrat', sans-serif;
+        padding: 0.4rem 0;
+        text-decoration: none;
+    }
+
+    .menu-overlay {
+        display: block;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease;
+        z-index: 9999;
+    }
+
+    .menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    body.dark-mode .nav-links {
+        background-color: #273038;
+    }
+
+    body.dark-mode .user-card {
+        background-color: #323D45;
+        border-color: #45525C;
+    }
+
+    body.dark-mode .user-name,
+    body.dark-mode .nav-links li a {
+        color: var(--white);
+    }
+
+    body.dark-mode{
+    background-color: #17252D;
+    }
+
+    .hero {
+        width: 100%;
+        margin: 3.5rem 0 3rem 0;
+        padding: 0 2.5rem;
+        box-sizing: border-box;
+    }
+
+    .hero h1 {
+        font-size: 2.4rem;
+        color: var(--burnt-orange);
+        margin-bottom: 1.5rem;
+    }
+
+    .hero p {
+        font-size: 1.35rem;
+        line-height: 1.5;
+    }
+
+    .video {
+        width: calc(100% - 5rem);
+        max-width: 40rem;
+        height: 20rem;
+        margin: 0 auto 3.5rem auto;
+        border-radius: 2rem;
+    }
+
+    .video-player img {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    .play {
+        margin-bottom: 3.5rem;
+    }
+
+    .play a {
+        width: 18.5rem;
+        height: 4.5rem;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.6rem;
+        border-radius: 5rem;
+        box-shadow: 0 0.4rem 1rem rgba(0, 0, 0, 0.15);
+    }
+
+    .game-image {
+        content: url(../../assets/images/FUNDO\ JOGO\ MOBILE\ CLARO.png);
+        width: 100%;
+        height: auto;
+        display: block;
+        margin-bottom: -0.5rem;
+    }
+
+    body.dark-mode .game-image {
+        content: url(../../assets/images/FUNDO\ JOGO\ MOBILE\ ESCURO.png);
+    }
+
+    .footer {
+        padding: 3.5rem 2.5rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .footerLogo {
+        max-width: 13rem;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .footerText {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .footerEmail,
+    .footerSocial {
+        gap: 0.3rem;
+    }
+
+    .footerEmail h2,
+    .footerSocial h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.1rem;
+    }
+
+    .footerEmail a,
+    .footerSocial a,
+    .footerEmail p {
+        font-size: 1.2rem;
+    }
+
+    .socialLink {
+        gap: 0.6rem;
+        margin-top: 0rem;
+    }
+
+    .footerSocialIcon {
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+}

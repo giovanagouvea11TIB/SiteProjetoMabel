@@ -4,7 +4,8 @@ body.dark-mode .hero {
     background-image: url(../assets/images/modo\ escuro\ fundo\ home.png);
 }
 
-body.dark-mode .hero h2, body.dark-mode .goal-text h2{
+body.dark-mode .hero h2, 
+body.dark-mode .goal-text h2 {
     color: var(--white);
 }
 
@@ -13,9 +14,8 @@ body.dark-mode .hero h2, body.dark-mode .goal-text h2{
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
-
     padding-top: 21.7rem;
-    width: auto;
+    width: 100%;
     height: 81rem;
 }
 
@@ -29,7 +29,8 @@ body.dark-mode .hero h2, body.dark-mode .goal-text h2{
 
 .hero h1, 
 .hero h2 {
-    width: 74.1rem;
+    width: 100%;
+    max-width: 74.1rem;
 }
 
 .hero h1,
@@ -38,148 +39,209 @@ body.dark-mode .hero h2, body.dark-mode .goal-text h2{
     margin-left: 18.1rem;
 }
 
-.hero-button{
+.hero-button {
     width: 32.2783rem;
     height: 6.4rem;
     border: none;
     border-radius: 5rem;
-
     background: var(--burnt-orange);
-
     color: var(--white);
     text-align: center;
-    font-family: Montserrat;
+    font-family: 'Montserrat', sans-serif;
     font-size: 2.4rem;
     font-style: normal;
-    
     line-height: normal;
-
+    cursor: pointer;
 }
 
 .hero-button a {
     text-decoration: none;
     color: var(--white);
     font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .features {
     width: 100%;
-    height: 40.1rem;
-    
+    min-height: 40.1rem;
     background: var(--burnt-orange);
-    
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-right: 2.3rem;
-    
+    padding: 4rem 2.3rem;
     gap: 4.6rem;
 }
 
-.feature-card h2 {
-    font-weight: 600;
-    width: 169.814px;
-    margin: auto;
-    
-}
-
-.feature-card p {
-   padding-bottom: 3.6rem;
-   margin-top: 0.676rem;
-}
-
-.feature-card{
+.feature-card {
     background-color: var(--beige);
-
     width: 21.7rem;
     height: 29.2rem;
-
     text-align: center;
-
     display: flex;  
     align-items: center;
     flex-direction: column;
     justify-content: center;
-    margin: 0 2.4rem 1.3rem 2.319rem;
-
     border-radius: 2rem;
     box-shadow: 0 0.4rem 0.4rem 0 rgba(0, 0, 0, 0.25);
 }
 
+.feature-card h2 {
+    font-weight: 600;
+    width: 16.9rem;
+    margin: 0 auto;
+    font-size: 1.8rem;
+}
 
-.feature-img{
-    display: flex;
-    width: 7.204rem;
-    height: 7.204rem;
+.feature-card p {
+    padding-bottom: 3.6rem;
+    margin-top: 0.676rem;
+    font-size: 1.4rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
 
-    
-    margin: auto;
-    margin-top: 4.8rem;
-    margin-bottom: 2.4rem;
+.feature-img {
+    display: block;
+    width: 7.2rem;
+    height: 7.2rem;
+    margin: 0 auto 2.4rem auto;
 }
 
 .goal {
     display: flex;
-    margin: auto;
-    justify-content:center;
-    align-items:center;
-    flex-wrap:wrap;
+    flex-direction: row-reverse;
+    max-width: 128rem;
+    margin: 6rem auto;
+    justify-content: center;
+    align-items: center;
+    gap: 6rem;
+    padding: 0 4rem;
 }
 
-.goal h3, 
-.goal p {
-    margin-left: 3.779rem;
-    justify-content: center;
-    text-align: start;
+.goal-image {
+    width: 100%;
+    max-width: 53.4rem;
+    height: auto;
+    object-fit: contain;
 }
 
 .goal-text {
-    margin-top: 12.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .goal h2 {
     margin-bottom: 4.5rem;
-    margin-left: 12.7rem;
     font-weight: 700;
+    font-size: 3.2rem;
 }
 
-.div-public, .div-goal {
+.div-public, 
+.div-goal {
     background-color: var(--light-gray);
-
-    width: 43.9rem;
-    height: 21.0rem;
+    width: 100%;
+    max-width: 43.9rem;
+    padding: 2.5rem;
     border-radius: 1.5rem;
-
-    margin-bottom: 4.5rem;
-    margin-left: 9.4rem;
-    padding-right: 3.327rem;
-
+    margin-bottom: 3rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-
     box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
 }
 
-.goal-title{
+.goal-title {
     display: flex;
-    
-    gap: 12.5rem;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
 }
 
-.goal-title img{
-    margin-bottom: 1.117rem;
+.goal-title h3 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.goal-title img {
     width: 3.9rem;
     height: 3.9rem;
 }
 
-.goal-image  {
-    width: 53.4rem;
-    height: 71.9rem;
-    
-    margin-left: 18rem;
-    margin-top: 4.6rem;
+.goal p {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    margin: 0;
+    text-align: left;
+}
+
+.footer {
+    background-color: var(--burnt-orange, #D35400);
+    color: var(--white, #FFFFFF);
+    padding: 4rem 8rem;
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4rem;
+}
+
+.footerLogo {
+    max-width: 22rem;
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.footerText {
+    display: flex;
+    gap: 6rem;
+    align-items: flex-start;
+}
+
+.footerEmail,
+.footerSocial {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.footerEmail h2,
+.footerSocial h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem 0;
+    color: var(--white, #FFFFFF);
+    letter-spacing: 0.05rem;
+}
+
+.footerEmail a,
+.footerSocial a,
+.footerEmail p {
+    color: var(--white, #FFFFFF);
+    text-decoration: none;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.socialLink {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.footerSocialIcon {
+    width: 2.4rem;
+    height: 2.4rem;
+    object-fit: contain;
 }
 
 .user-card-item,
@@ -198,24 +260,357 @@ body.dark-mode .hero h2, body.dark-mode .goal-text h2{
 .hamburger-btn {
     display: none;
     background: none !important;
-    background-color: transparent !important;
     border: none !important;
     outline: none !important;
-    box-shadow: none !important;
     padding: 0;
-    margin: 0;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
 }
 
-.hamburger-btn:hover,
 .hamburger-btn:focus,
-.hamburger-btn:active,
-.hamburger-btn:visited,
-.hamburger-btn.active {
-    background: none !important;
-    background-color: transparent !important;
-    border: none !important;
+.hamburger-btn:active {
     outline: none !important;
-    box-shadow: none !important;
+    background: transparent !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .nav-actions .profile {
+        display: none;
+    }
+
+    .navbar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+    }
+
+    .hamburger-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .hamburger-icon {
+        width: 3rem;
+        height: auto;
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        right: -100%;
+        width: 85% !important;
+        max-width: 32rem !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 3rem 2rem;
+        gap: 2.2rem;
+        box-shadow: -0.5rem 0 1.5rem rgba(0, 0, 0, 0.15);
+        transition: right 0.35s ease-in-out;
+        z-index: 10000;
+        box-sizing: border-box !important;
+    }
+
+    .nav-links.active {
+        right: 0 !important;
+    }
+
+    .user-card-item {
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .user-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.4rem;
+        border: 1px solid #E0E0E0;
+        border-radius: 1.6rem;
+        background-color: #FFFFFF;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .user-avatar {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-name {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #2D2D2D;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .notification-btn {
+        background: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .notification-icon {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+    }
+
+    .nav-item-icon {
+        display: block;
+        width: 2.4rem;
+        height: 2.4rem;
+        object-fit: contain;
+    }
+
+    .nav-links li a {
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: #2D2D2D;
+        font-family: 'Montserrat', sans-serif;
+        padding: 0.4rem 0;
+        text-decoration: none;
+    }
+
+    .menu-overlay {
+        display: block;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease;
+        z-index: 9999;
+    }
+
+    .menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    body.dark-mode .nav-links {
+        background-color: #273038;
+    }
+
+    body.dark-mode .user-card {
+        background-color: #323D45;
+        border-color: #45525C;
+    }
+
+    body.dark-mode .user-name,
+    body.dark-mode .nav-links li a {
+        color: var(--white);
+    }
+
+    .hero {
+        background-image: url("../assets/images/LULU\ HOME\ MOBILE.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: right center;
+        background-color: var(--beige);
+        height: auto;
+        min-height: auto;
+        padding: 1.5rem 2rem 2rem;
+        margin-top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        text-align: left;
+        box-sizing: border-box;
+    }
+
+    body.dark-mode .hero {
+        background-image: url("../assets/images/modo\ escuro\ fundo\ home.png");
+        background-color: #0E100E;
+        background-size: contain;
+        background-position: right center;
+        background-repeat: no-repeat;
+    }
+
+    .hero h1, 
+    .hero h2, 
+    .hero button {
+        width: 100%;
+        max-width: 60%;
+        margin-left: 0;
+    }
+
+    .hero h1 {
+        font-size: 1.8rem;
+        color: var(--burnt-orange, #D35400);
+        margin-bottom: 0.8rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .hero h2 {
+        font-size: 1.3rem;
+        margin-bottom: 1.5rem;
+        font-weight: 400;
+        line-height: 1.3;
+    }
+
+    .hero-button {
+        width: 100%;
+        max-width: 18rem;
+        height: 4.2rem;
+        font-size: 1.4rem;
+        border-radius: 2.5rem;
+    }
+
+    .features {
+        margin-top: 0;
+        height: auto;
+        padding: 2.5rem 2rem;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.5rem;
+    }
+
+    .feature-card {
+        width: 100%;
+        height: auto;
+        min-height: 20rem;
+        margin: 0;
+        padding: 1.5rem 1rem;
+        box-sizing: border-box;
+    }
+
+    .feature-img {
+        width: 4.5rem;
+        height: 4.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-card h2 {
+        width: 100%;
+        font-size: 1.5rem;
+        margin-bottom: 0.8rem;
+    }
+
+    .feature-card p {
+        font-size: 1.2rem;
+        padding-bottom: 0;
+        margin-top: 0;
+    }
+
+    .goal {
+        padding: 3rem 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin: 0 auto;
+    }
+
+    .goal-text {
+        width: 100%;
+        order: 1;
+    }
+
+    .goal h2 {
+        margin-bottom: 2.5rem;
+        font-size: 2.2rem;
+        text-align: left;
+    }
+
+    .div-public, 
+    .div-goal {
+        width: 100%;
+        max-width: 100%;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-sizing: border-box;
+    }
+
+    .goal-image {
+        order: 2;
+        width: 100%;
+        max-width: 32rem;
+        height: auto;
+        margin: 1rem auto 0 auto;
+    }
+
+    .footer {
+        padding: 3.5rem 2.5rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .footerLogo {
+        max-width: 13rem;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .footerText {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .footerEmail,
+    .footerSocial {
+        gap: 0.3rem;
+    }
+
+    .footerEmail h2,
+    .footerSocial h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.1rem;
+    }
+
+    .footerEmail a,
+    .footerSocial a,
+    .footerEmail p {
+        font-size: 1.2rem;
+    }
+
+    .socialLink {
+        gap: 0.6rem;
+        margin-top: 0rem;
+    }
+
+    .footerSocialIcon {
+        width: 1.8rem;
+        height: 1.8rem;
+    }
 }

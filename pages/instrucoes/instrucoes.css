@@ -183,3 +183,334 @@ body.dark-mode .hero h2{
     outline: none !important;
     box-shadow: none !important;
 }
+
+@media (max-width: 768px) {
+    body {
+        overflow-x: hidden;
+    }
+
+    .nav-actions .profile {
+        display: none;
+    }
+
+    .navbar {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2rem;
+    }
+
+    .hamburger-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        margin-left: auto;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    .hamburger-icon {
+        width: 3rem;
+        height: auto;
+        display: block;
+    }
+
+    .nav-links {
+        position: fixed !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        right: -100%;
+        width: 85% !important;
+        max-width: 32rem !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        border: none !important;
+        border-radius: 0 !important;
+        background-color: #FFFFFF;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 3rem 2rem;
+        gap: 2.2rem;
+        box-shadow: -0.5rem 0 1.5rem rgba(0, 0, 0, 0.15);
+        transition: right 0.35s ease-in-out;
+        z-index: 10000;
+        box-sizing: border-box !important;
+    }
+
+    .nav-links.active {
+        right: 0 !important;
+    }
+
+    .user-card-item {
+        display: block;
+        margin-bottom: 1rem;
+    }
+
+    .user-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.4rem;
+        border: 1px solid #E0E0E0;
+        border-radius: 1.6rem;
+        background-color: #FFFFFF;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .user-avatar {
+        width: 4rem;
+        height: 4rem;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .user-name {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #2D2D2D;
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    .notification-btn {
+        background: transparent;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
+
+    .notification-icon {
+        display: block;
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+    }
+
+    .nav-item-icon {
+        display: block;
+        width: 2.4rem;
+        height: 2.4rem;
+        object-fit: contain;
+    }
+
+    .nav-links li a {
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+        font-size: 1.8rem;
+        font-weight: 500;
+        color: #2D2D2D;
+        font-family: 'Montserrat', sans-serif;
+        padding: 0.4rem 0;
+        text-decoration: none;
+    }
+
+    .menu-overlay {
+        display: block;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        margin: 0 !important;
+        background: rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.35s ease;
+        z-index: 9999;
+    }
+
+    .menu-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    body.dark-mode .nav-links {
+        background-color: #273038;
+    }
+
+    body.dark-mode .user-card {
+        background-color: #323D45;
+        border-color: #45525C;
+    }
+
+    body.dark-mode .user-name,
+    body.dark-mode .nav-links li a {
+        color: var(--white);
+    }
+
+    .hero {
+        height: auto;
+        position: relative;
+        padding: 3.5rem 2rem 0;
+        overflow: hidden;
+    }
+
+    .hero-content {
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: space-between;
+    }
+
+    .hero-text {
+        margin-left: 0;
+        width: 55%;
+        z-index: 2;
+    }
+
+    .hero-text h1 {
+        font-size: 1.8rem;
+        color: var(--burnt-orange, #D35400);
+        margin-bottom: 1rem;
+        line-height: 1.25;
+        max-width: 100%;
+        font-weight: 700;
+    }
+
+    .hero-text h2 {
+        font-size: 1.2rem;
+        margin-bottom: 2rem;
+        line-height: 1.4;
+        max-width: 100%;
+        font-weight: 400;
+    }
+
+    .hero-image {
+        height: auto;
+        width: 45%;
+        max-width: 18rem;
+        margin-left: 0;
+        object-fit: contain;
+        z-index: 2;
+        align-self: flex-end;
+    }
+
+    .hero-orange {
+        height: 5rem;
+        margin-top: -2.5rem;
+        width: 100vw;
+        margin-left: -2rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .steps {
+        margin: 4rem 2rem 4rem 2.8rem;
+    }
+
+    .step-grid {
+        grid-template-columns: 1fr;
+        gap: 3.5rem;
+    }
+
+    .step-card {
+        width: 100%;
+        height: auto;
+        min-height: 12rem;
+        padding: 1.5rem 1.5rem 1.5rem 1rem;
+        justify-content: flex-start;
+        gap: 1.2rem;
+        box-sizing: border-box;
+    }
+
+    .step-number {
+        top: -1.5rem;
+        left: -1.8rem;
+        width: 4.8rem;
+        height: 4.8rem;
+        font-size: 2.4rem;
+    }
+
+    .step-image {
+        width: 11rem;
+        height: 10rem;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+
+    .step-text {
+        width: 100%;
+        height: auto;
+        margin-bottom: 0;
+    }
+
+    .step-text h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.6rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .step-text p {
+        font-size: 1.1rem;
+        line-height: 1.35;
+        margin: 0;
+    }
+
+    .video {
+        width: calc(100% - 4rem);
+        height: 20rem;
+        margin: 4rem auto;
+    }
+
+    .video img {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+
+    .footer {
+        padding: 3.5rem 2.5rem;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .footerLogo {
+        max-width: 13rem;
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+    }
+
+    .footerText {
+        flex-direction: column;
+        gap: 1.2rem;
+    }
+
+    .footerEmail,
+    .footerSocial {
+        gap: 0.3rem;
+    }
+
+    .footerEmail h2,
+    .footerSocial h2 {
+        font-size: 1.4rem;
+        margin-bottom: 0.1rem;
+    }
+
+    .footerEmail a,
+    .footerSocial a,
+    .footerEmail p {
+        font-size: 1.2rem;
+    }
+
+    .socialLink {
+        gap: 0.6rem;
+        margin-top: 0rem;
+    }
+
+    .footerSocialIcon {
+        width: 1.8rem;
+        height: 1.8rem;
+    }
+}
