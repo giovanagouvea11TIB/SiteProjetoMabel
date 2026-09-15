@@ -84,7 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
             menuOverlay.addEventListener('click', closeMenu);
         }
 
-        document.querySelectorAll('.nav-links a').forEach(link => {
+        // Fecha o menu ao clicar em qualquer link interno
+        navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', closeMenu);
         });
     }
