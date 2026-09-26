@@ -89,4 +89,76 @@ document.addEventListener('DOMContentLoaded', () => {
             link.addEventListener('click', closeMenu);
         });
     }
+
+    const cadastroForm = document.querySelector('.register-form');
+    if (cadastroForm && cadastroForm.dataset.welcomeBound !== 'true') {
+        cadastroForm.dataset.welcomeBound = 'true';
+        cadastroForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!cadastroForm.reportValidity()) return;
+
+            const botao = cadastroForm.querySelector('button[type="submit"]');
+            if (botao) botao.disabled = true;
+
+            try {
+                const dados = Object.fromEntries(new FormData(cadastroForm).entries());
+                const respostaCadastro = await fetch('/api/auth/cadastro', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+                const resultadoCadastro = await respostaCadastro.json();
+
+                if (!respostaCadastro.ok || !resultadoCadastro.sucesso) {
+                    window.alert(resultadoCadastro.mensagem || 'Nao foi possivel realizar o cadastro.');
+                    return;
+                }
+
+                window.alert(resultadoCadastro.emailEnviado === true
+                    ? 'Cadastro realizado e e-mail de boas-vindas enviado!'
+                    : 'Cadastro realizado, mas nao foi possivel enviar o e-mail de boas-vindas.');
+
+                const destino = cadastroForm.dataset.redirect;
+                if (destino && destino !== '#') window.location.assign(destino);
+            } catch (erro) {
+                window.alert('Nao foi possivel conectar ao servidor. Tente novamente.');
+            } finally {
+                if (botao) botao.disabled = false;
+            }
+        });
+    }
+
+    const loginForm = document.querySelector('.auth-form');
+    if (loginForm && loginForm.dataset.loginBound !== 'true') {
+        loginForm.dataset.loginBound = 'true';
+        loginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            if (!loginForm.reportValidity()) return;
+
+            const botao = loginForm.querySelector('button[type="submit"]');
+            if (botao) botao.disabled = true;
+
+            try {
+                const dados = Object.fromEntries(new FormData(loginForm).entries());
+                const resposta = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(dados)
+                });
+                const resultado = await resposta.json();
+
+                if (!resposta.ok || !resultado.sucesso) {
+                    window.alert(resultado.mensagem || 'E-mail ou senha incorretos.');
+                    return;
+                }
+
+                const destino = loginForm.dataset.redirect;
+                if (destino && destino !== '#') window.location.assign(destino);
+            } catch (erro) {
+                window.alert('Nao foi possivel conectar ao servidor. Tente novamente.');
+            } finally {
+                if (botao) botao.disabled = false;
+            }
+        });
+    }
 });

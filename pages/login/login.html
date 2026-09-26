@@ -111,7 +111,7 @@
             <div class="auth-card">
                 <h2>Entrar na Conta</h2>
 
-                <form class="auth-form" action="/software/home/home.html" method="GET">
+                <form class="auth-form" action="/api/auth/login" method="POST" data-redirect="/software/home/home.html">
                 <div class="input-group">
                     <label for="email">E-mail</label>
                     <input type="email" id="email" name="email" placeholder="Digite seu e-mail" required>

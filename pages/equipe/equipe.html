@@ -180,10 +180,10 @@
                 <h1>Entre em contato</h1>
                 <img src="../../assets/images/Logo Mabel 1.png" alt="logo de pata" class="logo mabel">
             </div>
-            <form action=""> 
-                <input type="text" placeholder="Digite seu nome..." required>
-                <input type="email" placeholder="Digite seu e-mail..." required>
-                <input type="text" placeholder="Digite sua mensagem..." required class="message">
+            <form action="/api/avaliacao" method="POST">
+                <input type="text" name="nome" placeholder="Digite seu nome..." required>
+                <input type="email" name="email" placeholder="Digite seu e-mail..." required>
+                <input type="text" name="mensagem" placeholder="Digite sua mensagem..." required class="message">
                 <button type="submit">Enviar</button>
             </form>
         </section>
@@ -207,5 +207,6 @@
     </div>
     
     <script src="../../js/script.js"></script>
+    <script src="../../js/api-forms.js"></script>
 </body>
 </html>

@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/send-welcome",
+      "destination": "/api/send-welcome"
+    }
+  ]
+}

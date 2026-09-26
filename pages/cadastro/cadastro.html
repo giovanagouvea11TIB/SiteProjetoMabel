@@ -111,7 +111,7 @@
             <div class="register-card">
                 <h2>Criar Conta</h2>
 
-            <form class="register-form" action="/software/home/home.html" method="GET">
+            <form class="register-form" action="/api/auth/cadastro" method="POST" data-redirect="/software/home/home.html">
             <div class="input-group">
                 <label for="nome">Nome</label>
                 <input type="text" id="nome" name="nome" placeholder="Digite seu nome" required>
@@ -138,6 +138,7 @@
     </main>
 
     <script src="../../js/script.js"></script>
+    <script src="../../js/api-forms.js"></script>
 
 </body>
 </html>
