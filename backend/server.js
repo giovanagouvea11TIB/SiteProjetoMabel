@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: path.resolve(__dirname, "../.env"), quiet: true });
 
 const express = require("express");
+const cors = require("cors");
 const { pool, ensureAvaliacaoTable } = require("./db");
 const authRouter = require("./routes/auth");
 const avaliacaoRouter = require("./routes/avaliacao");
@@ -16,6 +17,12 @@ let initializationPromise;
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
+app.use(cors({
+    origin(origin, callback) {
+        const localFiveServer = /^https?:\/\/(localhost|127\.0\.0\.1):5500$/.test(origin || "");
+        callback(null, !origin || localFiveServer);
+    }
+}));
 app.use(express.json({ limit: "20kb" }));
 app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 

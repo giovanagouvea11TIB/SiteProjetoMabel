@@ -54,6 +54,10 @@ if (carousel) {
 
 //hamburguer
 document.addEventListener('DOMContentLoaded', () => {
+    const apiUrl = (path) => window.location.port === '5500'
+        ? `http://${window.location.hostname}:3000${path}`
+        : path;
+
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const navLinks = document.getElementById('nav-links');
     const menuOverlay = document.getElementById('menu-overlay');
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const dados = Object.fromEntries(new FormData(cadastroForm).entries());
-                const respostaCadastro = await fetch('/api/auth/cadastro', {
+                const respostaCadastro = await fetch(apiUrl('/api/auth/cadastro'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)
@@ -140,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             try {
                 const dados = Object.fromEntries(new FormData(loginForm).entries());
-                const resposta = await fetch('/api/auth/login', {
+                const resposta = await fetch(apiUrl('/api/auth/login'), {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(dados)

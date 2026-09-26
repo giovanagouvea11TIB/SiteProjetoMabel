@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const apiUrl = (path) => window.location.port === "5500"
+        ? `http://${window.location.hostname}:3000${path}`
+        : path;
+
     async function enviarFormulario(formulario, endpoint, montarDados, aoSucesso) {
         if (formulario.dataset.apiBound === "true") return;
         formulario.dataset.apiBound = "true";
@@ -38,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (contato) {
         enviarFormulario(
             contato,
-            "/api/avaliacao",
+            apiUrl("/api/avaliacao"),
             (formulario) => Object.fromEntries(new FormData(formulario).entries()),
             (formulario) => formulario.reset()
         );
