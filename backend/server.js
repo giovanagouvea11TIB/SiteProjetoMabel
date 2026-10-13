@@ -4,7 +4,10 @@ dotenv.config({ path: path.resolve(__dirname, "../.env"), quiet: true });
 
 const express = require("express");
 const cors = require("cors");
+const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 const { pool, ensureAvaliacaoTable } = require("./db");
+const requireAuth = require("./middleware/require-auth");
 const authRouter = require("./routes/auth");
 const avaliacaoRouter = require("./routes/avaliacao");
 const { enviarEmail, registrarErroEmail } = require("./email");
@@ -15,9 +18,40 @@ const projectRoot = path.resolve(__dirname, "..");
 const port = Number(process.env.PORT || 3000);
 let initializationPromise;
 
+if (!process.env.SESSION_SECRET) {
+    throw new Error("A variável SESSION_SECRET não foi configurada.");
+}
+
+const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT || 3306),
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE || process.env.DB_NAME,
+    connectionLimit: 1,
+    createDatabaseTable: true,
+    schema: {
+        tableName: "mabel_web_sessions"
+    }
+});
+
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
+app.use(session({
+    name: "mabel.sid",
+    secret: process.env.SESSION_SECRET,
+    store: sessionStore,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production" || Boolean(process.env.VERCEL),
+        sameSite: "lax",
+        maxAge: 8 * 60 * 60 * 1000
+    }
+}));
 app.use(cors({
+    credentials: true,
     origin(origin, callback) {
         const localFiveServer = /^https?:\/\/(localhost|127\.0\.0\.1):5500$/.test(origin || "");
         callback(null, !origin || localFiveServer);
@@ -45,6 +79,16 @@ app.get("/api/teste-db", async (req, res) => {
 
 app.get("/api/status", (req, res) => {
     return res.json({ status: "online", mensagem: "Sistema funcionando!" });
+});
+
+app.get("/api/auth/sessao", (req, res) => {
+    const usuario = req.session?.usuario;
+    const autenticado = Boolean(usuario?.id);
+
+    return res.json({
+        autenticado,
+        usuario: autenticado ? { nome: usuario.nome } : null
+    });
 });
 
 const enviosBoasVindas = new Map();
@@ -97,6 +141,7 @@ app.use((req, res, next) => {
     return next();
 });
 
+app.use("/software", requireAuth);
 app.use(express.static(projectRoot, { dotfiles: "ignore", index: "index.html" }));
 
 function initialize() {
