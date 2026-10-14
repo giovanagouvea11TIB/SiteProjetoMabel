@@ -1,5 +1,5 @@
 const { app } = require("../backend/server");
-const { rewriteApiRequestUrl } = require("./route-rewrite");
+const { rewriteApiRequestUrl } = require("../backend/api-route-rewrite");
 
 function mensagemErroSegura(erro) {
     let mensagem = String(erro?.message || "Erro sem mensagem.");

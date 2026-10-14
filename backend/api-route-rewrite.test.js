@@ -2,7 +2,7 @@ const assert = require("node:assert/strict");
 const Module = require("node:module");
 const path = require("node:path");
 const { test } = require("node:test");
-const { rewriteApiRequestUrl } = require("./route-rewrite");
+const { rewriteApiRequestUrl } = require("./api-route-rewrite");
 
 test("rewrites a nested pet API path and preserves the original query string", () => {
     assert.equal(
@@ -46,7 +46,7 @@ test("rejects malformed or duplicated rewrite paths", () => {
 });
 
 test("serverless entrypoint restores the routed pet path before invoking Express", () => {
-    const handlerPath = path.resolve(__dirname, "[...path].js");
+    const handlerPath = path.resolve(__dirname, "../api/[...path].js");
     const originalLoad = Module._load;
     let receivedUrl;
 
@@ -63,8 +63,12 @@ test("serverless entrypoint restores the routed pet path before invoking Express
     };
 
     delete require.cache[handlerPath];
-    const handler = require("./[...path]");
-    Module._load = originalLoad;
+    let handler;
+    try {
+        handler = require(handlerPath);
+    } finally {
+        Module._load = originalLoad;
+    }
 
     const response = {
         statusCode: 200,
