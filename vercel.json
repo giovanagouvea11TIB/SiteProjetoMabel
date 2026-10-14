@@ -8,6 +8,18 @@
   },
   "rewrites": [
     {
+      "source": "/api/perfil/:path*",
+      "destination": "/api/index?__mabel_api_path=perfil/:path*"
+    },
+    {
+      "source": "/api/vacinas/:path*",
+      "destination": "/api/index?__mabel_api_path=vacinas/:path*"
+    },
+    {
+      "source": "/api/mabel/:path*",
+      "destination": "/api/index?__mabel_api_path=mabel/:path*"
+    },
+    {
       "source": "/send-welcome",
       "destination": "/api/send-welcome"
     }

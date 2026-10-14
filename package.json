@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/server.js",
-    "test": "node --test backend/database-runtime.test.js backend/deployment.test.js backend/routes/mabel.test.js backend/routes/vacinas.test.js backend/routes/avatar.test.js software/vacina/vaccine-state.test.js js/api-response.test.js"
+    "test": "node --test backend/database-runtime.test.js backend/deployment.test.js backend/routes/mabel.test.js backend/routes/vacinas.test.js backend/routes/avatar.test.js backend/routes/pets.test.js api/route-rewrite.test.js software/vacina/vaccine-state.test.js js/api-response.test.js"
   },
   "repository": {
     "type": "git",

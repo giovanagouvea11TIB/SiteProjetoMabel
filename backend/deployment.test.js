@@ -26,10 +26,26 @@ test("Vercel routes preserve the private-page proxy and API aliases", () => {
     const vercel = JSON.parse(read("vercel.json"));
     assert.equal(vercel.proxy.entrypoint, "proxy.js");
     assert.deepEqual(vercel.proxy.matcher, ["/software", "/software/:path*"]);
-    assert.deepEqual(vercel.rewrites, [{
-        source: "/send-welcome",
-        destination: "/api/send-welcome"
-    }]);
+    assert.deepEqual(vercel.rewrites, [
+        {
+            source: "/api/perfil/:path*",
+            destination: "/api/index?__mabel_api_path=perfil/:path*"
+        },
+        {
+            source: "/api/vacinas/:path*",
+            destination: "/api/index?__mabel_api_path=vacinas/:path*"
+        },
+        {
+            source: "/api/mabel/:path*",
+            destination: "/api/index?__mabel_api_path=mabel/:path*"
+        },
+        {
+            source: "/send-welcome",
+            destination: "/api/send-welcome"
+        }
+    ]);
+    assert.match(read("api/index.js"), /require\("\.\/\[\.{3}path\]"\)/);
+    assert.match(read("api/[...path].js"), /rewriteApiRequestUrl\(req\.url\)/);
     assert.match(read("api/auth/sessao.js"), /require\("\.\.\/\[\.\.\.path\]"\)/);
     assert.match(read("api/auth/logout.js"), /require\("\.\.\/\[\.\.\.path\]"\)/);
 });

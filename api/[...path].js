@@ -1,4 +1,5 @@
 const { app } = require("../backend/server");
+const { rewriteApiRequestUrl } = require("./route-rewrite");
 
 function mensagemErroSegura(erro) {
     let mensagem = String(erro?.message || "Erro sem mensagem.");
@@ -31,6 +32,15 @@ function registrarFalhaHandler(erro) {
 }
 
 module.exports = function handler(req, res) {
+    const rewrittenUrl = rewriteApiRequestUrl(req.url);
+    if (rewrittenUrl === null) {
+        return res.status(400).json({
+            sucesso: false,
+            mensagem: "O caminho encaminhado para a API é inválido."
+        });
+    }
+    req.url = rewrittenUrl;
+
     try {
         return app(req, res);
     } catch (erro) {
