@@ -14,9 +14,13 @@ body {
     flex-direction: column;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 .user-hero {
-    background: linear-gradient(180deg, #F9B288 0%, #F5965B 100%);
-    padding: 3.5rem 2rem 7rem;
+    background: linear-gradient(180deg, #FFFFFF 0%, #FBECE2 100%);
+    padding: 4rem 2rem 6rem;
     display: flex;
     justify-content: center;
 }
@@ -38,54 +42,140 @@ body {
 .hero-header h1 {
     font-size: 3rem;
     font-weight: 700;
-    color: #FFFFFF;
+    color: #111111;
 }
 
-.notification-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.date-cards-container {
+.notification-toggle {
+    position: relative;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1.8rem;
+    place-items: center;
+    flex: 0 0 auto;
+    width: 4.6rem;
+    height: 4.6rem;
+    border: 0.1rem solid rgba(216, 87, 7, 0.2);
+    border-radius: 50%;
+    background: #FFF5EE;
+    color: #D85707;
+    cursor: pointer;
 }
 
-.date-card {
-    background-color: #D95308;
-    border-radius: 1.8rem;
-    padding: 2.2rem 1.5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+.notification-toggle svg {
+    width: 2.4rem;
+    height: 2.4rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+}
+
+.notification-toggle:focus-visible,
+.notification-close:focus-visible,
+.vaccine-form button:focus-visible,
+.vaccine-toolbar button:focus-visible,
+.vaccine-toolbar select:focus-visible,
+.vaccine-form input:focus-visible,
+.vaccine-form select:focus-visible,
+.vaccine-form textarea:focus-visible {
+    outline: 0.25rem solid rgba(216, 87, 7, 0.45);
+    outline-offset: 0.2rem;
+}
+
+.notification-count {
+    position: absolute;
+    top: -0.4rem;
+    right: -0.4rem;
+    display: grid;
+    place-items: center;
+    min-width: 2rem;
+    height: 2rem;
+    border-radius: 1rem;
+    padding: 0 0.5rem;
+    background: #A32616;
     color: #FFFFFF;
-    box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.08);
-}
-
-.date-card .day {
-    font-size: 3.8rem;
+    font-size: 1.1rem;
     font-weight: 700;
-    line-height: 1;
-    margin-bottom: 0.8rem;
 }
 
-.date-card .month {
-    font-size: 2rem;
-    font-weight: 500;
+.notification-panel {
+    border: 0.1rem solid rgba(39, 48, 56, 0.12);
+    border-radius: 1.8rem;
+    padding: 2rem;
+    background: #FFFFFF;
+    color: #222222;
+    box-shadow: 0 0.8rem 2.4rem rgba(80, 43, 20, 0.16);
+}
+
+.notification-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.2rem;
+}
+
+.notification-panel-header h2 {
+    font-size: 1.8rem;
+}
+
+.notification-rule,
+.notification-empty,
+.notification-error {
+    margin-top: 1rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+}
+
+.notification-rule,
+.notification-empty {
+    color: #555555;
+}
+
+.notification-error {
+    color: #A32616;
+}
+
+.notification-close,
+.secondary-button {
+    border: 0.1rem solid #D85707;
+    border-radius: 2rem;
+    padding: 0.8rem 1.8rem;
+    background: transparent;
+    color: #D85707;
+    font: inherit;
+    font-size: 1.35rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.notification-list {
+    display: grid;
+    gap: 0.8rem;
+    margin-top: 1.4rem;
+}
+
+.notification-item {
+    border-left: 0.35rem solid #D85707;
+    border-radius: 0.6rem;
+    padding: 1rem 1.2rem;
+    background: #FFF5EE;
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.notification-item.is-overdue {
+    border-left-color: #A32616;
+    background: #FFF0EE;
+}
+
+.notification-item strong,
+.notification-item span {
+    display: block;
 }
 
 .dashboard-main {
     flex: 1;
-    background-color: #FFFFFF;
-    border-radius: 3.5rem 3.5rem 0 0;
-    margin-top: -3.5rem;
-    padding: 3.5rem 2rem 5rem;
+    background: linear-gradient(180deg, #FBECE2 0%, #F5D3BD 100%);
+    padding: 2rem 2rem 6rem;
     display: flex;
     justify-content: center;
 }
@@ -98,79 +188,437 @@ body {
     gap: 2.5rem;
 }
 
+.vaccine-catalog-section,
+.vaccine-records {
+    display: grid;
+    gap: 1.4rem;
+}
+
+.vaccine-catalog-note {
+    margin-top: 0.8rem;
+    color: #555555;
+    font-size: 1.3rem;
+    line-height: 1.55;
+}
+
+.vaccine-catalog-status {
+    color: #555555;
+    font-size: 1.35rem;
+    line-height: 1.5;
+}
+
+.vaccine-catalog-status[role="alert"] {
+    color: #A32616;
+}
+
+.vaccine-catalog-list {
+    display: grid;
+    gap: 1.2rem;
+}
+
+.vaccine-catalog-card {
+    display: grid;
+    gap: 1.2rem;
+    border: 0.1rem solid rgba(39, 48, 56, 0.08);
+    border-radius: 1.8rem;
+    padding: 1.8rem 2rem;
+    background: #FFFFFF;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+}
+
+.vaccine-catalog-card h3 {
+    color: #222222;
+    font-size: 1.7rem;
+}
+
+.vaccine-catalog-card > p {
+    color: #555555;
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.vaccine-catalog-state {
+    color: #444444;
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+.vaccine-choice-group {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.vaccine-choice {
+    min-height: 4.2rem;
+    border: 0.1rem solid #D8D2CD;
+    border-radius: 1.2rem;
+    padding: 0.8rem 1rem;
+    background: #FFFFFF;
+    color: #333333;
+    font: inherit;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.vaccine-choice[aria-pressed="true"] {
+    border-color: #D85707;
+    background: #FFF5EE;
+    color: #8A3500;
+    box-shadow: inset 0 0 0 0.1rem #D85707;
+}
+
+.vaccine-choice:focus-visible,
+.vaccine-catalog-card input:focus-visible {
+    outline: 0.25rem solid rgba(216, 87, 7, 0.35);
+    outline-offset: 0.2rem;
+}
+
+.vaccine-date-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: 1rem;
+}
+
+.vaccine-date-row label {
+    display: grid;
+    gap: 0.6rem;
+    color: #333333;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.vaccine-date-row input {
+    min-height: 4.2rem;
+    border: 0.1rem solid #C9C9C9;
+    border-radius: 1rem;
+    padding: 0.8rem 1rem;
+    background: #FFFFFF;
+    color: #222222;
+    font: inherit;
+    font-size: 1.3rem;
+}
+
+.vaccine-catalog-save {
+    white-space: nowrap;
+}
+
+.vaccine-catalog-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.vaccine-catalog-save:disabled,
+.vaccine-choice:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
 .section-title {
     font-size: 2.2rem;
     font-weight: 700;
     color: #111111;
 }
 
-.vaccine-grid {
+.vaccine-toolbar {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
-}
-
-.vaccine-card {
-    background-color: #ECEAE6;
-    border-radius: 2.2rem;
-    padding: 2.2rem 2.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-}
-
-.vaccine-header {
-    display: flex;
-    justify-content: space-between;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
+    gap: 1.2rem;
+    border: 0.1rem solid rgba(39, 48, 56, 0.08);
+    border-radius: 1.8rem;
+    padding: 1.8rem 2rem;
+    background: #FFFFFF;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
 }
 
-.vaccine-header h3 {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #111111;
-}
-
-.badge {
-    border-radius: 2rem;
-    padding: 0.4rem 1.4rem;
-    font-size: 1.1rem;
+.vaccine-toolbar label,
+.vaccine-form label {
+    color: #222222;
+    font-size: 1.4rem;
     font-weight: 600;
-    letter-spacing: 0.03rem;
+}
+
+.vaccine-toolbar select,
+.vaccine-form input,
+.vaccine-form select,
+.vaccine-form textarea {
+    width: 100%;
+    min-width: 0;
+    border: 0.1rem solid #C9C9C9;
+    border-radius: 1rem;
+    padding: 1rem 1.2rem;
+    background: #FFFFFF;
+    color: #222222;
+    font: inherit;
+    font-size: 1.4rem;
+}
+
+.primary-button,
+.danger-button {
+    border: 0;
+    border-radius: 2rem;
+    padding: 1rem 2rem;
+    background: #D85707;
+    color: #FFFFFF;
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: #BD4A04;
+}
+
+.danger-button {
+    background: #A32616;
+}
+
+.danger-button:hover {
+    background: #852014;
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.danger-button:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.vaccine-status {
+    font-size: 1.4rem;
+    line-height: 1.5;
+}
+
+.vaccine-loading {
+    color: #555555;
+    font-size: 1.4rem;
+}
+
+.vaccine-status[role="alert"],
+.vaccine-form-error {
+    color: #A32616;
+}
+
+.vaccine-list {
+    display: grid;
+    gap: 1.4rem;
+}
+
+.vaccine-record {
+    display: grid;
+    gap: 1.2rem;
+    border: 0.1rem solid rgba(39, 48, 56, 0.08);
+    border-radius: 1.8rem;
+    padding: 2rem 2.2rem;
+    background: #FFFFFF;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+}
+
+.vaccine-record-header,
+.vaccine-record-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.vaccine-record-status {
+    display: grid;
+    justify-items: end;
+    gap: 0.6rem;
+    flex: 0 0 auto;
+}
+
+.vaccine-record-application-date {
+    color: #555555;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    text-align: right;
+}
+
+.vaccine-record h3 {
+    color: #222222;
+    font-size: 1.8rem;
+}
+
+.vaccine-status-badge {
     display: inline-block;
+    border: 0.1rem solid #E8C28A;
+    border-radius: 2rem;
+    padding: 0.4rem 1.2rem;
+    background: #FFF5D8;
+    color: #70520C;
+    font-size: 1.15rem;
+    font-weight: 700;
 }
 
-.badge-late {
-    background-color: #FDE8E8;
-    color: #D34553;
-    border: 0.1rem solid #F8C4C8;
+.vaccine-status-badge.is-applied {
+    border-color: #B8E7CB;
+    background: #E6F5EC;
+    color: #216C43;
 }
 
-.badge-next {
-    background-color: #FFF9E6;
-    color: #D29D12;
-    border: 0.1rem solid #F8E6B1;
+.vaccine-status-badge.is-aplicada {
+    border-color: #B8E7CB;
+    background: #E6F5EC;
+    color: #216C43;
 }
 
-.badge-ontime {
-    background-color: #E6F5EC;
-    color: #2BB673;
-    border: 0.1rem solid #B8E7CB;
+.vaccine-status-badge.is-nao_aplicada {
+    border-color: #E8C28A;
+    background: #FFF5D8;
+    color: #70520C;
 }
 
-.vaccine-details {
+.vaccine-status-badge.is-desconhecida {
+    border-color: #D4D6D8;
+    background: #F0F1F2;
+    color: #4B5156;
+}
+
+.vaccine-record-details {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.6rem 1.6rem;
+    color: #444444;
+    font-size: 1.35rem;
+    line-height: 1.5;
+}
+
+.vaccine-record-details .full-width {
+    grid-column: 1 / -1;
+}
+
+.vaccine-record-actions {
+    justify-content: flex-end;
+}
+
+.vaccine-empty-state {
+    border-radius: 1.8rem;
+    padding: 2.4rem;
+    background-color: #ECEAE6;
+    color: #333333;
+    font-size: 1.5rem;
+    line-height: 1.6;
+}
+
+.vaccine-form {
+    display: grid;
+    gap: 1.6rem;
+    border: 0.1rem solid rgba(39, 48, 56, 0.08);
+    border-radius: 1.8rem;
+    padding: 2.2rem;
+    background: #FFFFFF;
+    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+}
+
+.vaccine-form > h2 {
+    color: #222222;
+    font-size: 2rem;
+}
+
+.vaccine-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.4rem;
+}
+
+.vaccine-catalog-edit {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+    gap: 1.4rem;
+    border: 0;
+    border-top: 0.1rem solid rgba(39, 48, 56, 0.1);
+    border-bottom: 0.1rem solid rgba(39, 48, 56, 0.1);
+    padding: 1.5rem 0;
+    background: transparent;
+}
+
+.vaccine-catalog-edit h3 {
+    grid-column: 1 / -1;
+    color: #222222;
+    font-size: 1.6rem;
+}
+
+.vaccine-catalog-edit label {
     display: flex;
     flex-direction: column;
-    gap: 0.4rem;
+    gap: 0.7rem;
 }
 
-.vaccine-details p {
-    font-size: 1.45rem;
-    color: #333333;
+.vaccine-form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
 }
 
-.vaccine-details strong {
-    font-weight: 700;
+.vaccine-form-grid textarea {
+    resize: vertical;
+}
+
+.vaccine-notes-field {
+    grid-column: 1 / -1;
+}
+
+.vaccine-form-error {
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.vaccine-form-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.vaccine-form-primary-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-left: auto;
+}
+
+.vaccine-delete-button {
+    border: 0.1rem solid #A32616;
+    padding: 0.8rem 1.5rem;
+    background: #FFFFFF;
+    color: #A32616;
+    font-size: 1.25rem;
+}
+
+.vaccine-delete-button:hover:not(:disabled) {
+    background: #FFF0EE;
+}
+
+.vaccine-delete-dialog {
+    width: min(92vw, 42rem);
+    margin: auto;
+    border: 0;
+    border-radius: 1.8rem;
+    padding: 2.6rem;
+    color: #222222;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+}
+
+.vaccine-delete-dialog::backdrop {
+    background: rgba(25, 20, 18, 0.48);
+}
+
+.vaccine-delete-dialog h2 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.vaccine-delete-dialog p {
+    font-size: 1.5rem;
+    line-height: 1.5;
 }
 
 .sidebar-right {
@@ -271,64 +719,70 @@ body.dark-mode {
 }
 
 body.dark-mode .user-hero {
-    background: #495863;
+    background: linear-gradient(180deg, #3A454E 0%, #273038 100%);
 }
 
 body.dark-mode .hero-header h1 {
     color: #FFFFFF;
 }
 
-body.dark-mode .date-card {
-    background-color: #D9D9D9;
-    color: #111111;
-}
-
-body.dark-mode .date-card .day,
-body.dark-mode .date-card .month {
-    color: #111111;
-}
-
 body.dark-mode .dashboard-main {
-    background-color: #273038;
+    background: linear-gradient(180deg, #3A454E 0%, #273038 100%);
 }
 
 body.dark-mode .section-title {
     color: #FFFFFF;
 }
 
-body.dark-mode .vaccine-card {
+body.dark-mode .vaccine-empty-state {
     background-color: #E6E6E6;
-}
-
-body.dark-mode .vaccine-header h3 {
-    color: #111111;
-}
-
-body.dark-mode .vaccine-details p {
     color: #222222;
 }
 
-body.dark-mode .badge-late {
-    background-color: #FFFFFF;
-    color: #D34553;
-    border-color: #F8C4C8;
+body.dark-mode .vaccine-toolbar,
+body.dark-mode .vaccine-record,
+body.dark-mode .vaccine-form,
+body.dark-mode .vaccine-catalog-card,
+body.dark-mode .vaccine-catalog-edit {
+    background: #E6E6E6;
 }
 
-body.dark-mode .badge-next {
-    background-color: #FFFFFF;
-    color: #D29D12;
-    border-color: #F8E6B1;
+body.dark-mode .vaccine-catalog-card {
+    border-color: rgba(255, 255, 255, 0.1);
+    background: #E6E6E6;
 }
 
-body.dark-mode .badge-ontime {
-    background-color: #FFFFFF;
-    color: #2BB673;
-    border-color: #B8E7CB;
+body.dark-mode .vaccine-catalog-note,
+body.dark-mode .vaccine-catalog-status,
+body.dark-mode .vaccine-catalog-card > p,
+body.dark-mode .vaccine-catalog-state {
+    color: #333333;
 }
+
+body.dark-mode .vaccine-choice {
+    background: #FFFFFF;
+}
+
+body.dark-mode .vaccine-choice[aria-pressed="true"] {
+    background: #FFF5EE;
+}
+
+body.dark-mode .notification-panel {
+    background: #F7F7F7;
+    color: #222222;
+}
+
+body.dark-mode .vaccine-status-badge.is-applied {
+    background: #E6F5EC;
+}
+
+body.dark-mode .vaccine-record-application-date {
+    color: #444444;
+}
+
 
 .user-card-item,
 .nav-item-icon,
-.notification-icon,
 .menu-overlay {
     display: none;
 }
@@ -492,22 +946,6 @@ body.dark-mode .badge-ontime {
         font-family: 'Montserrat', sans-serif;
     }
 
-    .notification-btn {
-        background: transparent;
-        border: none;
-        padding: 0;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-    }
-
-    .notification-icon {
-        display: block;
-        width: 2rem;
-        height: 2rem;
-        object-fit: contain;
-    }
-
     .nav-item-icon, 
     .nav-icon {
         display: block;
@@ -577,39 +1015,16 @@ body.dark-mode .badge-ontime {
         font-size: 2.2rem;
     }
 
-    .date-cards-container {
-        display: flex;
-        grid-template-columns: none;
-        overflow-x: auto;
-        padding-bottom: 0.8rem;
-        gap: 1.2rem;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
+    .notification-toggle {
+        width: 4rem;
+        height: 4rem;
     }
 
-    .date-cards-container::-webkit-scrollbar {
-        display: none;
-    }
-
-    .date-card {
-        min-width: 8.5rem;
-        flex: 0 0 auto;
-        padding: 1.5rem 1rem;
-        border-radius: 1.4rem;
-    }
-
-    .date-card .day {
-        font-size: 2.8rem;
-        margin-bottom: 0.4rem;
-    }
-
-    .date-card .month {
-        font-size: 1.4rem;
+    .notification-panel {
+        padding: 1.5rem;
     }
 
     .dashboard-main {
-        border-radius: 2.5rem 2.5rem 0 0;
-        margin-top: -3rem;
         padding: 2.5rem 1.5rem 4rem;
     }
 
@@ -621,28 +1036,83 @@ body.dark-mode .badge-ontime {
         font-size: 1.8rem;
     }
 
-    .vaccine-grid {
+    .vaccine-empty-state {
+        padding: 1.8rem;
+        font-size: 1.35rem;
+    }
+
+    .vaccine-toolbar {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        align-items: stretch;
+        padding: 1.6rem;
     }
 
-    .vaccine-card {
-        padding: 1.8rem 1.8rem;
-        border-radius: 1.8rem;
-        gap: 1rem;
+    .vaccine-catalog-card {
+        padding: 1.6rem;
     }
 
-    .vaccine-header h3 {
-        font-size: 1.7rem;
+    .vaccine-choice-group {
+        grid-template-columns: 1fr;
     }
 
-    .badge {
-        padding: 0.3rem 1rem;
-        font-size: 1rem;
+    .vaccine-date-row {
+        grid-template-columns: 1fr;
     }
 
-    .vaccine-details p {
-        font-size: 1.3rem;
+    .vaccine-catalog-save {
+        width: 100%;
+    }
+
+    .vaccine-catalog-actions {
+        justify-content: stretch;
+    }
+
+    .vaccine-form {
+        padding: 1.8rem;
+    }
+
+    .vaccine-form-grid,
+    .vaccine-record-details,
+    .vaccine-catalog-edit {
+        grid-template-columns: 1fr;
+    }
+
+    .vaccine-notes-field,
+    .vaccine-record-details .full-width {
+        grid-column: auto;
+    }
+
+    .vaccine-form-actions,
+    .vaccine-form-primary-actions {
+        align-items: stretch;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .vaccine-form-actions > button,
+    .vaccine-form-primary-actions > button {
+        width: 100%;
+    }
+
+    .vaccine-form-primary-actions {
+        margin-left: 0;
+    }
+
+    .vaccine-record {
+        padding: 1.6rem;
+    }
+
+    .vaccine-record-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .vaccine-record-status {
+        justify-items: start;
+    }
+
+    .vaccine-record-application-date {
+        text-align: left;
     }
 
     .footer {

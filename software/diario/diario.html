@@ -33,8 +33,8 @@
                 <a href="/pages/login/login.html" class="user-card-link">
                     <div class="user-card">
                         <div class="user-info">
-                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
-                            <span class="user-name">Marisa Ferreira</span>
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Avatar da conta" class="user-avatar">
+                            <span class="user-name">Minha conta</span>
                         </div>
                         <button type="button" class="notification-btn" aria-label="Notificações">
                             <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
@@ -166,112 +166,44 @@
     <section class="user-hero">
         <div class="user-hero-content">
             <h1>Diário de Evolução</h1>
+            <div class="diary-pet-context">
+                <label for="diary-pet-selector">Animal</label>
+                <select id="diary-pet-selector" disabled hidden>
+                    <option value="">Carregando animais...</option>
+                </select>
+                <p id="diary-pet-status" role="status" aria-live="polite">
+                    Carregando os animais da sua conta...
+                </p>
+                <a id="diary-profile-link" href="../perfil/perfil.html" hidden>
+                    Cadastrar um animal
+                </a>
+            </div>
         </div>
     </section>
 
     <main class="dashboard-main">
         <div class="main-container">
 
-            <section class="chart-card">
-                <div class="chart-wrapper">
-                    <svg viewBox="0 0 500 320" class="chart-svg">
-                        <line x1="80" y1="30" x2="80" y2="250" class="grid-line" />
-                        <line x1="150" y1="30" x2="150" y2="250" class="grid-line" />
-                        <line x1="220" y1="30" x2="220" y2="250" class="grid-line" />
-                        <line x1="290" y1="30" x2="290" y2="250" class="grid-line" />
-                        <line x1="360" y1="30" x2="360" y2="250" class="grid-line" />
-                        <line x1="430" y1="30" x2="430" y2="250" class="grid-line" />
-
-                        <line x1="50" y1="40" x2="460" y2="40" class="grid-line-light" />
-                        <line x1="50" y1="110" x2="460" y2="110" class="grid-line-light" />
-                        <line x1="50" y1="180" x2="460" y2="180" class="grid-line-light" />
-                        <line x1="50" y1="250" x2="460" y2="250" class="grid-line-light" />
-
-                        <text x="35" y="44" class="axis-label-y">3</text>
-                        <text x="35" y="114" class="axis-label-y">2</text>
-                        <text x="35" y="184" class="axis-label-y">1</text>
-                        <text x="35" y="254" class="axis-label-y">0</text>
-
-                        <defs>
-                            <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                                <stop offset="0%" stop-color="#D85707" />
-                                <stop offset="50%" stop-color="#E27228" />
-                                <stop offset="100%" stop-color="#E98847" />
-                            </linearGradient>
-                            <filter id="glow" x="-10%" y="-10%" width="120%" height="120%">
-                                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#D85707" flood-opacity="0.3" />
-                            </filter>
-                        </defs>
-
-                        <path d="M 80 40 
-                                 C 110 80, 130 110, 150 110 
-                                 C 180 110, 200 110, 220 110 
-                                 C 260 110, 270 180, 290 180 
-                                 C 320 180, 340 180, 360 180 
-                                 C 400 180, 410 220, 430 220" 
-                              fill="none" 
-                              stroke="url(#lineGrad)" 
-                              stroke-width="3.5" 
-                              stroke-linecap="round" 
-                              filter="url(#glow)"/>
-
-                        <circle cx="80" cy="40" r="4.5" class="chart-point" />
-                        <circle cx="150" cy="110" r="4.5" class="chart-point" />
-                        <circle cx="220" cy="110" r="4.5" class="chart-point" />
-                        <circle cx="290" cy="180" r="4.5" class="chart-point" />
-                        <circle cx="360" cy="180" r="4.5" class="chart-point" />
-                        <circle cx="430" cy="220" r="4.5" class="chart-point" />
-
-                        <text x="80" y="275" class="axis-label-x" text-anchor="middle">02/06</text>
-                        <text x="150" y="275" class="axis-label-x" text-anchor="middle">05/06</text>
-                        <text x="220" y="275" class="axis-label-x" text-anchor="middle">09/06</text>
-                        <text x="290" y="275" class="axis-label-x" text-anchor="middle">12/06</text>
-                        <text x="360" y="275" class="axis-label-x" text-anchor="middle">16/06</text>
-                        <text x="430" y="275" class="axis-label-x" text-anchor="middle">20/06</text>
-                    </svg>
-                </div>
-
-                <div class="chart-legend">
-                    <span class="legend-circle"></span>
-                    <span class="legend-text">Intensidade</span>
+            <section class="chart-card" aria-labelledby="diary-chart-title">
+                <h2 id="diary-chart-title">Histórico da órtese</h2>
+                <div class="history-empty-state" role="status" aria-live="polite">
+                    <p id="diary-chart-empty">
+                        O histórico de sessões e leituras ainda não está disponível.
+                    </p>
+                    <p>Dados digitais do sensor não representam uma medida clínica de intensidade.</p>
                 </div>
             </section>
 
-            <section class="sessions-list">
-                
-                <div class="session-card">
-                    <div class="session-card-header">
-                        <span class="session-date">02/06/2026</span>
-                        <span class="badge badge-strong">FORTE</span>
-                    </div>
-                    <div class="session-card-body">
-                        <h3>Sessão realizada: <span>10 minutos</span></h3>
-                        <p><strong>Observações:</strong> Animal apresentou tremores frequentes ao levantar.</p>
-                    </div>
+            <section class="sessions-list" aria-labelledby="diary-sessions-title">
+                <h2 id="diary-sessions-title">Sessões registradas</h2>
+                <div class="history-empty-state" role="status" aria-live="polite">
+                    <p id="diary-sessions-empty">
+                        Ainda não há sessões persistidas para este animal.
+                    </p>
+                    <p id="diary-history-limitation">
+                        A integração atual não associa leituras do dispositivo a um animal nem mantém histórico persistente.
+                    </p>
                 </div>
-
-                <div class="session-card">
-                    <div class="session-card-header">
-                        <span class="session-date">05/06/2026</span>
-                        <span class="badge badge-moderate">MODERADA</span>
-                    </div>
-                    <div class="session-card-body">
-                        <h3>Sessão realizada: <span>15 minutos</span></h3>
-                        <p><strong>Observações:</strong> Melhora leve observada após a sessão. Caminhada mais estável.</p>
-                    </div>
-                </div>
-
-                <div class="session-card">
-                    <div class="session-card-header">
-                        <span class="session-date">12/06/2026</span>
-                        <span class="badge badge-light">LEVE</span>
-                    </div>
-                    <div class="session-card-body">
-                        <h3>Sessão realizada: <span>15 minutos</span></h3>
-                        <p><strong>Observações:</strong> Redução visível dos tremores durante o repouso.</p>
-                    </div>
-                </div>
-
             </section>
 
         </div>
@@ -295,6 +227,8 @@
             </div>
     </div>
 
+    <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
+    <script src="./diario.js"></script>
 </body>
 </html>

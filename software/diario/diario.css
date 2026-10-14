@@ -7,6 +7,10 @@
     padding: 0;
 }
 
+[hidden] {
+    display: none !important;
+}
+
 body {
     background-color: #F8DFC8;
     min-height: 100vh;
@@ -24,6 +28,44 @@ body {
 .user-hero-content {
     width: 100%;
     max-width: 68rem;
+}
+
+.diary-pet-context {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.8rem 1.2rem;
+    margin-top: 1.4rem;
+    color: #333333;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.diary-pet-context select {
+    min-width: min(100%, 24rem);
+    padding: 0.8rem 1rem;
+    border: 0.1rem solid #D8C9BD;
+    border-radius: 0.8rem;
+    background: #FFFFFF;
+    color: #222222;
+    font: inherit;
+}
+
+.diary-pet-context p {
+    flex-basis: 100%;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.diary-pet-context p.is-error {
+    color: #8C2020;
+    font-weight: 600;
+}
+
+.diary-pet-context a {
+    color: #A74208;
+    font-size: 1.2rem;
+    text-underline-offset: 0.2em;
 }
 
 .user-hero h1 {
@@ -59,137 +101,41 @@ body {
     box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
 }
 
-.chart-wrapper {
+.chart-card h2,
+.sessions-list h2 {
     width: 100%;
-    position: relative;
+    color: #222222;
+    font-size: 1.8rem;
 }
 
-.chart-svg {
+.history-empty-state {
     width: 100%;
-    height: auto;
-    display: block;
-}
-
-.grid-line {
-    stroke: #F2ECE7;
-    stroke-width: 1;
-    stroke-dasharray: 4 4;
-}
-
-.grid-line-light {
-    stroke: #F6F2EE;
-    stroke-width: 1;
-}
-
-.axis-label-y,
-.axis-label-x {
-    font-size: 13px;
-    font-weight: 600;
-    fill: #222222;
-}
-
-.chart-point {
-    fill: #FFFFFF;
-    stroke: #D85707;
-    stroke-width: 2.5;
-}
-
-.chart-legend {
     display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    margin-top: 1rem;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    min-height: 25rem;
+    padding: 2rem;
+    border: 0.1rem dashed #D8C9BD;
+    border-radius: 1.4rem;
+    background: #FFFCF9;
+    color: #555555;
+    text-align: center;
 }
 
-.legend-circle {
-    width: 0.8rem;
-    height: 0.8rem;
-    border-radius: 50%;
-    border: 0.2rem solid #888888;
-    background-color: #FFFFFF;
-}
-
-.legend-text {
-    font-size: 1.3rem;
-    font-weight: 700;
-    color: #333333;
+.history-empty-state p {
+    font-size: 1.35rem;
+    line-height: 1.55;
 }
 
 .sessions-list {
     display: flex;
     flex-direction: column;
-    gap: 1.8rem;
-}
-
-.session-card {
+    gap: 1.2rem;
     background-color: #FFFFFF;
     border-radius: 2rem;
-    padding: 2.2rem 2.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    padding: 2.5rem 2rem;
     box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
-}
-
-.session-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.session-date {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #222222;
-}
-
-.badge {
-    border-radius: 2rem;
-    padding: 0.4rem 1.6rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 0.03rem;
-    display: inline-block;
-}
-
-.badge-strong {
-    background-color: #FFFFFF;
-    color: #D34553;
-    border: 0.1rem solid #F8C4C8;
-}
-
-.badge-moderate {
-    background-color: #FFFFFF;
-    color: #D29D12;
-    border: 0.1rem solid #F8E6B1;
-}
-
-.badge-light {
-    background-color: #FFFFFF;
-    color: #2BB673;
-    border: 0.1rem solid #B8E7CB;
-}
-
-.session-card-body h3 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #111111;
-    margin-bottom: 0.6rem;
-}
-
-.session-card-body h3 span {
-    font-weight: 500;
-}
-
-.session-card-body p {
-    font-size: 1.35rem;
-    color: #444444;
-    line-height: 1.45;
-}
-
-.session-card-body strong {
-    font-weight: 700;
-    color: #111111;
 }
 
 .sidebar-right {
@@ -303,25 +249,28 @@ body.dark-mode .dashboard-main {
 }
 
 body.dark-mode .chart-card,
-body.dark-mode .session-card {
+body.dark-mode .sessions-list {
     background-color: #FFFFFF;
 }
 
-body.dark-mode .legend-text {
+body.dark-mode .chart-card h2,
+body.dark-mode .sessions-list h2 {
     color: #333333;
 }
 
-body.dark-mode .grid-line {
-    stroke: #EAEAEA;
+body.dark-mode .diary-pet-context {
+    color: #FFFFFF;
 }
 
-body.dark-mode .grid-line-light {
-    stroke: #F0F0F0;
+body.dark-mode .diary-pet-context select {
+    background-color: #323D45;
+    border-color: #66747E;
+    color: #FFFFFF;
 }
 
-body.dark-mode .axis-label-y,
-body.dark-mode .axis-label-x {
-    fill: #333333;
+body.dark-mode .history-empty-state {
+    background: #F7F5F2;
+    color: #444444;
 }
 
 .user-card-item,
@@ -592,12 +541,9 @@ body.dark-mode .axis-label-x {
         box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.05);
     }
 
-    .chart-legend {
-        margin-top: 0.8rem;
-    }
-
-    .legend-text {
-        font-size: 1.2rem;
+    .history-empty-state {
+        min-height: 19rem;
+        padding: 1.5rem;
     }
 
     .sessions-list {
@@ -609,26 +555,16 @@ body.dark-mode .axis-label-x {
         gap: 2rem;
     }
 
-    .session-card {
+    .sessions-list .history-empty-state {
         background-color: #EFEFEF;
-        border-radius: 2rem;
-        padding: 2rem 2rem;
-    }
-
-    .session-date {
-        font-size: 1.5rem;
-    }
-
-    .session-card-body h3 {
-        font-size: 1.4rem;
-    }
-
-    .session-card-body p {
-        font-size: 1.3rem;
     }
 
     body.dark-mode .sessions-list {
         background-color: #2D3740;
+    }
+
+    body.dark-mode .sessions-list .history-empty-state {
+        background-color: #F7F5F2;
     }
 
     .footer {

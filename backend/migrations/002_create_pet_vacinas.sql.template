@@ -1,0 +1,24 @@
+CREATE TABLE pet_vacinas (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    pet_id BIGINT NOT NULL,
+    nome_vacina VARCHAR(120) NOT NULL,
+    status ENUM('prevista', 'aplicada') NOT NULL,
+    data_prevista DATE NULL,
+    data_aplicacao DATE NULL,
+    veterinario VARCHAR(120) NULL,
+    clinica VARCHAR(160) NULL,
+    observacoes TEXT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    INDEX idx_pet_vacinas_pet_data (pet_id, data_prevista, data_aplicacao),
+    CONSTRAINT chk_pet_vacinas_status_datas
+        CHECK (
+            (status = 'prevista' AND data_prevista IS NOT NULL AND data_aplicacao IS NULL)
+            OR (status = 'aplicada' AND data_aplicacao IS NOT NULL)
+        ),
+    CONSTRAINT fk_pet_vacinas_pet
+        FOREIGN KEY (pet_id)
+        REFERENCES pets (id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

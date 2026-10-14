@@ -1,4 +1,11 @@
 {
+  "proxy": {
+    "entrypoint": "proxy.js",
+    "matcher": [
+      "/software",
+      "/software/:path*"
+    ]
+  },
   "rewrites": [
     {
       "source": "/send-welcome",

@@ -1,10 +1,13 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const { pool, getUsersTableName } = require("../db");
+const { pool, executeReadWithRetry, getUsersTableName } = require("../db");
+const { sendDatabaseError } = require("../database-errors");
 const { enviarEmail, registrarErroEmail } = require("../email");
 const { mensagemBoasVindas } = require("../mensagem");
+const avatarRouter = require("./avatar");
 
 const router = express.Router();
+router.use("/avatar", avatarRouter);
 
 router.post("/cadastro", async (req, res) => {
     const nome = typeof req.body?.nome === "string" ? req.body.nome.trim() : "";
@@ -21,9 +24,10 @@ router.post("/cadastro", async (req, res) => {
 
     try {
         const tabelaUsuarios = await getUsersTableName();
-        const [usuarios] = await pool.execute(
+        const [usuarios] = await executeReadWithRetry(
             `SELECT id FROM \`${tabelaUsuarios}\` WHERE email = ? LIMIT 1`,
-            [email]
+            [email],
+            "verificar e-mail de cadastro"
         );
 
         if (usuarios.length > 0) {
@@ -56,8 +60,12 @@ router.post("/cadastro", async (req, res) => {
             return res.status(409).json({ sucesso: false, mensagem: "Este e-mail já está cadastrado." });
         }
 
-        console.error("Erro interno no cadastro:", erro.code || "erro não identificado");
-        return res.status(500).json({ sucesso: false, mensagem: "Erro interno ao realizar o cadastro." });
+        return sendDatabaseError(
+            res,
+            erro,
+            "realizar cadastro",
+            "Erro interno ao realizar o cadastro."
+        );
     }
 });
 
@@ -84,12 +92,13 @@ router.post("/login", async (req, res) => {
     try {
         const tabelaUsuarios = await getUsersTableName();
 
-        const [usuarios] = await pool.execute(
+        const [usuarios] = await executeReadWithRetry(
             `SELECT id, nome, email, senha_hash
              FROM \`${tabelaUsuarios}\`
              WHERE email = ?
              LIMIT 1`,
-            [email]
+            [email],
+            "consultar credenciais de login"
         );
 
         if (
@@ -110,10 +119,14 @@ router.post("/login", async (req, res) => {
 
         req.session.regenerate((erroRegeneracao) => {
             if (erroRegeneracao) {
-                console.error("Falha ao regenerar sessão.");
-                return res.status(500).json({
+                console.error("Falha ao regenerar sessão:", erroRegeneracao.code || "erro não identificado");
+                const indisponivel = erroRegeneracao.code === "ECONNRESET"
+                    || erroRegeneracao.code === "PROTOCOL_CONNECTION_LOST";
+                return res.status(indisponivel ? 503 : 500).json({
                     sucesso: false,
-                    mensagem: "Não foi possível iniciar a sessão."
+                    mensagem: indisponivel
+                        ? "O banco de dados está temporariamente indisponível. Tente novamente."
+                        : "Não foi possível iniciar a sessão."
                 });
             }
 
@@ -125,10 +138,14 @@ router.post("/login", async (req, res) => {
 
             req.session.save((erroSalvamento) => {
                 if (erroSalvamento) {
-                    console.error("Falha ao salvar sessão.");
-                    return res.status(500).json({
+                    console.error("Falha ao salvar sessão:", erroSalvamento.code || "erro não identificado");
+                    const indisponivel = erroSalvamento.code === "ECONNRESET"
+                        || erroSalvamento.code === "PROTOCOL_CONNECTION_LOST";
+                    return res.status(indisponivel ? 503 : 500).json({
                         sucesso: false,
-                        mensagem: "Não foi possível salvar a sessão."
+                        mensagem: indisponivel
+                            ? "O banco de dados está temporariamente indisponível. Tente novamente."
+                            : "Não foi possível salvar a sessão."
                     });
                 }
 
@@ -144,15 +161,12 @@ router.post("/login", async (req, res) => {
             });
         });
     } catch (erro) {
-        console.error(
-            "Erro interno no login:",
-            erro.code || "erro não identificado"
+        return sendDatabaseError(
+            res,
+            erro,
+            "realizar login",
+            "Erro interno ao realizar o login."
         );
-
-        return res.status(500).json({
-            sucesso: false,
-            mensagem: "Erro interno ao realizar o login."
-        });
     }
 });
 
@@ -173,11 +187,15 @@ router.post("/logout", (req, res) => {
 
     req.session.destroy((erro) => {
         if (erro) {
-            console.error("Falha ao encerrar sessão.");
+            console.error("Falha ao encerrar sessão:", erro.code || "erro não identificado");
 
-            return res.status(500).json({
+            const indisponivel = erro.code === "ECONNRESET"
+                || erro.code === "PROTOCOL_CONNECTION_LOST";
+            return res.status(indisponivel ? 503 : 500).json({
                 sucesso: false,
-                mensagem: "Não foi possível encerrar a sessão."
+                mensagem: indisponivel
+                    ? "O banco de dados está temporariamente indisponível. Tente novamente."
+                    : "Não foi possível encerrar a sessão."
             });
         }
 

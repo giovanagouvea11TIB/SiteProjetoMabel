@@ -146,20 +146,33 @@ body.dark-mode .theme-icon {
 }
 
 .nav-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem;
     position: relative;
     z-index: 10001;
+    border: 0.1rem solid rgba(39, 48, 56, 0.08);
+    border-radius: 999px;
+    background: var(--dark-white);
 }
 
 .account-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left: 4.8rem;
+    margin-left: 0;
     padding: 0;
     border: 0;
     border-radius: 50%;
     background: transparent;
     cursor: pointer;
+}
+
+.account-avatar-toggle {
+    width: 3.8rem;
+    height: 3.8rem;
+    margin-left: 0;
 }
 
 .account-toggle:hover,
@@ -175,10 +188,176 @@ body.dark-mode .theme-icon {
 }
 
 .account-avatar {
+    display: inline-grid;
+    place-items: center;
     width: 3.3rem;
     height: 3.3rem;
     border-radius: 50%;
-    object-fit: cover;
+    background: #FBECE2;
+    color: #6B3217;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.avatar-symbol,
+.user-avatar-symbol {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: #FBECE2;
+    color: #6B3217;
+    line-height: 1;
+}
+
+.user-avatar-symbol {
+    font-size: 2.4rem;
+}
+
+.account-menu-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 3.2rem;
+    height: 3.2rem;
+    margin-left: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--burnt-orange);
+    font: inherit;
+    font-size: 2.2rem;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.account-menu-toggle:focus-visible,
+.account-menu-avatar-picker:focus-visible,
+.avatar-picker-close:focus-visible,
+.avatar-option:focus-visible {
+    outline: 0.2rem solid var(--burnt-orange);
+    outline-offset: 0.2rem;
+}
+
+.account-menu-avatar-picker {
+    display: inline-grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    flex: 0 0 auto;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+}
+
+.account-menu-avatar-symbol {
+    display: inline-grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    background: #FBECE2;
+    color: #6B3217;
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.avatar-picker-dialog {
+    width: min(48rem, calc(100vw - 2rem));
+    max-height: min(85vh, 62rem);
+    margin: auto;
+    padding: 2rem;
+    border: 0.1rem solid rgba(39, 48, 56, 0.12);
+    border-radius: 1.8rem;
+    background: var(--white);
+    color: var(--black);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.22);
+    font-family: Montserrat, sans-serif;
+}
+
+.avatar-picker-dialog::backdrop {
+    background: rgba(24, 29, 33, 0.55);
+}
+
+.avatar-picker-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.avatar-picker-header h2 {
+    font-size: 2rem;
+}
+
+.avatar-picker-dialog > p {
+    margin-top: 0.8rem;
+    font-size: 1.35rem;
+    line-height: 1.5;
+}
+
+.avatar-picker-close {
+    display: grid;
+    place-items: center;
+    width: 3.6rem;
+    height: 3.6rem;
+    flex: 0 0 auto;
+    border: 0;
+    border-radius: 50%;
+    background: var(--beige);
+    color: var(--black);
+    font: inherit;
+    font-size: 2.6rem;
+    cursor: pointer;
+}
+
+.avatar-picker-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 1.8rem;
+}
+
+.avatar-option {
+    display: flex;
+    min-height: 9rem;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.8rem;
+    border: 0.1rem solid var(--light-gray);
+    border-radius: 1.2rem;
+    background: var(--white);
+    color: var(--black);
+    font: inherit;
+    font-size: 1.25rem;
+    cursor: pointer;
+}
+
+.avatar-option[aria-pressed="true"] {
+    border-color: var(--burnt-orange);
+    background: #FFF5EE;
+    box-shadow: inset 0 0 0 0.1rem var(--burnt-orange);
+}
+
+.avatar-option:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+
+.avatar-option-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.avatar-picker-status {
+    min-height: 1.6em;
+    margin-top: 1.2rem;
+    color: #8A2B00;
+    font-size: 1.3rem;
+    line-height: 1.5;
 }
 
 .account-menu {
@@ -187,6 +366,8 @@ body.dark-mode .theme-icon {
     right: 0;
     z-index: 10002;
     width: min(28rem, calc(100vw - 2rem));
+    display: grid;
+    gap: 0.2rem;
     padding: 0.8rem;
     border: 0.1rem solid rgba(39, 48, 56, 0.12);
     border-radius: 1.2rem;
@@ -205,8 +386,7 @@ body.dark-mode .theme-icon {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.8rem 1rem 1.2rem;
-    border-bottom: 0.1rem solid var(--light-gray);
+    padding: 0.8rem 1rem;
     font-size: 1.4rem;
     font-weight: 600;
     overflow-wrap: anywhere;
@@ -218,6 +398,10 @@ body.dark-mode .theme-icon {
     flex: 0 0 auto;
     border-radius: 50%;
     object-fit: cover;
+}
+
+.account-menu-user .account-menu-avatar-picker {
+    margin: 0;
 }
 
 .account-menu-link,
@@ -273,7 +457,7 @@ body.dark-mode .account-menu {
 }
 
 body.dark-mode .account-menu-user {
-    border-bottom-color: #45525C;
+    color: var(--white);
 }
 
 body.dark-mode .account-menu-link,
@@ -291,9 +475,74 @@ body.dark-mode .account-menu-status {
     color: #FFC2A3;
 }
 
+body.dark-mode .avatar-picker-dialog {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: #323D45;
+    color: var(--white);
+}
+
+body.dark-mode .avatar-option {
+    border-color: #58646C;
+    background: #273038;
+    color: var(--white);
+}
+
+body.dark-mode .avatar-option[aria-pressed="true"] {
+    border-color: #FFB17F;
+    background: #49382F;
+}
+
+body.dark-mode .account-menu-toggle {
+    border-color: transparent;
+    background: transparent;
+}
+
+body.dark-mode .nav-actions {
+    border-color: rgba(255, 255, 255, 0.12);
+    background: #323D45;
+}
+
 @media (max-width: 768px) {
+    .nav-links .user-card-item {
+        margin-bottom: 0;
+    }
+
+    .nav-links .user-card {
+        border: 0;
+        border-radius: 0;
+        padding: 0.6rem 0;
+        background: transparent;
+    }
+
+    body.dark-mode .nav-links .user-card {
+        border-color: transparent;
+        background: transparent;
+    }
+
     .account-toggle {
-        margin-left: 1.2rem;
+        margin-left: 0;
+    }
+
+    .account-avatar-toggle {
+        margin-left: 0;
+    }
+
+    .avatar-picker-dialog {
+        padding: 1.6rem;
+    }
+
+    .avatar-picker-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.8rem;
+    }
+
+    .avatar-option {
+        min-height: 8rem;
+    }
+
+    .nav-actions {
+        gap: 0.2rem;
+        padding: 0.25rem;
     }
 }
 
@@ -333,6 +582,62 @@ body.dark-mode .account-menu-status {
     line-height: 1;
 
     transition: transform 0.3s ease;
+}
+
+.account-menu .theme-toggle {
+    width: 100%;
+    height: 4.2rem;
+    justify-content: flex-start;
+    gap: 1rem;
+    margin: 0.4rem 0 0;
+    padding: 0.8rem 1rem;
+    border-radius: 0.8rem;
+    background: transparent;
+    color: var(--black);
+    text-align: left;
+    font-family: Montserrat, sans-serif;
+    font-size: 1.4rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.account-menu .theme-toggle:hover {
+    transform: none;
+    background: var(--beige);
+    color: var(--burnt-orange);
+}
+
+.account-menu .theme-icon {
+    display: inline-flex;
+    width: 2rem;
+    flex: 0 0 2rem;
+    align-items: center;
+    justify-content: center;
+    color: var(--burnt-orange);
+    font-size: 2rem;
+}
+
+.theme-label {
+    line-height: 1.4;
+}
+
+.account-menu .theme-toggle:focus-visible {
+    outline: 0.2rem solid var(--burnt-orange);
+    outline-offset: 0.2rem;
+}
+
+body.dark-mode .account-menu .theme-toggle {
+    background: transparent;
+    color: var(--white);
+}
+
+body.dark-mode .account-menu .theme-toggle:hover {
+    background: #45525C;
+    color: #FFB17F;
+}
+
+body.dark-mode .account-menu .theme-icon {
+    color: #FFB17F;
 }
 
 body.dark-mode .theme-toggle {

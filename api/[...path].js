@@ -1,6 +1,4 @@
-const { app, initialize } = require("../backend/server");
-
-let initializationPromise;
+const { app } = require("../backend/server");
 
 function mensagemErroSegura(erro) {
     let mensagem = String(erro?.message || "Erro sem mensagem.");
@@ -23,38 +21,23 @@ function mensagemErroSegura(erro) {
     return mensagem;
 }
 
-module.exports = async function handler(req, res) {
-    try {
-        if (!initializationPromise) {
-            initializationPromise = initialize().catch((erro) => {
-                initializationPromise = null;
-                throw erro;
-            });
-        }
+function registrarFalhaHandler(erro) {
+    console.error("Falha ao encaminhar requisição para a API na Vercel:", {
+        stage: "handler.app",
+        name: erro?.name || "Error",
+        code: erro?.code || null,
+        message: mensagemErroSegura(erro)
+    });
+}
 
-        await initializationPromise;
+module.exports = function handler(req, res) {
+    try {
         return app(req, res);
     } catch (erro) {
-        console.error("Falha ao preparar API na Vercel:", {
-            stage: "initialize.ensureAvaliacaoTable",
-            name: erro?.name || "Error",
-            code: erro?.code || null,
-            message: mensagemErroSegura(erro),
-            environment: {
-                dbHostConfigured: Boolean(process.env.DB_HOST),
-                dbPortConfigured: Boolean(process.env.DB_PORT),
-                dbUserConfigured: Boolean(process.env.DB_USER),
-                dbPasswordConfigured: Boolean(process.env.DB_PASSWORD),
-                databaseVariable: process.env.DB_DATABASE
-                    ? "DB_DATABASE"
-                    : process.env.DB_NAME
-                        ? "DB_NAME"
-                        : "default"
-            }
-        });
+        registrarFalhaHandler(erro);
         return res.status(500).json({
             sucesso: false,
-            mensagem: "Não foi possível inicializar a API. Verifique as variáveis de ambiente do servidor."
+            mensagem: "Não foi possível processar a requisição da API."
         });
     }
 };

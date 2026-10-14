@@ -1,0 +1,15 @@
+ALTER TABLE alunos_usuarios
+    ADD COLUMN avatar_id ENUM(
+        'paw',
+        'flower',
+        'heart',
+        'star',
+        'fish',
+        'dog',
+        'cat',
+        'horse',
+        'butterfly',
+        'rabbit',
+        'bird',
+        'leaf'
+    ) NULL;

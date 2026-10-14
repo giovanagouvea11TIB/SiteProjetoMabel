@@ -33,12 +33,9 @@
                 <a href="/pages/login/login.html" class="user-card-link">
                     <div class="user-card">
                         <div class="user-info">
-                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
-                            <span class="user-name">Marisa Ferreira</span>
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Avatar da conta" class="user-avatar">
+                            <span class="user-name">Minha conta</span>
                         </div>
-                        <button type="button" class="notification-btn" aria-label="Notificações">
-                            <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
-                        </button>
                     </div>
                 </a>
             </li>
@@ -168,90 +165,149 @@
             
             <div class="hero-header">
                 <h1>Calendário Vacinal</h1>
-                <button class="notification-btn" aria-label="Notificações">
-                    <svg width="24" height="26" viewBox="0 0 24 24" fill="#FFFFFF" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.37 5.36 13.5 4.68V4C13.5 3.17 12.83 2.5 12 2.5C11.17 2.5 10.5 3.17 10.5 4V4.68C7.64 5.36 6 7.92 6 11V16L4 18V19H20V18L18 16Z"/>
+                <button class="notification-toggle" id="notification-toggle" type="button"
+                    aria-label="Abrir notificações de vacinação" aria-expanded="false"
+                    aria-controls="vaccine-notifications">
+                    <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4" />
                     </svg>
+                    <span class="notification-count" id="notification-count" hidden></span>
                 </button>
             </div>
-
-            <div class="date-cards-container">
-                <div class="date-card">
-                    <span class="day">01</span>
-                    <span class="month">Maio</span>
+            <section class="notification-panel" id="vaccine-notifications" hidden aria-labelledby="notifications-title">
+                <div class="notification-panel-header">
+                    <h2 id="notifications-title">Lembretes nesta página</h2>
+                    <button class="notification-close" id="notification-close" type="button">Fechar</button>
                 </div>
-                <div class="date-card">
-                    <span class="day">12</span>
-                    <span class="month">Julho</span>
+                <p class="notification-rule">
+                    Doses cadastradas como previstas para hoje ou datas anteriores são destacadas; “próxima” considera os próximos 30 dias.
+                    Este lembrete não substitui orientação veterinária e não é enviado com a página fechada.
+                </p>
+                <div id="notification-list" role="status" aria-live="polite">
+                    Carregando notificações...
                 </div>
-                <div class="date-card">
-                    <span class="day">18</span>
-                    <span class="month">Agosto</span>
-                </div>
-                <div class="date-card">
-                    <span class="day">22</span>
-                    <span class="month">Abril</span>
-                </div>
-            </div>
-
+            </section>
         </div>
     </section>
 
     <main class="dashboard-main">
-        
         <div class="main-container">
-            <h2 class="section-title">Próximas Vacinas</h2>
-
-            <div class="vaccine-grid">
-                
-                <div class="vaccine-card">
-                    <div class="vaccine-header">
-                        <h3>Vermífugo</h3>
-                        <span class="badge badge-late">ATRASADA</span>
-                    </div>
-                    <div class="vaccine-details">
-                        <p><strong>Aplicada em:</strong> 01/11/2025</p>
-                        <p><strong>Próxima dose:</strong> 01/11/2025</p>
-                    </div>
-                </div>
-
-                <div class="vaccine-card">
-                    <div class="vaccine-header">
-                        <h3>Leishmaniose</h3>
-                        <span class="badge badge-next">PRÓXIMA</span>
-                    </div>
-                    <div class="vaccine-details">
-                        <p><strong>Aplicada em:</strong> 12/07/2025</p>
-                        <p><strong>Próxima dose:</strong> 12/07/2026</p>
-                    </div>
-                </div>
-
-                <div class="vaccine-card">
-                    <div class="vaccine-header">
-                        <h3>Antirrábica</h3>
-                        <span class="badge badge-ontime">EM DIA</span>
-                    </div>
-                    <div class="vaccine-details">
-                        <p><strong>Aplicada em:</strong> 10/03/2026</p>
-                        <p><strong>Próxima dose:</strong> 10/03/2027</p>
-                    </div>
-                </div>
-
-                <div class="vaccine-card">
-                    <div class="vaccine-header">
-                        <h3>Gripe Canina</h3>
-                        <span class="badge badge-ontime">EM DIA</span>
-                    </div>
-                    <div class="vaccine-details">
-                        <p><strong>Aplicada em:</strong> 01/02/2026</p>
-                        <p><strong>Próxima dose:</strong> 01/02/2027</p>
-                    </div>
-                </div>
-
+            <div class="vaccine-toolbar">
+                <label for="pet-selector">Pet</label>
+                <select id="pet-selector" disabled aria-describedby="vaccine-status">
+                    <option value="">Carregando pets...</option>
+                </select>
+                <button class="primary-button" id="add-vaccine-btn" type="button" disabled>
+                    + Adicionar vacina
+                </button>
             </div>
-        </div>
 
+            <p class="vaccine-status" id="vaccine-status" role="status" aria-live="polite">
+                Carregando pets...
+            </p>
+            <section class="vaccine-catalog-section" aria-labelledby="vaccine-catalog-title">
+                <div>
+                    <h2 class="section-title" id="vaccine-catalog-title">
+                        Vacinas recomendadas para conversar com o veterinário
+                    </h2>
+                    <p class="vaccine-catalog-note">
+                        A polivalente canina (V8/V10) e a antirrábica são vacinas de referência para conversar
+                        com o médico-veterinário; o protocolo e a indicação dependem da avaliação profissional.
+                        Outras vacinas também dependem dessa avaliação. Esta lista é apenas para registrar
+                        informações: falta de informação não significa que uma vacina não foi aplicada ou está atrasada.
+                    </p>
+                </div>
+                <p class="vaccine-catalog-status" id="vaccine-catalog-status" role="status" aria-live="polite">
+                    Carregando catálogo...
+                </p>
+                <p class="vaccine-empty-state" id="vaccine-catalog-empty-state" hidden>
+                    Todas as vacinas desta lista já têm uma situação registrada.
+                </p>
+                <div class="vaccine-catalog-list" id="vaccine-catalog-list"></div>
+            </section>
+            <section class="vaccine-records" id="vaccine-records" aria-labelledby="vaccine-list-title">
+                <h2 class="section-title" id="vaccine-list-title">Histórico de doses</h2>
+                <p class="vaccine-empty-state" id="vaccine-empty-state" hidden>
+                    Este pet ainda não tem registros de vacinação.
+                </p>
+                <div class="vaccine-list" id="vaccine-list"></div>
+            </section>
+
+            <form class="vaccine-form" id="vaccine-form" hidden>
+                <h2 id="vaccine-form-title">Registrar dose</h2>
+                <div class="vaccine-form-grid">
+                    <label>
+                        Nome da vacina
+                        <input name="nome_vacina" type="text" maxlength="120" required>
+                    </label>
+                    <label>
+                        Situação
+                        <select name="status" required>
+                            <option value="prevista">Dose prevista</option>
+                            <option value="aplicada">Aplicação realizada</option>
+                        </select>
+                    </label>
+                    <label>
+                        Data prevista
+                        <input name="data_prevista" type="date">
+                    </label>
+                    <label>
+                        Data da aplicação (opcional, se conhecida)
+                        <input name="data_aplicacao" type="date">
+                    </label>
+                    <label>
+                        Veterinário (opcional)
+                        <input name="veterinario" type="text" maxlength="120">
+                    </label>
+                    <label>
+                        Clínica (opcional)
+                        <input name="clinica" type="text" maxlength="160">
+                    </label>
+                    <label class="vaccine-notes-field">
+                        Observações (opcional)
+                        <textarea name="observacoes" rows="4" maxlength="4000"></textarea>
+                    </label>
+                </div>
+                <section class="vaccine-catalog-edit" id="vaccine-catalog-edit" hidden
+                    aria-labelledby="vaccine-catalog-edit-title">
+                    <h3 id="vaccine-catalog-edit-title">Classificação da vacina</h3>
+                    <label>
+                        Situação
+                        <select name="catalog_status">
+                            <option value="aplicada">Aplicada</option>
+                            <option value="nao_aplicada">Não aplicada</option>
+                            <option value="desconhecida">Situação desconhecida</option>
+                        </select>
+                    </label>
+                    <label>
+                        Data da aplicação (opcional, se conhecida)
+                        <input name="catalog_data_aplicacao" type="date">
+                    </label>
+                </section>
+                <p class="vaccine-form-error" id="vaccine-form-error" role="alert" hidden></p>
+                <div class="vaccine-form-actions">
+                    <div class="vaccine-form-primary-actions">
+                        <button class="primary-button" id="save-vaccine-btn" type="submit">Salvar vacina</button>
+                        <button class="secondary-button" id="cancel-vaccine-btn" type="button">Cancelar</button>
+                    </div>
+                    <button class="danger-button vaccine-delete-button" id="delete-vaccine-btn"
+                        type="button" hidden>Excluir registro</button>
+                </div>
+            </form>
+        </div>
     </main>
+
+    <dialog class="vaccine-delete-dialog" id="vaccine-delete-dialog"
+        aria-labelledby="vaccine-delete-title" aria-describedby="vaccine-delete-message">
+        <form method="dialog">
+            <h2 id="vaccine-delete-title">Excluir registro?</h2>
+            <p id="vaccine-delete-message"></p>
+            <div class="vaccine-form-actions">
+                <button class="secondary-button" type="submit" value="cancel">Cancelar</button>
+                <button class="danger-button" type="submit" value="delete">Excluir registro</button>
+            </div>
+        </form>
+    </dialog>
 
     <div class="footer">
         <img src="../../assets/images/LOGO BRANCO.png" alt="logo do projeto Mabel" class="footerLogo">
@@ -271,6 +327,9 @@
             </div>
     </div>
 
+    <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
+    <script src="./vaccine-state.js"></script>
+    <script src="./vacina.js"></script>
 </body>
 </html>

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test backend/database-runtime.test.js backend/deployment.test.js backend/routes/mabel.test.js backend/routes/vacinas.test.js backend/routes/avatar.test.js software/vacina/vaccine-state.test.js js/api-response.test.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/giovanagouvea11TIB/SiteProjetoMabel#readme",
   "dependencies": {
+    "@vercel/functions": "^3.9.11",
     "bcryptjs": "^3.0.3",
     "cors": "^2.8.6",
     "dotenv": "^18.0.4",
@@ -28,6 +29,9 @@
     "express-session": "^1.19.0",
     "mysql2": "^3.24.4",
     "nodemailer": "^10.0.10"
+  },
+  "overrides": {
+    "mysql2": "^3.24.4"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"

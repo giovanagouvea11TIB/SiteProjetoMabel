@@ -20,7 +20,7 @@ main h1{
 
 .article {
     width: 32.5rem;
-    height: 50.1rem;
+    min-height: 50.1rem;
 
     display: flex;
     flex-direction: column;
@@ -55,6 +55,7 @@ main h1{
 }
 
 .article a {
+    margin-top: auto;
     width: 25.3874rem;
     height: 3.1rem;
     padding: 0.8rem 9.487rem 0.8rem 9.487rem;

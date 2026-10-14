@@ -10,8 +10,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
     <link rel="stylesheet" href="../../styles/globals.css">
     <link rel="stylesheet" href="../home/home.css">
 </head>
@@ -35,8 +33,8 @@
                 <a href="/pages/login/login.html" class="user-card-link">
                     <div class="user-card">
                         <div class="user-info">
-                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
-                            <span class="user-name">Marisa Ferreira</span>
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Avatar da conta" class="user-avatar">
+                            <span class="user-name">Minha conta</span>
                         </div>
                         <button type="button" class="notification-btn" aria-label="Notificações">
                             <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
@@ -131,7 +129,7 @@
     <div class="layout-container">
         <section class="user-hero">
             <div class="user-hero-content">
-                <h1>Olá, Usuário!</h1>
+                <h1>Resumo dos seus animais</h1>
                 <div class="search-bar">
                     <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D85707" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="11" cy="11" r="8"></circle>
@@ -181,46 +179,55 @@
   
         <main class="dashboard-main">
             
-            <section class="pet-card">
+            <section class="pet-card" aria-labelledby="home-pet-name">
                 <div class="pet-info">
-                    <h2 class="pet-title">Mabel</h2>
+                    <h2 class="pet-title" id="home-pet-name">Carregando perfil...</h2>
+                    <label class="pet-selector-label" for="home-pet-selector" hidden>Animal selecionado</label>
+                    <select class="pet-selector" id="home-pet-selector" hidden disabled></select>
+                    <p class="home-pet-message" id="home-pet-message" role="status" aria-live="polite">
+                        Carregando os animais da sua conta...
+                    </p>
 
-                    <div class="info-group">
-                        <p class="info-label">Próxima Vacina:</p>
-                        <p class="info-value">20/06/2026</p>
+                    <dl class="pet-details" id="home-pet-details" hidden></dl>
+
+                    <div class="info-group vaccine-summary" id="home-vaccine-summary" hidden>
+                        <p class="info-label">Próxima vacina</p>
+                        <p class="info-value" id="home-vaccine-date"></p>
+                        <p class="vaccine-note" id="home-vaccine-note" role="status" aria-live="polite"></p>
                     </div>
 
-                    <div class="info-group">
-                        <p class="info-label">Próxima Sessão:</p>
-                        <p class="info-value">18/04/2026</p>
-                    </div>
-
-                    <div class="info-group">
-                        <p class="info-label">Última estimulação:</p>
-                        <p class="info-value">Hoje, 14:23h</p>
-                    </div>
-
-                    <div class="battery-status">
-                        <span>50%</span>
-                        <div class="battery-icon">
-                            <div class="battery-fill"></div>
-                        </div>
-                    </div>
+                    <a class="profile-link" id="home-profile-link" href="../perfil/perfil.html" hidden>
+                        Cadastrar ou gerenciar animais
+                    </a>
                 </div>
 
-                
-                <div class="pet-image-container">
-                    <img src="../../assets/images/FOTO PET.png" alt="Mabel" class="pet-image">
+                <div class="pet-visual" id="home-pet-visual" hidden>
+                    <div class="pet-illustration" id="home-pet-illustration" role="img" aria-label="Ícone genérico de animal">
+                        🐾
+                    </div>
+                    <fieldset class="pet-icon-picker" id="home-pet-icon-picker">
+                        <legend>Ícone ilustrativo salvo neste navegador</legend>
+                        <button type="button" class="pet-icon-option" data-icon="dog-tan" aria-label="Cão, cor caramelo" aria-pressed="false">
+                            <span aria-hidden="true">🐶</span>
+                        </button>
+                        <button type="button" class="pet-icon-option" data-icon="dog-gray" aria-label="Cão, cor cinza" aria-pressed="false">
+                            <span aria-hidden="true">🐶</span>
+                        </button>
+                        <button type="button" class="pet-icon-option" data-icon="cat-orange" aria-label="Gato, cor laranja" aria-pressed="false">
+                            <span aria-hidden="true">🐱</span>
+                        </button>
+                        <button type="button" class="pet-icon-option" data-icon="cat-gray" aria-label="Gato, cor cinza" aria-pressed="false">
+                            <span aria-hidden="true">🐱</span>
+                        </button>
+                    </fieldset>
                 </div>
             </section>
 
-            <section class="chart-card">
-                <div class="chart-wrapper">
-                    <canvas id="tremorChart"></canvas>
-                </div>
-                <div class="chart-legend">
-                    <span class="legend-dot"></span>
-                    <span class="legend-text">Nível de Tremores</span>
+            <section class="chart-card" aria-labelledby="home-history-title">
+                <h2 class="chart-title" id="home-history-title">Histórico da órtese</h2>
+                <div class="chart-wrapper chart-empty-state" role="status">
+                    <p>O histórico de sessões e leituras ainda não está disponível.</p>
+                    <p>Quando houver dados persistidos associados a este animal, eles serão exibidos aqui.</p>
                 </div>
             </section>
 
@@ -245,61 +252,9 @@
             </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const ctx = document.getElementById('tremorChart').getContext('2d');
-            
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00'],
-                    datasets: [{
-                        data: [4, 5, 4, 3, 2, 0, 0, 0, 1, 0, 0, 2],
-                        borderColor: '#D85707',
-                        borderWidth: 2.5,
-                        pointBackgroundColor: '#FFFFFF',
-                        pointBorderColor: '#D85707',
-                        pointBorderWidth: 2,
-                        pointRadius: 4,
-                        tension: 0.4,
-                        fill: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        x: {
-                            grid: {
-                                color: '#EEEEEE',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#333333',
-                                font: { family: 'Montserrat', size: 11, weight: '600' }
-                            }
-                        },
-                        y: {
-                            min: 0,
-                            max: 5,
-                            ticks: {
-                                stepSize: 1,
-                                color: '#333333',
-                                font: { family: 'Montserrat', size: 11, weight: '600' }
-                            },
-                            grid: {
-                                color: '#EEEEEE',
-                                drawBorder: false
-                            }
-                        }
-                    }
-                }
-            });
-        });
-    </script>
+    <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
+    <script src="./home-state.js"></script>
+    <script src="./home.js"></script>
 </body>
 </html>

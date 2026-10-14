@@ -1,0 +1,32 @@
+CREATE TABLE pets (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    usuario_id BIGINT NOT NULL,
+    nome VARCHAR(120) NOT NULL,
+    identificacao VARCHAR(120) NULL,
+    idade_meses SMALLINT UNSIGNED NULL,
+    peso_kg DECIMAL(7, 3) NULL,
+    condicao_saude TEXT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    INDEX idx_pets_usuario_id (usuario_id),
+    CONSTRAINT fk_pets_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES alunos_usuarios (id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE pet_historico (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    pet_id BIGINT NOT NULL,
+    data_evento DATE NULL,
+    descricao TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    INDEX idx_pet_historico_pet_id (pet_id),
+    CONSTRAINT fk_pet_historico_pet
+        FOREIGN KEY (pet_id)
+        REFERENCES pets (id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

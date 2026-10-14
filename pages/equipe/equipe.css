@@ -109,15 +109,19 @@ form {
     opacity: 0.8;
 }
 
-input {
+form input,
+form textarea {
     border: none;
     padding: 2.4rem;
-    border-radius: 3rem
+    border-radius: 3rem;
+    background-color: var(--white);
+    color: var(--black);
+    font: inherit;
 }
 
-.message{
-    width: 102.9rem;
+.message {
     height: 20.2rem;
+    resize: vertical;
 }
 
 form button {
@@ -137,9 +141,10 @@ form button {
     font-weight: 700;
 }
 
-input:focus{
-  outline:none;
-  box-shadow:0 0 0 0.10rem rgba(62, 60, 60, 0.375);
+form input:focus,
+form textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 0.10rem rgba(62, 60, 60, 0.375);
 }
 
 .user-card-item,
@@ -438,7 +443,8 @@ input:focus{
         gap: 1.5rem;
     }
 
-    input {
+    form input,
+    form textarea {
         padding: 1.4rem 1.8rem;
         font-size: 1.3rem;
         border-radius: 1.5rem;

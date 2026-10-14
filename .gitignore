@@ -1,2 +1,6 @@
 node_modules/
 .env
+.vercel
+.env*
+# Local ESP32 configuration contains Wi-Fi credentials and device token.
+firmware/esp32-mabel/mabel_config.h

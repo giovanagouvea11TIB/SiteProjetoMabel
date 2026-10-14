@@ -49,6 +49,72 @@ body {
     align-items: stretch;
 }
 
+[hidden] {
+    display: none !important;
+}
+
+.profile-status,
+.empty-state {
+    grid-column: 1 / -1;
+    color: var(--black);
+    font-size: 1.5rem;
+    line-height: 1.5;
+}
+
+.profile-status[role="alert"],
+.form-error {
+    color: #A32616;
+}
+
+.pet-toolbar {
+    grid-column: 1 / -1;
+    gap: 1rem;
+    padding: 2rem 2.5rem;
+}
+
+.pet-toolbar > label,
+.pet-edit-form > h2 {
+    color: #111111;
+    font-size: 1.7rem;
+    font-weight: 700;
+}
+
+.pet-toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.pet-toolbar select,
+.pet-edit-form input,
+.pet-edit-form textarea {
+    width: 100%;
+    min-width: 0;
+    border: 0.1rem solid #C9C9C9;
+    border-radius: 1rem;
+    padding: 1rem 1.2rem;
+    background-color: #FFFFFF;
+    color: #222222;
+    font: inherit;
+}
+
+.pet-toolbar select {
+    max-width: 42rem;
+}
+
+.pet-toolbar select:focus,
+.pet-edit-form input:focus,
+.pet-edit-form textarea:focus {
+    outline: 0.2rem solid rgba(216, 87, 7, 0.25);
+    border-color: #D85707;
+}
+
+.pet-toolbar select:disabled,
+.pet-edit-form button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
 .pet-meta-container {
     display: flex;
     align-items: center;
@@ -76,6 +142,7 @@ body {
 .pet-profile-card {
     align-items: center;
     text-align: center;
+    justify-content: center;
 }
 
 .pet-avatar-container {
@@ -96,7 +163,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
 }
 
 .pet-name {
@@ -122,6 +189,74 @@ body {
     gap: 2.5rem;
     width: 100%;
     margin-bottom: 3rem;
+}
+
+.pet-edit-form {
+    grid-column: 1 / -1;
+    gap: 2rem;
+}
+
+.pet-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.6rem;
+}
+
+.pet-form-grid label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    color: #222222;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.pet-form-grid input,
+.pet-form-grid textarea {
+    font-size: 1.4rem;
+    font-weight: 400;
+}
+
+.pet-form-grid textarea {
+    resize: vertical;
+}
+
+.pet-condition-field {
+    grid-column: 1 / -1;
+}
+
+.optional-label {
+    color: #777777;
+    font-size: 1.2rem;
+    font-weight: 400;
+}
+
+.form-error {
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1.2rem;
+    flex-wrap: wrap;
+}
+
+.cancel-btn {
+    border: 0.1rem solid #D85707;
+    border-radius: 2rem;
+    padding: 0.9rem 2rem;
+    background: transparent;
+    color: #D85707;
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-btn:hover {
+    background-color: rgba(216, 87, 7, 0.08);
 }
 
 .health-section h3 {
@@ -184,8 +319,108 @@ body {
     background-color: #bd4a04;
 }
 
+.delete-icon-btn {
+    display: inline-grid;
+    place-items: center;
+    width: 4.2rem;
+    height: 4.2rem;
+    border: 0.1rem solid #D9B8AB;
+    border-radius: 50%;
+    padding: 0.9rem;
+    background: transparent;
+    color: #A32616;
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.delete-icon-btn svg {
+    width: 100%;
+    height: 100%;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.7;
+}
+
+.delete-icon-btn:hover:not(:disabled) {
+    border-color: #A32616;
+    background-color: rgba(163, 38, 22, 0.08);
+}
+
+.delete-icon-btn:disabled,
+.edit-btn:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.delete-confirmation {
+    width: min(92vw, 42rem);
+    margin: auto;
+    border: 0;
+    border-radius: 1.8rem;
+    padding: 2.8rem;
+    color: #222222;
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.2);
+}
+
+.delete-confirmation::backdrop {
+    background: rgba(25, 20, 18, 0.48);
+}
+
+.delete-confirmation h2 {
+    margin-bottom: 1rem;
+    font-size: 2rem;
+}
+
+.delete-confirmation p {
+    font-size: 1.5rem;
+    line-height: 1.5;
+}
+
+.delete-confirmation-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2.4rem;
+    flex-wrap: wrap;
+}
+
+.confirm-delete-btn {
+    border: 0.1rem solid #A32616;
+    border-radius: 2rem;
+    padding: 0.9rem 2rem;
+    background: #A32616;
+    color: #FFFFFF;
+    font: inherit;
+    font-size: 1.4rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.confirm-delete-btn:hover {
+    background: #852014;
+}
+
 .edit-btn:active {
     transform: scale(0.98);
+}
+
+body.dark-mode .pet-toolbar > label,
+body.dark-mode .pet-edit-form > h2,
+body.dark-mode .pet-form-grid label {
+    color: #111111;
+}
+
+body.dark-mode .pet-toolbar select,
+body.dark-mode .pet-edit-form input,
+body.dark-mode .pet-edit-form textarea {
+    background-color: #FFFFFF;
+    color: #222222;
+}
+
+body.dark-mode .optional-label {
+    color: #666666;
 }
 
 .sidebar-right {
@@ -615,6 +850,27 @@ body.dark-mode .edit-btn:hover {
 
     .pet-info {
         margin-bottom: 1.8rem;
+    }
+
+    .pet-toolbar {
+        padding: 2rem;
+    }
+
+    .pet-toolbar-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .pet-toolbar select {
+        max-width: none;
+    }
+
+    .pet-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .pet-condition-field {
+        grid-column: auto;
     }
 
     .health-content {

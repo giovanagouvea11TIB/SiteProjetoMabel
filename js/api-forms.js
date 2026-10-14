@@ -16,22 +16,26 @@ document.addEventListener("DOMContentLoaded", () => {
             if (botao) botao.disabled = true;
 
             try {
-                const resposta = await fetch(endpoint, {
+                const { response: resposta, result: dados } = await MabelApiResponse.fetchJson(fetch, endpoint, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(montarDados(formulario))
+                    body: JSON.stringify(montarDados(formulario)),
+                    cache: "no-store"
                 });
-                const dados = await resposta.json();
 
-                if (!resposta.ok || !dados.sucesso) {
-                    window.alert(dados.mensagem || "Não foi possível enviar os dados.");
+                if (!resposta.ok || dados?.sucesso !== true) {
+                    window.alert(MabelApiResponse.errorMessage(
+                        resposta,
+                        dados,
+                        "Não foi possível enviar os dados."
+                    ));
                     return;
                 }
 
                 window.alert(dados.mensagem);
                 aoSucesso?.(formulario, dados);
             } catch (erro) {
-                window.alert("Não foi possível conectar ao servidor. Tente novamente.");
+                window.alert(erro.message || "Não foi possível enviar os dados. Tente novamente.");
             } finally {
                 if (botao) botao.disabled = false;
             }

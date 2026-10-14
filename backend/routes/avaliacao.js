@@ -1,5 +1,6 @@
 const express = require("express");
 const { pool } = require("../db");
+const { sendDatabaseError } = require("../database-errors");
 const { enviarEmail, registrarErroEmail } = require("../email");
 const { mensagemAgradecimentoAvaliacao } = require("../mensagem");
 
@@ -57,8 +58,12 @@ router.post("/", async (req, res) => {
             emailAdminEnviado
         });
     } catch (erro) {
-        console.error("Erro ao registrar avaliação:", erro.code || "erro não identificado");
-        return res.status(500).json({ sucesso: false, mensagem: "Não foi possível registrar sua mensagem." });
+        return sendDatabaseError(
+            res,
+            erro,
+            "registrar avaliação",
+            "Não foi possível registrar sua mensagem."
+        );
     }
 });
 

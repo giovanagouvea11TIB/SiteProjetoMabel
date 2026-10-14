@@ -33,8 +33,8 @@
                 <a href="/pages/login/login.html" class="user-card-link">
                     <div class="user-card">
                         <div class="user-info">
-                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
-                            <span class="user-name">Marisa Ferreira</span>
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Avatar da conta" class="user-avatar">
+                            <span class="user-name">Minha conta</span>
                         </div>
                         <button type="button" class="notification-btn" aria-label="Notificações">
                             <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
@@ -171,51 +171,96 @@
 
     <main class="dashboard-main">
         <div class="cards-container">
+            <p class="profile-status" id="profile-status" role="status" aria-live="polite">
+                Carregando os pets...
+            </p>
 
-            <section class="pet-card pet-profile-card">
-                <div class="pet-avatar-container">
-                    <img src="../../assets/images/FOTO PET.png" alt="Foto do Pet Mabel" class="pet-avatar">
+            <section class="pet-card pet-toolbar" aria-label="Selecionar pet">
+                <label for="pet-selector">Seus pets</label>
+                <div class="pet-toolbar-actions">
+                    <select id="pet-selector" disabled>
+                        <option value="">Carregando...</option>
+                    </select>
+                    <button class="edit-btn" id="add-pet-btn" type="button" disabled>Adicionar pet</button>
                 </div>
+            </section>
 
+            <p class="empty-state" id="empty-state" hidden>
+                Você ainda não cadastrou pets. Use “Adicionar pet” para criar um perfil.
+            </p>
+
+            <section class="pet-card pet-profile-card" id="pet-summary" hidden>
                 <div class="pet-info">
-                    <h2 class="pet-name">Mabel</h2>
+                    <h2 class="pet-name" id="pet-name"></h2>
                     <div class="pet-meta-container">
-                        <span class="pet-meta">NDF</span>
+                        <span class="pet-meta" id="pet-identification"></span>
                         <span class="pet-bullet">•</span>
-                        <span class="pet-meta">8 Meses</span>
+                        <span class="pet-meta" id="pet-age"></span>
                         <span class="pet-bullet">•</span>
-                        <span class="pet-meta">Peso</span>
+                        <span class="pet-meta" id="pet-weight"></span>
                     </div>
                 </div>
 
-                <button class="edit-btn">Editar</button>
+                <button class="edit-btn" type="button" data-edit-pet>Editar</button>
             </section>
 
-            <section class="pet-card pet-health-card">
+            <section class="pet-card pet-health-card" id="pet-health" hidden>
                 <div class="health-content">
-                    
                     <div class="health-section">
-                        <h3>Condição de Saúde:</h3>
-                        <p>Tremores musculares moderados nas patas traseiras, com necessidade de estimulação elétrica.</p>
+                        <h3>Condição de saúde</h3>
+                        <p id="pet-condition"></p>
                     </div>
-
-                    <div class="health-section">
-                        <h3>Histórico médico:</h3>
-                        <ul class="medical-history-list">
-                            <li><span class="date">05/02/2025</span> <span class="bullet">•</span> <span class="desc">Diagnóstico neurológico</span></li>
-                            <li><span class="date">20/02/2025</span> <span class="bullet">•</span> <span class="desc">Início da fisioterapia</span></li>
-                            <li><span class="date">15/03/2025</span> <span class="bullet">•</span> <span class="desc">Adaptação da órtese</span></li>
-                            <li><span class="date">10/04/2025</span> <span class="bullet">•</span> <span class="desc">Consulta de acompanhamento</span></li>
-                        </ul>
-                    </div>
-
                 </div>
-
-                <button class="edit-btn">Editar</button>
             </section>
 
+            <form class="pet-card pet-edit-form" id="pet-edit-form" hidden>
+                <h2 id="pet-form-title">Editar perfil do pet</h2>
+                <div class="pet-form-grid">
+                    <label>
+                        Nome <span aria-hidden="true">*</span>
+                        <input name="nome" type="text" maxlength="120" required autocomplete="off">
+                    </label>
+                    <label>
+                        Identificação <span class="optional-label">(opcional)</span>
+                        <input name="identificacao" type="text" maxlength="120" autocomplete="off">
+                    </label>
+                    <label>
+                        Idade (meses) <span class="optional-label">(opcional)</span>
+                        <input name="idade_meses" type="number" min="0" max="65535" step="1">
+                    </label>
+                    <label>
+                        Peso (kg) <span class="optional-label">(opcional)</span>
+                        <input name="peso_kg" type="number" min="0.001" max="9999.999" step="0.001">
+                    </label>
+                    <label class="pet-condition-field">
+                        Condição de saúde <span class="optional-label">(opcional)</span>
+                        <textarea name="condicao_saude" rows="4" maxlength="4000"></textarea>
+                    </label>
+                </div>
+                <p class="form-error" id="form-error" role="alert" hidden></p>
+                <div class="form-actions">
+                    <button class="delete-icon-btn" id="delete-pet-btn" type="button" aria-label="Excluir pet" title="Excluir pet" hidden disabled>
+                        <svg aria-hidden="true" viewBox="0 0 24 24" focusable="false">
+                            <path d="M3 6h18M8 6V4h8v2m3 0-.9 14H5.9L5 6m4 4v6m6-6v6" />
+                        </svg>
+                    </button>
+                    <button class="edit-btn" type="submit" id="save-pet-btn">Salvar</button>
+                    <button class="cancel-btn" type="button" id="cancel-edit-btn">Cancelar</button>
+                </div>
+            </form>
         </div>
     </main>
+
+    <dialog class="delete-confirmation" id="delete-confirmation" aria-labelledby="delete-confirmation-title">
+        <form method="dialog">
+            <h2 id="delete-confirmation-title">Excluir pet?</h2>
+            <p id="delete-confirmation-message"></p>
+            <div class="delete-confirmation-actions">
+                <button class="cancel-btn" type="submit" value="cancel">Cancelar</button>
+                <button class="confirm-delete-btn" type="submit" value="delete">Excluir pet</button>
+            </div>
+        </form>
+    </dialog>
 
     <div class="footer">
         <img src="../../assets/images/LOGO BRANCO.png" alt="logo do projeto Mabel" class="footerLogo">
@@ -235,6 +280,8 @@
             </div>
     </div>
 
+    <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
+    <script src="./perfil.js"></script>
 </body>
 </html>

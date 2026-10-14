@@ -33,8 +33,8 @@
                 <a href="/pages/login/login.html" class="user-card-link">
                     <div class="user-card">
                         <div class="user-info">
-                            <img src="../../assets/images/foto-de-perfil.png" alt="Marisa Ferreira" class="user-avatar">
-                            <span class="user-name">Marisa Ferreira</span>
+                            <img src="../../assets/images/foto-de-perfil.png" alt="Avatar da conta" class="user-avatar">
+                            <span class="user-name">Minha conta</span>
                         </div>
                         <button type="button" class="notification-btn" aria-label="Notificações">
                             <img src="../../assets/images/ICON LEMBRETE.png" alt="Notificação" class="notification-icon">
@@ -90,7 +90,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="../controle/controle.html" class="active">
+                        <a href="./controle.html" class="active" aria-current="page">
                             <img src="/assets/images/ICON ORTESE.png" alt="Controle" class="nav-icon">
                             <span>Controle</span>
                         </a>
@@ -136,7 +136,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="./controle/controle.html" class="active">
+                        <a href="./controle.html" class="active" aria-current="page">
                             <img src="/assets/images/ICON ORTESE.png" alt="Controle" class="nav-icon">
                             <span>Controle</span>
                         </a>
@@ -185,65 +185,20 @@
             </div>
             
             <div class="status-indicators">
-                <span class="badge badge-connected">CONECTADO</span>
-                <div class="battery-status">
-                    <span>50%</span>
-                    <div class="battery-icon">
-                        <div class="battery-fill"></div>
-                    </div>
-                </div>
+                <span class="badge">Integração indisponível</span>
             </div>
         </section>
 
         <section class="card stimulation-card">
             <h2>Estimulação</h2>
-            
-            <div class="range-group">
-                <label for="intensity">Intensidade</label>
-                <div class="range-container">
-                    <input type="range" id="intensity" min="0" max="100" value="35" class="intensity-slider">
-                </div>
-            </div>
-
-            <div class="timer-subcard">
-                <div class="timer-left">
-                    <h3>Timer</h3>
-                    <div class="timer-display">10:00</div>
-                    
-                    <div class="timer-options">
-                        <button class="timer-btn active">10 min</button>
-                        <button class="timer-btn">15 min</button>
-                        <button class="timer-btn">20 min</button>
-                    </div>
-                </div>
-
-                <div class="timer-right">
-                    <button class="pause-btn" aria-label="Pausar">
-                        <svg width="20" height="28" viewBox="0 0 20 28" fill="#F59153" xmlns="http://www.w3.org/2000/svg">
-                            <rect width="7" height="28" rx="3.5"/>
-                            <rect x="13" width="7" height="28" rx="3.5"/>
-                        </svg>
-                    </button>
-                    <button class="start-btn">Iniciar</button>
-                </div>
-            </div>
+            <p>A integração de controle com o ESP32 não está disponível nesta aplicação. Intensidade e temporizador não podem ser definidos aqui.</p>
         </section>
 
         <section class="last-session-section">
-            <h2 class="section-title">Última Sessão:</h2>
+            <h2 class="section-title">Histórico de sessões</h2>
 
             <div class="card session-card">
-                <div class="session-header">
-                    <div class="session-details">
-                        <p><strong>Duração:</strong> 15 minutos</p>
-                        <p><strong>Intensidade:</strong> Moderada</p>
-                    </div>
-                    <span class="badge badge-moderate">MODERADA</span>
-                </div>
-
-                <div class="session-notes">
-                    <p><strong>Observações:</strong> Redução visível dos tremores durante o repouso.</p>
-                </div>
+                <p>Não há sessões reais disponíveis para exibição. Esta aplicação ainda não persiste sessões associadas a um pet.</p>
             </div>
         </section>
 

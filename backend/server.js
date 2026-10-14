@@ -5,42 +5,41 @@ dotenv.config({ path: path.resolve(__dirname, "../.env"), quiet: true });
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
-const { pool, ensureAvaliacaoTable } = require("./db");
+const { pool } = require("./db");
+const { createSessionStore } = require("./session-store");
+const { isTransientDatabaseError } = require("./database-errors");
+const { createErrorHandler } = require("./error-handler");
 const requireAuth = require("./middleware/require-auth");
 const authRouter = require("./routes/auth");
 const avaliacaoRouter = require("./routes/avaliacao");
+const petsRouter = require("./routes/pets");
+const vacinasRouter = require("./routes/vacinas");
+const { createMabelRouter } = require("./routes/mabel");
+const { executeReadWithRetry } = require("./db");
 const { enviarEmail, registrarErroEmail } = require("./email");
 const { mensagemBoasVindas } = require("./mensagem");
 
 const app = express();
 const projectRoot = path.resolve(__dirname, "..");
 const port = Number(process.env.PORT || 3000);
-let initializationPromise;
 
 if (!process.env.SESSION_SECRET) {
     throw new Error("A variável SESSION_SECRET não foi configurada.");
 }
 
-const sessionStore = new MySQLStore({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT || 3306),
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_DATABASE || process.env.DB_NAME,
-    connectionLimit: 1,
-    createDatabaseTable: true,
-    schema: {
-        tableName: "mabel_web_sessions"
-    }
-});
-
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
-app.use(session({
+app.use(cors({
+    credentials: true,
+    origin(origin, callback) {
+        const localFiveServer = /^https?:\/\/(localhost|127\.0\.0\.1):5500$/.test(origin || "");
+        callback(null, !origin || localFiveServer);
+    }
+}));
+const sessionMiddleware = session({
     name: "mabel.sid",
     secret: process.env.SESSION_SECRET,
-    store: sessionStore,
+    store: createSessionStore(session, pool),
     resave: false,
     saveUninitialized: false,
     cookie: {
@@ -49,19 +48,19 @@ app.use(session({
         sameSite: "lax",
         maxAge: 8 * 60 * 60 * 1000
     }
-}));
-app.use(cors({
-    credentials: true,
-    origin(origin, callback) {
-        const localFiveServer = /^https?:\/\/(localhost|127\.0\.0\.1):5500$/.test(origin || "");
-        callback(null, !origin || localFiveServer);
-    }
-}));
+});
 app.use(express.json({ limit: "20kb" }));
 app.use(express.urlencoded({ extended: false, limit: "20kb" }));
 
-app.use("/api/auth", authRouter);
+app.use("/api/auth", sessionMiddleware, authRouter);
 app.use("/api/avaliacao", avaliacaoRouter);
+app.use("/api/perfil", sessionMiddleware, petsRouter);
+app.use("/api/vacinas", sessionMiddleware, vacinasRouter);
+app.use("/api/mabel", createMabelRouter({
+    deviceToken: process.env.MABEL_DEVICE_TOKEN,
+    sessionMiddleware,
+    executeReadWithRetry
+}));
 
 app.get("/api/teste-db", async (req, res) => {
     try {
@@ -73,7 +72,12 @@ app.get("/api/teste-db", async (req, res) => {
         });
     } catch (erro) {
         console.error("Falha no teste MySQL:", erro.code || "erro não identificado");
-        return res.status(500).json({ sucesso: false, mensagem: "Não foi possível conectar ao MySQL." });
+        return res.status(isTransientDatabaseError(erro) ? 503 : 500).json({
+            sucesso: false,
+            mensagem: isTransientDatabaseError(erro)
+                ? "O banco de dados está temporariamente indisponível."
+                : "Não foi possível conectar ao MySQL."
+        });
     }
 });
 
@@ -85,6 +89,7 @@ app.get("/api/auth/sessao", (req, res) => {
     const usuario = req.session?.usuario;
     const autenticado = Boolean(usuario?.id);
 
+    res.set("Cache-Control", "no-store");
     return res.json({
         autenticado,
         usuario: autenticado ? { nome: usuario.nome } : null
@@ -122,18 +127,6 @@ app.post(["/send-welcome", "/api/send-welcome"], async (req, res) => {
     }
 });
 
-app.use((erro, req, res, next) => {
-    if (res.headersSent) return next(erro);
-
-    const status = Number(erro.status) || 500;
-    if (status === 400 || status === 413) {
-        return res.status(status).json({ sucesso: false, mensagem: "O corpo da requisição é inválido ou excede o limite permitido." });
-    }
-
-    console.error("Erro ao processar requisição:", erro.code || "erro não identificado");
-    return res.status(500).json({ sucesso: false, mensagem: "Erro interno ao processar a requisição." });
-});
-
 app.use((req, res, next) => {
     if (/^\/(?:backend|node_modules|\.git)(?:\/|$)/i.test(req.path)) {
         return res.sendStatus(404);
@@ -141,27 +134,11 @@ app.use((req, res, next) => {
     return next();
 });
 
-app.use("/software", requireAuth);
+app.use("/software", sessionMiddleware, requireAuth);
 app.use(express.static(projectRoot, { dotfiles: "ignore", index: "index.html" }));
+app.use(createErrorHandler());
 
-function initialize() {
-    if (!initializationPromise) {
-        initializationPromise = ensureAvaliacaoTable().catch((erro) => {
-            initializationPromise = null;
-            throw erro;
-        });
-    }
-    return initializationPromise;
-}
-
-async function iniciarServidor() {
-    try {
-        await initialize();
-        console.log("Tabela de avaliacoes verificada.");
-    } catch (erro) {
-        console.error("Nao foi possivel preparar a tabela de avaliacoes:", erro.code || "erro nao identificado");
-    }
-
+function iniciarServidor() {
     const servidor = app.listen(port, () => {
         console.log(`Servidor rodando em http://localhost:${port}`);
     });
@@ -180,4 +157,4 @@ if (require.main === module) {
     iniciarServidor();
 }
 
-module.exports = { app, initialize };
+module.exports = { app, iniciarServidor };
