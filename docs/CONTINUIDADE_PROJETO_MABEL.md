@@ -89,7 +89,7 @@ O firmware em `firmware/esp32-mabel/esp32-mabel.ino` lê o sinal digital do SW-4
 
 `POST /api/mabel/dados` exige um Bearer token configurado no servidor, valida estritamente os campos e mantém o último estado em um `Map` em memória, limitado a 100 dispositivos. A resposta indica `persistida: false`. `GET /api/mabel/status`, quando chamado com autenticação de dispositivo, devolve o estado mais recente mantido nesse processo.
 
-Sem autenticação de dispositivo, `GET /api/mabel/status?pet_id=...` exige sessão web e verifica se o pet pertence ao usuário. Mesmo para um pet próprio, responde HTTP 409 porque ainda não existe associação persistente segura entre pet e dispositivo; a leitura não é exposta.
+Sem autenticação de dispositivo, `GET /api/mabel/status?pet_id=...` exige sessão web, verifica se o pet pertence ao usuário e consulta apenas o dispositivo associado. As rotas autenticadas de associação permitem criar, consultar e remover o vínculo; não aceitam `usuario_id` do cliente. Sem associação ou sem leitura atual, o status retorna um estado vazio distinto. A migration `005_create_mabel_pet_associations.sql.template` define a estrutura, mas é um modelo que ainda precisa ser revisado e executado manualmente.
 
 ## Estado funcional e validação
 
@@ -108,15 +108,17 @@ Sem autenticação de dispositivo, `GET /api/mabel/status?pet_id=...` exige sess
 
 ## Vínculo persistente dispositivo–pet
 
-O problema atual é que a API recebe um identificador de dispositivo, mas não há, no fluxo observado, associação persistente desse dispositivo a um pet. A rota web verifica a propriedade do pet e então responde 409, em vez de associar uma leitura arbitrariamente ou expor a leitura de outro dispositivo.
+O backend implementa associação ativa 1:1 entre dispositivo e pet. A associação pertence ao usuário que possui o pet; unicidade no banco impede associar um dispositivo ou pet mais de uma vez. Desvincular remove a linha e permite reassociar o dispositivo. Excluir o pet remove o vínculo por `ON DELETE CASCADE`. A ESP32 continua enviando `device_id`; o vínculo não altera o firmware.
 
-Antes de implementar a associação, a equipe precisa decidir como dispositivos serão cadastrados/atribuídos a pets, quem pode fazer isso, como trocar/remover uma associação e qual regra de acesso será aplicada. O código do repositório não demonstra uma decisão de produto ou fluxo administrativo para isso. Não foi feita consulta ao banco ativo nesta tarefa; portanto, a existência, conteúdo e compatibilidade do schema implantado não foram confirmados.
+A rota invalida a leitura em memória no processo que executa a associação ou desvinculação e, no status web, compara o horário da leitura com `linked_at`, exigindo ao menos um segundo de diferença. A margem cobre a precisão de segundos da coluna `TIMESTAMP` atual e pode atrasar a exibição de uma leitura recente por até um ciclo de telemetria. `ultimo_contato` usa o relógio do processo Node, enquanto `linked_at` usa o relógio do MySQL; a comparação pressupõe relógios razoavelmente sincronizados e não pode garantir correção absoluta se houver desvio entre eles. Além disso, o `Map` é local a cada processo/instância: invalidar uma leitura não invalida caches de outras instâncias, e telemetria não é persistida. Portanto, a associação não deve ser interpretada como histórico durável nem como garantia de disponibilidade consistente entre instâncias.
+
+A migration continua sendo um template e não foi executada nesta tarefa. Não foi feita consulta ao banco ativo; a existência, conteúdo e compatibilidade do schema implantado não foram confirmados. O token Bearer compartilhado ainda não prova a identidade física de um `device_id`; um fluxo de pareamento e credenciais individuais por dispositivo continuam sendo decisões de segurança pendentes.
 
 ## Persistência das leituras
 
 No código atual, as leituras de telemetria ficam apenas no `Map` em memória de cada processo Node. São substituídas pela leitura seguinte do mesmo dispositivo, podem ser removidas quando o limite de estados é atingido e desaparecem ao reiniciar o processo ou encerrar uma instância serverless. Não existe histórico persistido de leituras nessa rota.
 
-Os modelos SQL versionados cobrem pets, histórico do pet, vacinas/catálogo e avatar; não incluem uma associação de dispositivo nem uma tabela de leituras Mabel. Isso descreve os arquivos do repositório, não o estado confirmado do banco externo. A migração do banco requer autorização e revisão; não foi executada nesta tarefa.
+Os modelos SQL versionados cobrem pets, histórico do pet, vacinas/catálogo, avatar e a nova associação ativa de dispositivo a pet; não incluem uma tabela de leituras Mabel. Isso descreve os arquivos do repositório, não o estado confirmado do banco externo. A migration de associação requer revisão e execução manual autorizada; não foi executada nesta tarefa.
 
 ## Próxima tarefa recomendada
 

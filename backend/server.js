@@ -59,7 +59,8 @@ app.use("/api/vacinas", sessionMiddleware, vacinasRouter);
 app.use("/api/mabel", createMabelRouter({
     deviceToken: process.env.MABEL_DEVICE_TOKEN,
     sessionMiddleware,
-    executeReadWithRetry
+    executeReadWithRetry,
+    executeWrite: (query, params) => pool.execute(query, params)
 }));
 
 app.get("/api/teste-db", async (req, res) => {

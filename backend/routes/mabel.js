@@ -2,6 +2,7 @@ const crypto = require("node:crypto");
 const express = require("express");
 
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9._:-]{1,64}$/;
+const MAX_SIGNED_BIGINT = 9223372036854775807n;
 const MAX_DEVICE_STATES = 100;
 const EXPECTED_FIELDS = [
     "device_id",
@@ -22,6 +23,13 @@ function hasValidDeviceToken(req, configuredToken) {
     return received.length === expected.length && crypto.timingSafeEqual(received, expected);
 }
 
+function validateDeviceId(value) {
+    if (typeof value !== "string" || !DEVICE_ID_PATTERN.test(value)) {
+        return "device_id deve conter de 1 a 64 caracteres alfanuméricos, ponto, hífen, dois-pontos ou sublinhado.";
+    }
+    return null;
+}
+
 function validateTelemetry(body) {
     if (!body || typeof body !== "object" || Array.isArray(body)) {
         return "Envie um objeto JSON com os dados do dispositivo.";
@@ -34,9 +42,8 @@ function validateTelemetry(body) {
     ) {
         return "Informe somente device_id, sensor_detectou, contador_deteccoes e uptime_ms.";
     }
-    if (typeof body.device_id !== "string" || !DEVICE_ID_PATTERN.test(body.device_id)) {
-        return "device_id deve conter de 1 a 64 caracteres alfanuméricos, ponto, hífen, dois-pontos ou sublinhado.";
-    }
+    const deviceIdError = validateDeviceId(body.device_id);
+    if (deviceIdError) return deviceIdError;
     if (typeof body.sensor_detectou !== "boolean") {
         return "sensor_detectou deve ser booleano.";
     }
@@ -49,10 +56,30 @@ function validateTelemetry(body) {
     return null;
 }
 
+function parsePositiveBigInt(value) {
+    if (
+        (typeof value !== "string" && typeof value !== "number" && typeof value !== "bigint")
+        || (typeof value === "number" && !Number.isSafeInteger(value))
+    ) {
+        return null;
+    }
+
+    const text = String(value);
+    if (!/^[1-9]\d*$/.test(text)) return null;
+
+    try {
+        const parsed = BigInt(text);
+        return parsed <= MAX_SIGNED_BIGINT ? parsed.toString() : null;
+    } catch {
+        return null;
+    }
+}
+
 function createMabelRouter({
     deviceToken = process.env.MABEL_DEVICE_TOKEN,
     sessionMiddleware,
     executeReadWithRetry,
+    executeWrite,
     readings = new Map(),
     now = () => new Date()
 }) {
@@ -74,6 +101,78 @@ function createMabelRouter({
             return false;
         }
         return true;
+    }
+
+    function withWebSession(req, res, next, handler) {
+        if (typeof sessionMiddleware !== "function") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "A autenticação web não está disponível."
+            });
+        }
+
+        return sessionMiddleware(req, res, (sessionError) => {
+            if (sessionError) return next(sessionError);
+
+            const usuarioId = parsePositiveBigInt(req.session?.usuario?.id);
+            if (!usuarioId) {
+                return res.status(401).json({
+                    sucesso: false,
+                    mensagem: "Autenticação necessária."
+                });
+            }
+            return Promise.resolve(handler(usuarioId)).catch(next);
+        });
+    }
+
+    function readPetId(value, res) {
+        const petId = parsePositiveBigInt(value);
+        if (!petId) {
+            res.status(400).json({
+                sucesso: false,
+                mensagem: "Informe um pet_id válido."
+            });
+            return null;
+        }
+        return petId;
+    }
+
+    async function findOwnedPet(petId, usuarioId) {
+        const [pets] = await executeReadWithRetry(
+            "SELECT id FROM pets WHERE id = ? AND usuario_id = ? LIMIT 1",
+            [petId, usuarioId],
+            "confirmar propriedade do pet para Mabel"
+        );
+        return pets.length > 0;
+    }
+
+    async function findPetAssociation(petId) {
+        const [associations] = await executeReadWithRetry(
+            `SELECT device_id, UNIX_TIMESTAMP(linked_at) * 1000 AS linked_at_ms
+             FROM mabel_pet_associations
+             WHERE pet_id = ?
+             LIMIT 1`,
+            [petId],
+            "consultar associação Mabel do pet"
+        );
+        return associations[0] || null;
+    }
+
+    function sendAssociationConflict(res) {
+        return res.status(409).json({
+            sucesso: false,
+            mensagem: "Este dispositivo ou pet já possui uma associação ativa."
+        });
+    }
+
+    function handleAssociationError(res, error, next) {
+        if (error?.code === "ER_NO_SUCH_TABLE") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "As associações Mabel ainda não estão disponíveis. A estrutura do banco precisa ser preparada."
+            });
+        }
+        return next(error);
     }
 
     router.post("/dados", (req, res) => {
@@ -108,6 +207,132 @@ function createMabelRouter({
         });
     });
 
+    router.post("/associacoes", (req, res, next) => withWebSession(req, res, next, async (usuarioId) => {
+        if (!req.body || typeof req.body !== "object" || Array.isArray(req.body)) {
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: "Envie pet_id e device_id em um objeto JSON."
+            });
+        }
+        const fields = Object.keys(req.body).sort();
+        if (fields.length !== 2 || fields[0] !== "device_id" || fields[1] !== "pet_id") {
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: "Informe somente pet_id e device_id."
+            });
+        }
+
+        const petId = parsePositiveBigInt(req.body.pet_id);
+        if (!petId) {
+            return res.status(400).json({
+                sucesso: false,
+                mensagem: "Informe um pet_id válido."
+            });
+        }
+        const deviceIdError = validateDeviceId(req.body.device_id);
+        if (deviceIdError) {
+            return res.status(400).json({ sucesso: false, mensagem: deviceIdError });
+        }
+        if (typeof executeReadWithRetry !== "function" || typeof executeWrite !== "function") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "O gerenciamento de associações Mabel não está disponível."
+            });
+        }
+
+        try {
+            if (!(await findOwnedPet(petId, usuarioId))) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: "Pet não encontrado."
+                });
+            }
+            await executeWrite(
+                "INSERT INTO mabel_pet_associations (device_id, pet_id) VALUES (?, ?)",
+                [req.body.device_id, petId]
+            );
+            readings.delete(req.body.device_id);
+            res.set("Cache-Control", "no-store");
+            return res.status(201).json({
+                sucesso: true,
+                associacao: {
+                    device_id: req.body.device_id,
+                    pet_id: petId
+                }
+            });
+        } catch (error) {
+            if (error?.code === "ER_DUP_ENTRY") return sendAssociationConflict(res);
+            return handleAssociationError(res, error, next);
+        }
+    }));
+
+    router.get("/associacoes", (req, res, next) => withWebSession(req, res, next, async (usuarioId) => {
+        const petId = readPetId(req.query.pet_id, res);
+        if (!petId) return;
+        if (typeof executeReadWithRetry !== "function") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "A consulta de associações Mabel não está disponível."
+            });
+        }
+
+        try {
+            if (!(await findOwnedPet(petId, usuarioId))) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: "Pet não encontrado."
+                });
+            }
+            const association = await findPetAssociation(petId);
+            res.set("Cache-Control", "no-store");
+            return res.json({
+                sucesso: true,
+                tem_associacao: Boolean(association),
+                associacao: association
+                    ? { device_id: association.device_id, pet_id: petId }
+                    : null
+            });
+        } catch (error) {
+            return handleAssociationError(res, error, next);
+        }
+    }));
+
+    router.delete("/associacoes", (req, res, next) => withWebSession(req, res, next, async (usuarioId) => {
+        const petId = readPetId(req.query.pet_id, res);
+        if (!petId) return;
+        if (typeof executeReadWithRetry !== "function" || typeof executeWrite !== "function") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "O gerenciamento de associações Mabel não está disponível."
+            });
+        }
+
+        try {
+            if (!(await findOwnedPet(petId, usuarioId))) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: "Pet não encontrado."
+                });
+            }
+            const association = await findPetAssociation(petId);
+            if (!association) {
+                return res.status(404).json({
+                    sucesso: false,
+                    mensagem: "Este pet não possui uma associação Mabel."
+                });
+            }
+            await executeWrite(
+                "DELETE FROM mabel_pet_associations WHERE pet_id = ? AND device_id = ?",
+                [petId, association.device_id]
+            );
+            readings.delete(association.device_id);
+            res.set("Cache-Control", "no-store");
+            return res.json({ sucesso: true, mensagem: "Dispositivo desvinculado do pet." });
+        } catch (error) {
+            return handleAssociationError(res, error, next);
+        }
+    }));
+
     router.get("/status", (req, res, next) => {
         if (req.get("authorization")) {
             if (!requireDevice(req, res)) return;
@@ -123,34 +348,9 @@ function createMabelRouter({
             });
         }
 
-        if (typeof sessionMiddleware !== "function") {
-            return res.status(503).json({
-                sucesso: false,
-                mensagem: "A autenticação web não está disponível."
-            });
-        }
-
-        return sessionMiddleware(req, res, (sessionError) => {
-            if (sessionError) return next(sessionError);
-
-            const usuarioId = req.session?.usuario?.id;
-            if (
-                (typeof usuarioId !== "string" && typeof usuarioId !== "number")
-                || !/^[1-9]\d*$/.test(String(usuarioId))
-            ) {
-                return res.status(401).json({
-                    sucesso: false,
-                    mensagem: "Autenticação necessária."
-                });
-            }
-
-            const petId = req.query.pet_id;
-            if (typeof petId !== "string" || !/^[1-9]\d*$/.test(petId)) {
-                return res.status(400).json({
-                    sucesso: false,
-                    mensagem: "Informe um pet_id válido para consultar o status."
-                });
-            }
+        return withWebSession(req, res, next, async (usuarioId) => {
+            const petId = readPetId(req.query.pet_id, res);
+            if (!petId) return;
             if (typeof executeReadWithRetry !== "function") {
                 return res.status(503).json({
                     sucesso: false,
@@ -158,27 +358,41 @@ function createMabelRouter({
                 });
             }
 
-            return executeReadWithRetry(
-                "SELECT id FROM pets WHERE id = ? AND usuario_id = ? LIMIT 1",
-                [petId, String(usuarioId)],
-                "confirmar propriedade do pet para consultar Mabel"
-            ).then(([pets]) => {
-                if (pets.length === 0) {
+            try {
+                if (!(await findOwnedPet(petId, usuarioId))) {
                     return res.status(404).json({
                         sucesso: false,
                         mensagem: "Pet não encontrado."
                     });
                 }
 
-                return res.status(409).json({
-                    sucesso: false,
-                    mensagem: "As leituras ainda não podem ser vinculadas com segurança a este pet. É necessária uma associação persistente entre dispositivo e pet."
+                const association = await findPetAssociation(petId);
+                const reading = association ? readings.get(association.device_id) || null : null;
+                const readingIsCurrent = reading
+                    && Number.isFinite(Number(association.linked_at_ms))
+                    && Date.parse(reading.ultimo_contato) >= Number(association.linked_at_ms) + 1000;
+                const currentReading = readingIsCurrent ? reading : null;
+                res.set("Cache-Control", "no-store");
+                return res.json({
+                    sucesso: true,
+                    tem_associacao: Boolean(association),
+                    tem_dados: Boolean(currentReading),
+                    device_id: association?.device_id || null,
+                    ultimo_contato: currentReading?.ultimo_contato || null,
+                    dados: currentReading
                 });
-            }).catch(next);
+            } catch (error) {
+                return handleAssociationError(res, error, next);
+            }
         });
     });
 
     return router;
 }
 
-module.exports = { createMabelRouter, hasValidDeviceToken, validateTelemetry };
+module.exports = {
+    createMabelRouter,
+    hasValidDeviceToken,
+    validateDeviceId,
+    validateTelemetry
+};

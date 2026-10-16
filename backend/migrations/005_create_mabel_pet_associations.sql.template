@@ -1,0 +1,11 @@
+CREATE TABLE mabel_pet_associations (
+    device_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    pet_id BIGINT NOT NULL,
+    linked_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (device_id),
+    UNIQUE KEY uq_mabel_pet_associations_pet_id (pet_id),
+    CONSTRAINT fk_mabel_pet_associations_pet
+        FOREIGN KEY (pet_id)
+        REFERENCES pets (id)
+        ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
