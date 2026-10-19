@@ -3,7 +3,6 @@ const express = require("express");
 
 const DEVICE_ID_PATTERN = /^[A-Za-z0-9._:-]{1,64}$/;
 const MAX_SIGNED_BIGINT = 9223372036854775807n;
-const MAX_DEVICE_STATES = 100;
 const EXPECTED_FIELDS = [
     "device_id",
     "sensor_detectou",
@@ -79,9 +78,7 @@ function createMabelRouter({
     deviceToken = process.env.MABEL_DEVICE_TOKEN,
     sessionMiddleware,
     executeReadWithRetry,
-    executeWrite,
-    readings = new Map(),
-    now = () => new Date()
+    executeWrite
 }) {
     const router = express.Router();
 
@@ -148,7 +145,7 @@ function createMabelRouter({
 
     async function findPetAssociation(petId) {
         const [associations] = await executeReadWithRetry(
-            `SELECT device_id, UNIX_TIMESTAMP(linked_at) * 1000 AS linked_at_ms
+            `SELECT device_id
              FROM mabel_pet_associations
              WHERE pet_id = ?
              LIMIT 1`,
@@ -156,6 +153,64 @@ function createMabelRouter({
             "consultar associação Mabel do pet"
         );
         return associations[0] || null;
+    }
+
+    async function findLatestDeviceStatus(deviceId) {
+        const [statuses] = await executeReadWithRetry(
+            `SELECT device_id, sensor_detectou, contador_deteccoes, uptime_ms,
+                    UNIX_TIMESTAMP(ultimo_contato) * 1000 AS ultimo_contato_ms
+             FROM mabel_device_status
+             WHERE device_id = ?
+             LIMIT 1`,
+            [deviceId],
+            "consultar a última telemetria Mabel"
+        );
+        return statuses[0] || null;
+    }
+
+    async function findCurrentPetStatus(petId, deviceId) {
+        const [statuses] = await executeReadWithRetry(
+            `SELECT s.device_id, s.sensor_detectou, s.contador_deteccoes, s.uptime_ms,
+                    UNIX_TIMESTAMP(s.ultimo_contato) * 1000 AS ultimo_contato_ms
+             FROM mabel_pet_associations a
+             INNER JOIN mabel_device_status s
+                ON s.device_id = a.device_id
+             WHERE a.pet_id = ?
+               AND a.device_id = ?
+               AND s.ultimo_contato >= DATE_ADD(a.linked_at, INTERVAL 1 SECOND)
+             LIMIT 1`,
+            [petId, deviceId],
+            "consultar telemetria do dispositivo associado ao pet"
+        );
+        return statuses[0] || null;
+    }
+
+    function serializeStatus(row, expectedDeviceId) {
+        if (!row || row.device_id !== expectedDeviceId) return null;
+
+        const sensorDetected = Number(row.sensor_detectou);
+        const detectionCount = Number(row.contador_deteccoes);
+        const uptimeMs = Number(row.uptime_ms);
+        const receivedAtMs = Number(row.ultimo_contato_ms);
+        if (
+            (sensorDetected !== 0 && sensorDetected !== 1)
+            || !Number.isSafeInteger(detectionCount)
+            || detectionCount < 0
+            || !Number.isSafeInteger(uptimeMs)
+            || uptimeMs < 0
+            || !Number.isFinite(receivedAtMs)
+            || receivedAtMs <= 0
+        ) {
+            return null;
+        }
+
+        return {
+            device_id: row.device_id,
+            sensor_detectou: sensorDetected === 1,
+            contador_deteccoes: detectionCount,
+            uptime_ms: uptimeMs,
+            ultimo_contato: new Date(receivedAtMs).toISOString()
+        };
     }
 
     function sendAssociationConflict(res) {
@@ -175,36 +230,70 @@ function createMabelRouter({
         return next(error);
     }
 
-    router.post("/dados", (req, res) => {
+    function handleTelemetryError(res, error, next) {
+        if (error?.code === "ER_NO_SUCH_TABLE") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "A persistência da telemetria Mabel ainda não está disponível. A estrutura do banco precisa ser preparada."
+            });
+        }
+        return next(error);
+    }
+
+    router.post("/dados", async (req, res, next) => {
         if (!requireDevice(req, res)) return;
 
         const validationError = validateTelemetry(req.body);
         if (validationError) {
             return res.status(400).json({ sucesso: false, mensagem: validationError });
         }
-
-        const receivedAt = now().toISOString();
-        if (!readings.has(req.body.device_id) && readings.size >= MAX_DEVICE_STATES) {
-            const oldestDeviceId = readings.keys().next().value;
-            readings.delete(oldestDeviceId);
+        if (typeof executeWrite !== "function" || typeof executeReadWithRetry !== "function") {
+            return res.status(503).json({
+                sucesso: false,
+                mensagem: "A persistência da telemetria Mabel não está disponível."
+            });
         }
-        readings.delete(req.body.device_id);
-        readings.set(req.body.device_id, {
-            device_id: req.body.device_id,
-            sensor_detectou: req.body.sensor_detectou,
-            contador_deteccoes: req.body.contador_deteccoes,
-            uptime_ms: req.body.uptime_ms,
-            ultimo_contato: receivedAt
-        });
 
-        res.set("Cache-Control", "no-store");
-        return res.status(202).json({
-            sucesso: true,
-            mensagem: "Leitura recebida. Ela ficará disponível somente enquanto este processo estiver ativo.",
-            persistida: false,
-            device_id: req.body.device_id,
-            ultimo_contato: receivedAt
-        });
+        try {
+            await executeWrite(
+                `INSERT INTO mabel_device_status
+                    (device_id, sensor_detectou, contador_deteccoes, uptime_ms, ultimo_contato)
+                 VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP(3))
+                 ON DUPLICATE KEY UPDATE
+                    sensor_detectou = VALUES(sensor_detectou),
+                    contador_deteccoes = VALUES(contador_deteccoes),
+                    uptime_ms = VALUES(uptime_ms),
+                    ultimo_contato = CURRENT_TIMESTAMP(3)`,
+                [
+                    req.body.device_id,
+                    req.body.sensor_detectou ? 1 : 0,
+                    req.body.contador_deteccoes,
+                    req.body.uptime_ms
+                ]
+            );
+
+            const status = serializeStatus(
+                await findLatestDeviceStatus(req.body.device_id),
+                req.body.device_id
+            );
+            if (!status) {
+                return res.status(503).json({
+                    sucesso: false,
+                    mensagem: "A gravação da telemetria não pôde ser confirmada."
+                });
+            }
+
+            res.set("Cache-Control", "no-store");
+            return res.status(202).json({
+                sucesso: true,
+                mensagem: "Leitura recebida e persistida.",
+                persistida: true,
+                device_id: status.device_id,
+                ultimo_contato: status.ultimo_contato
+            });
+        } catch (error) {
+            return handleTelemetryError(res, error, next);
+        }
     });
 
     router.post("/associacoes", (req, res, next) => withWebSession(req, res, next, async (usuarioId) => {
@@ -251,7 +340,6 @@ function createMabelRouter({
                 "INSERT INTO mabel_pet_associations (device_id, pet_id) VALUES (?, ?)",
                 [req.body.device_id, petId]
             );
-            readings.delete(req.body.device_id);
             res.set("Cache-Control", "no-store");
             return res.status(201).json({
                 sucesso: true,
@@ -325,7 +413,6 @@ function createMabelRouter({
                 "DELETE FROM mabel_pet_associations WHERE pet_id = ? AND device_id = ?",
                 [petId, association.device_id]
             );
-            readings.delete(association.device_id);
             res.set("Cache-Control", "no-store");
             return res.json({ sucesso: true, mensagem: "Dispositivo desvinculado do pet." });
         } catch (error) {
@@ -336,16 +423,30 @@ function createMabelRouter({
     router.get("/status", (req, res, next) => {
         if (req.get("authorization")) {
             if (!requireDevice(req, res)) return;
-
-            const latest = [...readings.values()]
-                .sort((a, b) => b.ultimo_contato.localeCompare(a.ultimo_contato))[0] || null;
-            res.set("Cache-Control", "no-store");
-            return res.json({
-                sucesso: true,
-                tem_dados: Boolean(latest),
-                ultimo_contato: latest?.ultimo_contato || null,
-                dados: latest
-            });
+            if (typeof executeReadWithRetry !== "function") {
+                return res.status(503).json({
+                    sucesso: false,
+                    mensagem: "A consulta da telemetria Mabel não está disponível."
+                });
+            }
+            return executeReadWithRetry(
+                `SELECT device_id, sensor_detectou, contador_deteccoes, uptime_ms,
+                        UNIX_TIMESTAMP(ultimo_contato) * 1000 AS ultimo_contato_ms
+                 FROM mabel_device_status
+                 ORDER BY ultimo_contato DESC
+                 LIMIT 1`,
+                [],
+                "consultar a última telemetria Mabel"
+            ).then(([statuses]) => {
+                const latest = serializeStatus(statuses[0], statuses[0]?.device_id);
+                res.set("Cache-Control", "no-store");
+                return res.json({
+                    sucesso: true,
+                    tem_dados: Boolean(latest),
+                    ultimo_contato: latest?.ultimo_contato || null,
+                    dados: latest
+                });
+            }).catch((error) => handleTelemetryError(res, error, next));
         }
 
         return withWebSession(req, res, next, async (usuarioId) => {
@@ -367,11 +468,10 @@ function createMabelRouter({
                 }
 
                 const association = await findPetAssociation(petId);
-                const reading = association ? readings.get(association.device_id) || null : null;
-                const readingIsCurrent = reading
-                    && Number.isFinite(Number(association.linked_at_ms))
-                    && Date.parse(reading.ultimo_contato) >= Number(association.linked_at_ms) + 1000;
-                const currentReading = readingIsCurrent ? reading : null;
+                const row = association
+                    ? await findCurrentPetStatus(petId, association.device_id)
+                    : null;
+                const currentReading = serializeStatus(row, association?.device_id);
                 res.set("Cache-Control", "no-store");
                 return res.json({
                     sucesso: true,
@@ -382,7 +482,7 @@ function createMabelRouter({
                     dados: currentReading
                 });
             } catch (error) {
-                return handleAssociationError(res, error, next);
+                return handleTelemetryError(res, error, next);
             }
         });
     });

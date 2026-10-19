@@ -38,14 +38,14 @@ Não configure `DB_HOST`, usuário ou senha em arquivos versionados. Não use `D
 
 ## ESP32 e telemetria Mabel
 
-O backend expõe `POST /api/mabel/dados` para o ESP32, autenticado por `Authorization: Bearer <token>`, e `GET /api/mabel/status` para consultar o último estado recebido pelo mesmo token. Sem `MABEL_DEVICE_TOKEN` configurado, a API recusa a autenticação do dispositivo. Não envie o token em logs, repositórios ou tráfego HTTP pela internet pública.
+O backend recebe a telemetria do dispositivo em `POST /api/mabel/dados` e oferece consulta de status em `GET /api/mabel/status`. A autenticacao do dispositivo permanece no servidor e o segredo nao deve ser exposto ao frontend.
 
-O firmware Arduino IDE, os pinos e o uso do IP local do computador estão documentados em [firmware/esp32-mabel/README.md](./firmware/esp32-mabel/README.md). O arquivo local `firmware/esp32-mabel/mabel_config.h`, com Wi-Fi e token, é ignorado pelo Git.
+A configuracao do firmware, pinos e uso da rede local estao em [firmware/esp32-mabel/README.md](./firmware/esp32-mabel/README.md). O arquivo local `firmware/esp32-mabel/mabel_config.h`, com Wi-Fi e configuracao do dispositivo, e ignorado pelo Git.
 
-### Persistência pendente de autorização
+### Persistencia da telemetria
 
-A inspeção somente de metadados encontrou `telemetria_mabel` com colunas de motores e estado do sensor, mas sem `device_id`, contador ou `uptime_ms`; `mabel_sessoes` não relaciona sessões a pets, e `mabel_eventos` exige uma sessão. Portanto, nenhuma dessas tabelas permite persistir essas leituras e garantir a propriedade do pet sem reutilizar indevidamente outro modelo.
+`POST /api/mabel/dados` valida a autenticacao e o payload, depois grava atomicamente a leitura mais recente por dispositivo em `mabel_device_status` usando UPSERT. `persistida: true` so e retornado apos confirmacao do banco. `GET /api/mabel/status?pet_id=...` exige sessao autenticada, verifica a propriedade do pet e consulta somente o dispositivo associado; o horario precisa ser pelo menos um segundo posterior ao `linked_at` atual para compensar a precisao de segundos dessa coluna. A consulta autenticada do dispositivo tambem le do MySQL.
 
-Até haver autorização para uma migração de schema, `POST /api/mabel/dados` mantém apenas o último estado de cada dispositivo na memória do processo; os dados se perdem quando o servidor reinicia ou quando uma instância serverless termina. O status via token do dispositivo mostra essa leitura volátil. O acesso web exige sessão autenticada e `pet_id`, verifica a propriedade do pet e então retorna HTTP 409, sem revelar leituras não associadas.
+A migration `006_create_mabel_device_status.sql.template` e somente um template e nao foi aplicada. Execute-a apenas no banco aprovado, apos revisar o schema ativo.
 
-Para habilitar persistência e leitura segura pelo site, será necessária uma associação administrativa de dispositivo a pet e uma tabela de leituras com, no mínimo, `device_id`, `sensor_detectou`, `contador_deteccoes`, `uptime_ms` e `recebido_em`, ligada à associação do dispositivo. Nenhuma tabela ou dado foi criado ou alterado nesta etapa.
+Limitacao futura: `uptime_ms` e `contador_deteccoes`, isoladamente, nao ordenam perfeitamente as leituras depois de uma reinicializacao da ESP32. O protocolo do firmware nao foi ampliado nesta etapa.

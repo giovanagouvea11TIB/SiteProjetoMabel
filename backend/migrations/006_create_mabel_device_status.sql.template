@@ -1,0 +1,8 @@
+CREATE TABLE mabel_device_status (
+    device_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    sensor_detectou TINYINT(1) NOT NULL,
+    contador_deteccoes BIGINT UNSIGNED NOT NULL,
+    uptime_ms BIGINT UNSIGNED NOT NULL,
+    ultimo_contato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    PRIMARY KEY (device_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

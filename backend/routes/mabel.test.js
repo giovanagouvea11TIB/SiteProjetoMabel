@@ -1,455 +1,549 @@
 const assert = require("node:assert/strict");
-const express = require("express");
+const Module = require("node:module");
+const path = require("node:path");
 const { test } = require("node:test");
-const { createMabelRouter } = require("./mabel");
 
-const TOKEN = "test-device-token-that-is-at-least-32-characters";
+const routeFile = path.resolve(__dirname, "mabel.js");
+const originalLoad = Module._load;
+const TOKEN = "test-device-token-with-at-least-thirty-two-characters";
+const DEVICE_ID = "mabel-esp32-01";
+const READING_TIME = "2026-10-13T22:00:00.000Z";
 const telemetry = {
-    device_id: "mabel-esp32-01",
+    device_id: DEVICE_ID,
     sensor_detectou: true,
     contador_deteccoes: 4,
-    uptime_ms: 18000
+    uptime_ms: 12000
 };
-const OLD_READING_TIME = "2026-10-13T21:00:00.000Z";
-const LINKED_AT_MS = Date.parse("2026-10-13T20:00:00.000Z");
+
+Module._load = function loadWithExpressStub(request, parent, isMain) {
+    if (request === "express" && parent.filename === routeFile) {
+        return {
+            Router() {
+                const handlers = new Map();
+                return {
+                    handlers,
+                    get(route, handler) { handlers.set(`GET ${route}`, handler); },
+                    post(route, handler) { handlers.set(`POST ${route}`, handler); },
+                    delete(route, handler) { handlers.set(`DELETE ${route}`, handler); }
+                };
+            }
+        };
+    }
+    return originalLoad.call(this, request, parent, isMain);
+};
+delete require.cache[routeFile];
+const { createMabelRouter } = require("./mabel");
+Module._load = originalLoad;
 
 function createDatabase({
-    pets = { "22": "17", "23": "17", "99": "88" },
+    ownedPets = { "22": "41" },
     associations = [],
-    linkedAtMs = LINKED_AT_MS,
-    queries = []
+    statuses = [],
+    writeError = null
 } = {}) {
-    const petOwners = new Map(Object.entries(pets));
-    const petAssociations = new Map(associations.map(({ petId, deviceId, linkedAt = linkedAtMs }) => [
-        String(petId),
-        { device_id: deviceId, linked_at_ms: linkedAt }
-    ]));
+    const petOwners = new Map(Object.entries(ownedPets));
+    const petAssociations = new Map();
+    const deviceStatuses = new Map();
+    for (const association of associations) {
+        petAssociations.set(String(association.petId), {
+            device_id: association.deviceId,
+            pet_id: String(association.petId),
+            linked_at: association.linkedAt || "2026-10-13T21:00:00.000Z"
+        });
+    }
+    for (const status of statuses) {
+        deviceStatuses.set(status.device_id, { ...status });
+    }
+
+    function statusRow(status) {
+        if (!status) return null;
+        return {
+            ...status,
+            ultimo_contato_ms: new Date(status.ultimo_contato).getTime()
+        };
+    }
 
     async function executeReadWithRetry(query, params) {
-        queries.push({ query, params });
-        if (/FROM pets/i.test(query)) {
+        if (query.includes("FROM pets")) {
             const [petId, userId] = params;
-            return [petOwners.get(String(petId)) === String(userId) ? [{ id: String(petId) }] : [], []];
+            return [petOwners.get(String(petId)) === String(userId) ? [{ id: petId }] : [], []];
         }
-        if (/FROM mabel_pet_associations/i.test(query)) {
-            const association = petAssociations.get(String(params[0]));
-            return [association ? [{ ...association }] : [], []];
+        if (query.includes("INNER JOIN mabel_device_status")) {
+            const [petId, deviceId] = params;
+            const association = petAssociations.get(String(petId));
+            const status = deviceStatuses.get(deviceId);
+            const isCurrent = association?.device_id === deviceId
+                && status
+                && new Date(status.ultimo_contato).getTime()
+                >= new Date(association.linked_at).getTime() + 1000;
+            return [isCurrent ? [statusRow(status)] : [], []];
         }
-        throw new Error(`Unexpected read query: ${query}`);
+        if (query.includes("FROM mabel_pet_associations")) {
+            const [petId] = params;
+            const association = petAssociations.get(String(petId));
+            return [association ? [{ device_id: association.device_id }] : [], []];
+        }
+        if (query.includes("FROM mabel_device_status")) {
+            if (query.includes("ORDER BY ultimo_contato DESC")) {
+                const latest = [...deviceStatuses.values()]
+                    .sort((left, right) => new Date(right.ultimo_contato) - new Date(left.ultimo_contato))[0];
+                return [latest ? [statusRow(latest)] : [], []];
+            }
+            const [deviceId] = params;
+            return [deviceStatuses.has(deviceId) ? [statusRow(deviceStatuses.get(deviceId))] : [], []];
+        }
+        throw new Error(`Unexpected database read: ${query}`);
     }
 
     async function executeWrite(query, params) {
-        if (/^INSERT INTO mabel_pet_associations/i.test(query)) {
-            const [deviceId, petId] = params;
-            if ([...petAssociations.values()].some((item) => item.device_id === deviceId)
-                || petAssociations.has(String(petId))) {
-                const error = new Error("Duplicate association");
-                error.code = "ER_DUP_ENTRY";
-                throw error;
-            }
-            petAssociations.set(String(petId), {
+        if (writeError) throw writeError;
+        if (query.includes("INSERT INTO mabel_device_status")) {
+            const [deviceId, detected, count, uptime] = params;
+            deviceStatuses.set(deviceId, {
                 device_id: deviceId,
-                linked_at_ms: linkedAtMs
+                sensor_detectou: detected,
+                contador_deteccoes: count,
+                uptime_ms: uptime,
+                ultimo_contato: READING_TIME
             });
             return [{ affectedRows: 1 }, []];
         }
-        if (/^DELETE FROM mabel_pet_associations/i.test(query)) {
-            return [{ affectedRows: Number(petAssociations.delete(String(params[0]))) }, []];
-        }
-        throw new Error(`Unexpected write query: ${query}`);
-    }
-
-    return { executeReadWithRetry, executeWrite, petAssociations, queries };
-}
-
-async function withApi(options, run) {
-    const app = express();
-    app.use(express.json());
-    app.use("/api/mabel", createMabelRouter(options));
-    const server = await new Promise((resolve) => {
-        const listeningServer = app.listen(0, () => resolve(listeningServer));
-    });
-    const baseUrl = `http://127.0.0.1:${server.address().port}/api/mabel`;
-
-    try {
-        await run(baseUrl);
-    } finally {
-        await new Promise((resolve, reject) => {
-            server.close((error) => error ? reject(error) : resolve());
-        });
-    }
-}
-
-function sessionOptions(database, options = {}) {
-    return {
-        deviceToken: TOKEN,
-        ...database,
-        sessionMiddleware(req, res, next) {
-            req.session = options.sessionUserId === null
-                ? {}
-                : { usuario: { id: options.sessionUserId || "17" } };
-            next();
-        },
-        ...options
-    };
-}
-
-function postAssociation(url, body, options = {}) {
-    return fetch(`${url}/associacoes`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            ...(options.authorization ? { Authorization: options.authorization } : {})
-        },
-        body: JSON.stringify(body)
-    });
-}
-
-test("device telemetry requires a configured bearer token and strict payload validation", async () => {
-    await withApi({
-        deviceToken: "",
-        readings: new Map()
-    }, async (url) => {
-        const noToken = await fetch(`${url}/dados`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(telemetry)
-        });
-        assert.equal(noToken.status, 503);
-        assert.doesNotMatch(await noToken.text(), /test-device-token/);
-    });
-
-    await withApi({
-        deviceToken: TOKEN,
-        readings: new Map()
-    }, async (url) => {
-        const unauthorized = await fetch(`${url}/dados`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: "Bearer invalid"
-            },
-            body: JSON.stringify(telemetry)
-        });
-        assert.equal(unauthorized.status, 401);
-
-        const invalidBodies = [
-            { ...telemetry, usuario_id: 7 },
-            { ...telemetry, sensor_detectou: 1 },
-            { ...telemetry, contador_deteccoes: -1 },
-            { ...telemetry, uptime_ms: 1.5 },
-            { ...telemetry, device_id: "bad device id" },
-            []
-        ];
-        for (const body of invalidBodies) {
-            const response = await fetch(`${url}/dados`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${TOKEN}`
-                },
-                body: JSON.stringify(body)
-            });
-            assert.equal(response.status, 400);
-        }
-    });
-});
-
-test("device telemetry is accepted and status does not invent an initial reading", async () => {
-    const readings = new Map();
-    await withApi({
-        deviceToken: TOKEN,
-        readings,
-        now: () => new Date("2026-10-13T22:00:00.000Z")
-    }, async (url) => {
-        const empty = await fetch(`${url}/status`, {
-            headers: { Authorization: `Bearer ${TOKEN}` }
-        });
-        assert.deepEqual(await empty.json(), {
-            sucesso: true,
-            tem_dados: false,
-            ultimo_contato: null,
-            dados: null
-        });
-
-        const accepted = await fetch(`${url}/dados`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${TOKEN}`
-            },
-            body: JSON.stringify(telemetry)
-        });
-        assert.equal(accepted.status, 202);
-        assert.equal((await accepted.json()).persistida, false);
-
-        const status = await fetch(`${url}/status`, {
-            headers: { Authorization: `Bearer ${TOKEN}` }
-        });
-        assert.deepEqual(await status.json(), {
-            sucesso: true,
-            tem_dados: true,
-            ultimo_contato: "2026-10-13T22:00:00.000Z",
-            dados: {
-                ...telemetry,
-                ultimo_contato: "2026-10-13T22:00:00.000Z"
+        if (query.includes("INSERT INTO mabel_pet_associations")) {
+            const [deviceId, petId] = params;
+            if (
+                [...petAssociations.values()].some((association) =>
+                    association.device_id === deviceId
+                    || association.pet_id === String(petId))
+            ) {
+                throw Object.assign(new Error("Duplicate association"), { code: "ER_DUP_ENTRY" });
             }
-        });
-    });
-});
-
-test("association requires a session and only accepts pet_id and device_id", async () => {
-    const database = createDatabase();
-    await withApi(sessionOptions(database, { sessionUserId: null }), async (url) => {
-        const unauthorized = await postAssociation(url, {
-            pet_id: "22",
-            device_id: telemetry.device_id
-        });
-        assert.equal(unauthorized.status, 401);
-
-        const forgedUser = await postAssociation(url, {
-            pet_id: "22",
-            device_id: telemetry.device_id,
-            usuario_id: "17"
-        });
-        assert.equal(forgedUser.status, 401);
-    });
-    assert.equal(database.queries.length, 0);
-
-    await withApi(sessionOptions(createDatabase()), async (url) => {
-        const extraField = await postAssociation(url, {
-            pet_id: "22",
-            device_id: telemetry.device_id,
-            usuario_id: "17"
-        });
-        assert.equal(extraField.status, 400);
-    });
-});
-
-test("association validates pet ownership and device_id", async () => {
-    const database = createDatabase();
-    await withApi(sessionOptions(database), async (url) => {
-        const anotherUsersPet = await postAssociation(url, {
-            pet_id: "99",
-            device_id: telemetry.device_id
-        });
-        assert.equal(anotherUsersPet.status, 404);
-
-        const invalidDevice = await postAssociation(url, {
-            pet_id: "22",
-            device_id: "bad device id"
-        });
-        assert.equal(invalidDevice.status, 400);
-
-        const invalidPet = await postAssociation(url, {
-            pet_id: "9223372036854775808",
-            device_id: telemetry.device_id
-        });
-        assert.equal(invalidPet.status, 400);
-    });
-    assert.deepEqual(database.queries.map(({ params }) => params), [["99", "17"]]);
-});
-
-test("association rejects an already associated device or pet", async () => {
-    for (const associations of [
-        [{ petId: "23", deviceId: telemetry.device_id }],
-        [{ petId: "22", deviceId: "another-device" }]
-    ]) {
-        const database = createDatabase({ associations });
-        await withApi(sessionOptions(database), async (url) => {
-            const response = await postAssociation(url, {
-                pet_id: "22",
-                device_id: telemetry.device_id
+            petAssociations.set(String(petId), {
+                device_id: deviceId,
+                pet_id: String(petId),
+                linked_at: "2026-10-13T21:00:00.000Z"
             });
-            assert.equal(response.status, 409);
-            assert.match((await response.json()).mensagem, /associação ativa/);
-        });
+            return [{ affectedRows: 1 }, []];
+        }
+        if (query.includes("DELETE FROM mabel_pet_associations")) {
+            const [petId, deviceId] = params;
+            if (petAssociations.get(String(petId))?.device_id === deviceId) {
+                petAssociations.delete(String(petId));
+            }
+            return [{ affectedRows: 1 }, []];
+        }
+        throw new Error(`Unexpected database write: ${query}`);
     }
-});
 
-test("valid association is persisted for the pet owned by the authenticated user", async () => {
+    return {
+        executeReadWithRetry,
+        executeWrite,
+        petAssociations,
+        deviceStatuses
+    };
+}
+
+function createRouter(database, { deviceToken = TOKEN } = {}) {
+    return createMabelRouter({
+        deviceToken,
+        sessionMiddleware(req, res, next) { return next(); },
+        executeReadWithRetry: database.executeReadWithRetry,
+        executeWrite: database.executeWrite
+    });
+}
+
+function responseHarness() {
+    const result = { status: 200, body: null, headers: {} };
+    return {
+        result,
+        res: {
+            status(code) {
+                result.status = code;
+                return this;
+            },
+            json(body) {
+                result.body = body;
+                return this;
+            },
+            set(name, value) {
+                result.headers[name] = value;
+                return this;
+            }
+        }
+    };
+}
+
+async function invoke(router, method, route, {
+    body = telemetry,
+    query = {},
+    session = { usuario: { id: "41" } },
+    authorization,
+    databaseErrorHandler = true
+} = {}) {
+    const handler = router.handlers.get(`${method} ${route}`);
+    assert.ok(handler, `Handler ${method} ${route} exists`);
+    const { result, res } = responseHarness();
+    const req = {
+        body,
+        query,
+        session,
+        get(name) {
+            return name.toLowerCase() === "authorization" ? authorization || "" : "";
+        }
+    };
+    await handler(req, res, (error) => {
+        if (!databaseErrorHandler) throw error;
+        result.status = 500;
+        result.body = {
+            sucesso: false,
+            mensagem: "Erro interno ao processar a requisição."
+        };
+    });
+    return result;
+}
+
+function createDeviceRouter(database, options) {
+    return createRouter(database, options);
+}
+
+function createWebRouter(database) {
+    return createRouter(database);
+}
+
+function statusFixture(overrides = {}) {
+    return {
+        ...telemetry,
+        sensor_detectou: 1,
+        ultimo_contato: READING_TIME,
+        ...overrides
+    };
+}
+
+test("telemetry requires a configured token and a valid bearer", async () => {
     const database = createDatabase();
-    const readings = new Map([[telemetry.device_id, { ...telemetry, ultimo_contato: OLD_READING_TIME }]]);
-    await withApi(sessionOptions(database, { readings }), async (url) => {
-        const response = await postAssociation(url, {
-            pet_id: "22",
-            device_id: telemetry.device_id
-        });
-        assert.equal(response.status, 201);
-        assert.deepEqual(await response.json(), {
-            sucesso: true,
-            associacao: { device_id: telemetry.device_id, pet_id: "22" }
-        });
-        assert.equal(database.petAssociations.get("22").device_id, telemetry.device_id);
-        assert.equal(readings.has(telemetry.device_id), false);
-    });
+    const unconfiguredRouter = createDeviceRouter(database, { deviceToken: "" });
+    const unconfigured = await invoke(unconfiguredRouter, "POST", "/dados", { authorization: `Bearer ${TOKEN}` });
+    assert.equal(unconfigured.status, 503);
+
+    const router = createDeviceRouter(database);
+    const invalid = await invoke(router, "POST", "/dados", { authorization: "Bearer invalid-token" });
+    assert.equal(invalid.status, 401);
+    assert.equal(database.deviceStatuses.size, 0);
 });
 
-test("association lookup returns the association or a safe empty state", async () => {
-    const database = createDatabase({
-        associations: [{ petId: "22", deviceId: telemetry.device_id }]
-    });
-    await withApi(sessionOptions(database), async (url) => {
-        const associated = await fetch(`${url}/associacoes?pet_id=22`);
-        assert.deepEqual(await associated.json(), {
-            sucesso: true,
-            tem_associacao: true,
-            associacao: { device_id: telemetry.device_id, pet_id: "22" }
-        });
-
-        const unassociated = await fetch(`${url}/associacoes?pet_id=23`);
-        assert.deepEqual(await unassociated.json(), {
-            sucesso: true,
-            tem_associacao: false,
-            associacao: null
-        });
-    });
-});
-
-test("association endpoints report the migration as unavailable when its table is absent", async () => {
+test("telemetry validates payload fields and ranges before writing", async () => {
     const database = createDatabase();
-    database.executeReadWithRetry = async (query, params) => {
-        if (/FROM pets/i.test(query)) return [[{ id: String(params[0]) }], []];
-        const error = new Error("Table does not exist");
-        error.code = "ER_NO_SUCH_TABLE";
-        throw error;
-    };
-    await withApi(sessionOptions(database), async (url) => {
-        const response = await fetch(`${url}/associacoes?pet_id=22`);
-        assert.equal(response.status, 503);
-        assert.match((await response.json()).mensagem, /estrutura do banco precisa ser preparada/);
-    });
-});
+    const router = createDeviceRouter(database);
+    const invalidBodies = [
+        { ...telemetry, sensor_detectou: 1 },
+        { ...telemetry, contador_deteccoes: -1 },
+        { ...telemetry, uptime_ms: 1.2 },
+        { ...telemetry, device_id: "bad device id" },
+        { ...telemetry, usuario_id: "41" },
+        []
+    ];
 
-test("association lookup and deletion do not expose or remove another user's association", async () => {
-    const database = createDatabase({
-        associations: [{ petId: "99", deviceId: "private-device" }]
-    });
-    await withApi(sessionOptions(database), async (url) => {
-        const lookup = await fetch(`${url}/associacoes?pet_id=99`);
-        assert.equal(lookup.status, 404);
-        assert.doesNotMatch(await lookup.text(), /private-device/);
-
-        const deletion = await fetch(`${url}/associacoes?pet_id=99`, { method: "DELETE" });
-        assert.equal(deletion.status, 404);
-        assert.equal(database.petAssociations.get("99").device_id, "private-device");
-    });
-});
-
-test("deleting an association allows the device to be reassociated with another owned pet", async () => {
-    const database = createDatabase({
-        associations: [{ petId: "22", deviceId: telemetry.device_id }]
-    });
-    const readings = new Map([[telemetry.device_id, { ...telemetry, ultimo_contato: OLD_READING_TIME }]]);
-    await withApi(sessionOptions(database, { readings }), async (url) => {
-        const deletion = await fetch(`${url}/associacoes?pet_id=22`, { method: "DELETE" });
-        assert.equal(deletion.status, 200);
-        assert.equal(database.petAssociations.has("22"), false);
-        assert.equal(readings.has(telemetry.device_id), false);
-
-        const reassociation = await postAssociation(url, {
-            pet_id: "23",
-            device_id: telemetry.device_id
+    for (const body of invalidBodies) {
+        const response = await invoke(router, "POST", "/dados", {
+            body,
+            authorization: `Bearer ${TOKEN}`
         });
-        assert.equal(reassociation.status, 201);
-        assert.equal(database.petAssociations.get("23").device_id, telemetry.device_id);
-    });
+        assert.equal(response.status, 400);
+    }
+    assert.equal(database.deviceStatuses.size, 0);
 });
 
-test("web status returns only telemetry for the device associated with the owned pet", async () => {
-    const associatedReading = {
+test("first telemetry reading is persisted and returned from persistent storage", async () => {
+    const database = createDatabase();
+    const router = createDeviceRouter(database);
+    const response = await invoke(router, "POST", "/dados", {
+        authorization: `Bearer ${TOKEN}`
+    });
+
+    assert.equal(response.status, 202);
+    assert.equal(response.body.persistida, true);
+    assert.equal(response.body.device_id, DEVICE_ID);
+    assert.equal(response.body.ultimo_contato, READING_TIME);
+    assert.equal(database.deviceStatuses.size, 1);
+
+    const status = await invoke(router, "GET", "/status", {
+        authorization: `Bearer ${TOKEN}`
+    });
+    assert.equal(status.body.tem_dados, true);
+    assert.deepEqual(status.body.dados, {
         ...telemetry,
-        ultimo_contato: "2026-10-13T22:00:00.000Z"
-    };
-    const unrelatedReading = {
-        ...telemetry,
-        device_id: "unrelated-device",
-        contador_deteccoes: 999,
-        ultimo_contato: "2026-10-13T23:00:00.000Z"
-    };
-    await withApi(sessionOptions(createDatabase({
-        associations: [{ petId: "22", deviceId: telemetry.device_id }]
-    }), {
-        readings: new Map([
-            [telemetry.device_id, associatedReading],
-            ["unrelated-device", unrelatedReading]
-        ])
-    }), async (url) => {
-        const response = await fetch(`${url}/status?pet_id=22`);
-        assert.deepEqual(await response.json(), {
-            sucesso: true,
-            tem_associacao: true,
-            tem_dados: true,
-            device_id: telemetry.device_id,
-            ultimo_contato: associatedReading.ultimo_contato,
-            dados: associatedReading
-        });
+        ultimo_contato: READING_TIME
     });
 });
 
-test("web status distinguishes no association from an associated device without telemetry", async () => {
+test("UPSERT updates the same device row and keeps different devices separate", async () => {
+    const database = createDatabase();
+    const router = createDeviceRouter(database);
+    await invoke(router, "POST", "/dados", { authorization: `Bearer ${TOKEN}` });
+    const updated = {
+        ...telemetry,
+        sensor_detectou: false,
+        contador_deteccoes: 5,
+        uptime_ms: 24000
+    };
+    await invoke(router, "POST", "/dados", {
+        body: updated,
+        authorization: `Bearer ${TOKEN}`
+    });
+    await invoke(router, "POST", "/dados", {
+        body: { ...telemetry, device_id: "mabel-esp32-02" },
+        authorization: `Bearer ${TOKEN}`
+    });
+
+    assert.equal(database.deviceStatuses.size, 2);
+    assert.deepEqual(database.deviceStatuses.get(DEVICE_ID), {
+        device_id: DEVICE_ID,
+        sensor_detectou: 0,
+        contador_deteccoes: 5,
+        uptime_ms: 24000,
+        ultimo_contato: READING_TIME
+    });
+    assert.equal(database.deviceStatuses.has("mabel-esp32-02"), true);
+});
+
+test("database write failure is sanitized and never reports persisted telemetry", async () => {
     const database = createDatabase({
-        associations: [{ petId: "23", deviceId: "silent-device" }]
+        writeError: Object.assign(new Error("internal SQL and connection detail"), {
+            code: "ER_ACCESS_DENIED_ERROR"
+        })
     });
-    await withApi(sessionOptions(database, {
-        readings: new Map([["other-device", { ...telemetry, ultimo_contato: OLD_READING_TIME }]])
-    }), async (url) => {
-        const unassociated = await fetch(`${url}/status?pet_id=22`);
-        assert.deepEqual(await unassociated.json(), {
-            sucesso: true,
-            tem_associacao: false,
-            tem_dados: false,
-            device_id: null,
-            ultimo_contato: null,
-            dados: null
-        });
+    const response = await invoke(createDeviceRouter(database), "POST", "/dados", {
+        authorization: `Bearer ${TOKEN}`
+    });
 
-        const noTelemetry = await fetch(`${url}/status?pet_id=23`);
-        assert.deepEqual(await noTelemetry.json(), {
-            sucesso: true,
-            tem_associacao: true,
-            tem_dados: false,
-            device_id: "silent-device",
-            ultimo_contato: null,
-            dados: null
-        });
+    assert.equal(response.status, 500);
+    assert.deepEqual(response.body, {
+        sucesso: false,
+        mensagem: "Erro interno ao processar a requisição."
+    });
+    assert.equal(database.deviceStatuses.size, 0);
+});
+
+test("an unassociated device can persist telemetry", async () => {
+    const database = createDatabase();
+    const response = await invoke(createDeviceRouter(database), "POST", "/dados", {
+        authorization: `Bearer ${TOKEN}`
+    });
+
+    assert.equal(response.status, 202);
+    assert.equal(response.body.persistida, true);
+    assert.equal(database.deviceStatuses.has(DEVICE_ID), true);
+    assert.equal(database.petAssociations.size, 0);
+});
+
+test("web status requires an authenticated session", async () => {
+    const database = createDatabase();
+    const response = await invoke(createWebRouter(database), "GET", "/status", {
+        query: { pet_id: "22" },
+        session: null
+    });
+    assert.equal(response.status, 401);
+});
+
+test("association requires a session and rejects extra client identity fields", async () => {
+    const router = createWebRouter(createDatabase());
+    const unauthenticated = await invoke(router, "POST", "/associacoes", {
+        session: null,
+        body: { pet_id: "22", device_id: DEVICE_ID }
+    });
+    assert.equal(unauthenticated.status, 401);
+
+    const extraField = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "22", device_id: DEVICE_ID, usuario_id: "99" }
+    });
+    assert.equal(extraField.status, 400);
+});
+
+test("association validates pet ownership and device identifier", async () => {
+    const database = createDatabase({ ownedPets: { "22": "99" } });
+    const router = createWebRouter(database);
+    const foreignPet = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "22", device_id: DEVICE_ID }
+    });
+    assert.equal(foreignPet.status, 404);
+
+    const invalidDevice = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "22", device_id: "invalid device" }
+    });
+    assert.equal(invalidDevice.status, 400);
+    assert.equal(database.petAssociations.size, 0);
+});
+
+test("association is persisted and can be queried by its owned pet", async () => {
+    const database = createDatabase();
+    const router = createWebRouter(database);
+    const created = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "22", device_id: DEVICE_ID }
+    });
+    assert.equal(created.status, 201);
+    assert.deepEqual(created.body.associacao, {
+        device_id: DEVICE_ID,
+        pet_id: "22"
+    });
+
+    const lookup = await invoke(router, "GET", "/associacoes", {
+        query: { pet_id: "22" }
+    });
+    assert.deepEqual(lookup.body, {
+        sucesso: true,
+        tem_associacao: true,
+        associacao: { device_id: DEVICE_ID, pet_id: "22" }
     });
 });
 
-test("web status rejects readings received before the current association", async () => {
-    const staleReading = {
-        ...telemetry,
-        ultimo_contato: "2026-10-13T20:00:00.999Z"
-    };
-    await withApi(sessionOptions(createDatabase({
+test("association rejects a device or pet that already has an association", async () => {
+    const database = createDatabase({
+        ownedPets: { "22": "41", "23": "41" },
+        associations: [{ petId: "22", deviceId: DEVICE_ID }]
+    });
+    const router = createWebRouter(database);
+    const petAlreadyLinked = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "22", device_id: "mabel-esp32-02" }
+    });
+    assert.equal(petAlreadyLinked.status, 409);
+
+    const deviceAlreadyLinked = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "23", device_id: DEVICE_ID }
+    });
+    assert.equal(deviceAlreadyLinked.status, 409);
+});
+
+test("association lookup and deletion do not expose another user's pet", async () => {
+    const database = createDatabase({
+        ownedPets: { "22": "99" },
+        associations: [{ petId: "22", deviceId: DEVICE_ID }]
+    });
+    const router = createWebRouter(database);
+    const lookup = await invoke(router, "GET", "/associacoes", {
+        query: { pet_id: "22" }
+    });
+    assert.equal(lookup.status, 404);
+    const removed = await invoke(router, "DELETE", "/associacoes", {
+        query: { pet_id: "22" }
+    });
+    assert.equal(removed.status, 404);
+    assert.equal(database.petAssociations.get("22").device_id, DEVICE_ID);
+});
+
+test("unlinking allows the device to be reassociated with another owned pet", async () => {
+    const database = createDatabase({
+        ownedPets: { "22": "41", "23": "41" },
+        associations: [{ petId: "22", deviceId: DEVICE_ID }]
+    });
+    const router = createWebRouter(database);
+    const removed = await invoke(router, "DELETE", "/associacoes", {
+        query: { pet_id: "22" }
+    });
+    assert.equal(removed.status, 200);
+    assert.equal(database.petAssociations.has("22"), false);
+
+    const reassociated = await invoke(router, "POST", "/associacoes", {
+        body: { pet_id: "23", device_id: DEVICE_ID }
+    });
+    assert.equal(reassociated.status, 201);
+    assert.equal(database.petAssociations.get("23").device_id, DEVICE_ID);
+});
+
+test("pet status distinguishes no association from an association without telemetry", async () => {
+    const unassociatedDatabase = createDatabase();
+    const unassociated = await invoke(createWebRouter(unassociatedDatabase), "GET", "/status", {
+        query: { pet_id: "22" }
+    });
+    assert.deepEqual(unassociated.body, {
+        sucesso: true,
+        tem_associacao: false,
+        tem_dados: false,
+        device_id: null,
+        ultimo_contato: null,
+        dados: null
+    });
+
+    const database = createDatabase({
+        associations: [{ petId: "22", deviceId: DEVICE_ID }]
+    });
+    const router = createWebRouter(database);
+    const noReading = await invoke(router, "GET", "/status", {
+        query: { pet_id: "22" }
+    });
+    assert.deepEqual(noReading.body, {
+        sucesso: true,
+        tem_associacao: true,
+        tem_dados: false,
+        device_id: DEVICE_ID,
+        ultimo_contato: null,
+        dados: null
+    });
+});
+
+test("pet status returns the associated device's persisted telemetry", async () => {
+    const database = createDatabase({
+        associations: [{ petId: "22", deviceId: DEVICE_ID }],
+        statuses: [statusFixture()]
+    });
+    const response = await invoke(createWebRouter(database), "GET", "/status", {
+        query: { pet_id: "22" }
+    });
+
+    assert.deepEqual(response.body, {
+        sucesso: true,
+        tem_associacao: true,
+        tem_dados: true,
+        device_id: DEVICE_ID,
+        ultimo_contato: READING_TIME,
+        dados: { ...telemetry, ultimo_contato: READING_TIME }
+    });
+});
+
+test("pet status does not show a reading from before the current linked_at", async () => {
+    const database = createDatabase({
         associations: [{
             petId: "22",
-            deviceId: telemetry.device_id,
-            linkedAt: LINKED_AT_MS
-        }]
-    }), {
-        readings: new Map([[telemetry.device_id, staleReading]])
-    }), async (url) => {
-        const response = await fetch(`${url}/status?pet_id=22`);
-        const result = await response.json();
-        assert.equal(result.tem_associacao, true);
-        assert.equal(result.tem_dados, false);
-        assert.equal(result.dados, null);
+            deviceId: DEVICE_ID,
+            linkedAt: "2026-10-13T22:00:00.001Z"
+        }],
+        statuses: [statusFixture()]
     });
+    const response = await invoke(createWebRouter(database), "GET", "/status", {
+        query: { pet_id: "22" }
+    });
+
+    assert.equal(response.body.tem_associacao, true);
+    assert.equal(response.body.tem_dados, false);
+    assert.equal(response.body.dados, null);
 });
 
-test("web status verifies pet ownership and requires an authenticated session", async () => {
+test("pet status rejects pets owned by another user", async () => {
     const database = createDatabase({
-        associations: [{ petId: "22", deviceId: telemetry.device_id }]
+        ownedPets: { "22": "99" },
+        associations: [{ petId: "22", deviceId: DEVICE_ID }],
+        statuses: [statusFixture()]
     });
-    await withApi(sessionOptions(database), async (url) => {
-        const anotherUsersPet = await fetch(`${url}/status?pet_id=99`);
-        assert.equal(anotherUsersPet.status, 404);
-        assert.deepEqual(database.queries.map(({ params }) => params), [["99", "17"]]);
+    const response = await invoke(createWebRouter(database), "GET", "/status", {
+        query: { pet_id: "22" }
     });
 
-    await withApi(sessionOptions(createDatabase(), { sessionUserId: null }), async (url) => {
-        const unauthorized = await fetch(`${url}/status?pet_id=22`);
-        assert.equal(unauthorized.status, 401);
+    assert.equal(response.status, 404);
+    assert.equal(response.body.tem_dados, undefined);
+});
+
+test("POST and GET in separate router instances share the persistent database", async () => {
+    const database = createDatabase({
+        associations: [{ petId: "22", deviceId: DEVICE_ID }]
     });
+    const postRouter = createDeviceRouter(database);
+    const post = await invoke(postRouter, "POST", "/dados", {
+        authorization: `Bearer ${TOKEN}`
+    });
+    assert.equal(post.body.persistida, true);
+
+    const getRouter = createWebRouter(database);
+    const status = await invoke(getRouter, "GET", "/status", {
+        query: { pet_id: "22" }
+    });
+    assert.equal(status.body.tem_dados, true);
+    assert.equal(status.body.device_id, DEVICE_ID);
 });

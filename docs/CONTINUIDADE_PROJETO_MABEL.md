@@ -87,9 +87,9 @@ As sessões usam cookie `mabel.sid` com `httpOnly`, `SameSite=Lax`, validade de 
 
 O firmware em `firmware/esp32-mabel/esp32-mabel.ino` lê o sinal digital do SW-420 no GPIO 27, aciona um LED no GPIO 25 e tenta enviar uma leitura a cada cinco segundos via HTTP. O corpo enviado inclui `device_id`, `sensor_detectou`, `contador_deteccoes` e `uptime_ms`. A documentação do firmware recomenda usar o endereço IP local do computador, não `localhost`, quando o ESP32 acessa o servidor local. O firmware documentado não aciona motores e não calcula intensidade clínica.
 
-`POST /api/mabel/dados` exige um Bearer token configurado no servidor, valida estritamente os campos e mantém o último estado em um `Map` em memória, limitado a 100 dispositivos. A resposta indica `persistida: false`. `GET /api/mabel/status`, quando chamado com autenticação de dispositivo, devolve o estado mais recente mantido nesse processo.
+`POST /api/mabel/dados` exige autenticacao do dispositivo, valida o payload e grava por UPSERT a leitura mais recente em `mabel_device_status`. Retorna `persistida: true` somente apos confirmar a gravacao. O status autenticado pelo dispositivo tambem consulta a leitura persistida no MySQL.
 
-Sem autenticação de dispositivo, `GET /api/mabel/status?pet_id=...` exige sessão web, verifica se o pet pertence ao usuário e consulta apenas o dispositivo associado. As rotas autenticadas de associação permitem criar, consultar e remover o vínculo; não aceitam `usuario_id` do cliente. Sem associação ou sem leitura atual, o status retorna um estado vazio distinto. A migration `005_create_mabel_pet_associations.sql.template` define a estrutura, mas é um modelo que ainda precisa ser revisado e executado manualmente.
+Sem autenticacao do dispositivo, `GET /api/mabel/status?pet_id=...` exige sessao web, verifica que o pet pertence ao usuario e consulta somente o dispositivo associado. Sem associacao e sem leitura atual sao estados distintos. As rotas de associacao nao aceitam `usuario_id` enviado pelo cliente. As migrations 005 e 006 sao templates e nao foram aplicadas ao banco real.
 
 ## Estado funcional e validação
 
@@ -97,38 +97,38 @@ Sem autenticação de dispositivo, `GET /api/mabel/status?pet_id=...` exige sess
 
 - Site público e páginas internas, com as rotas e funcionalidades web listadas acima.
 - Sessões MySQL, cadastro/login e rotas de perfil e vacinas dependentes do schema apropriado.
-- Recepção e validação da telemetria do ESP32 e consulta transitória do status no processo atual.
+- Recebe, valida e persiste no MySQL a telemetria mais recente da ESP32.
 - Esboço de firmware para leitura do sensor e envio periódico dos campos definidos.
 
 ### Verificação efetivamente obtida nesta passagem
 
-- Na passagem de criação, `git status --short`, `git diff --stat`, `git diff --name-status` e a listagem de arquivos não rastreados não mostraram alterações preexistentes; o documento foi criado em seguida. Nesta revisão, o único caminho não rastreado é este documento.
-- A inspeção do código confirmou as regras de validação e o estado volátil da telemetria, mas isso é inspeção estática, não execução.
-- A execução parcial de `npm test` está detalhada acima. Nenhuma integração, execução web, consulta ao banco ou ensaio com ESP32 foi concluído.
+- `npm test` concluiu com 81 testes aprovados e nenhuma falha.
+- `git diff --check` concluiu sem erros.
+- Os testes usam banco mockado; nenhuma migration foi aplicada e nenhum banco real ou ESP32 foi acessado nesta passagem.
 
 ## Vínculo persistente dispositivo–pet
 
 O backend implementa associação ativa 1:1 entre dispositivo e pet. A associação pertence ao usuário que possui o pet; unicidade no banco impede associar um dispositivo ou pet mais de uma vez. Desvincular remove a linha e permite reassociar o dispositivo. Excluir o pet remove o vínculo por `ON DELETE CASCADE`. A ESP32 continua enviando `device_id`; o vínculo não altera o firmware.
 
-A rota invalida a leitura em memória no processo que executa a associação ou desvinculação e, no status web, compara o horário da leitura com `linked_at`, exigindo ao menos um segundo de diferença. A margem cobre a precisão de segundos da coluna `TIMESTAMP` atual e pode atrasar a exibição de uma leitura recente por até um ciclo de telemetria. `ultimo_contato` usa o relógio do processo Node, enquanto `linked_at` usa o relógio do MySQL; a comparação pressupõe relógios razoavelmente sincronizados e não pode garantir correção absoluta se houver desvio entre eles. Além disso, o `Map` é local a cada processo/instância: invalidar uma leitura não invalida caches de outras instâncias, e telemetria não é persistida. Portanto, a associação não deve ser interpretada como histórico durável nem como garantia de disponibilidade consistente entre instâncias.
+O status web exige que `ultimo_contato` seja pelo menos um segundo posterior ao `linked_at` atual. A coluna `linked_at` tem precisao de segundos; essa margem evita classificar como atual uma leitura anterior na mesma janela de segundo, mas pode atrasar brevemente a exibicao de uma leitura valida.
 
-A migration continua sendo um template e não foi executada nesta tarefa. Não foi feita consulta ao banco ativo; a existência, conteúdo e compatibilidade do schema implantado não foram confirmados. O token Bearer compartilhado ainda não prova a identidade física de um `device_id`; um fluxo de pareamento e credenciais individuais por dispositivo continuam sendo decisões de segurança pendentes.
+A tabela guarda uma linha por dispositivo e substitui a leitura anterior, sem manter historico ilimitado de eventos. Ela nao tem FK para a associacao; a ESP32 pode transmitir antes do pareamento e a linha permanece apos desvincular.
 
 ## Persistência das leituras
 
-No código atual, as leituras de telemetria ficam apenas no `Map` em memória de cada processo Node. São substituídas pela leitura seguinte do mesmo dispositivo, podem ser removidas quando o limite de estados é atingido e desaparecem ao reiniciar o processo ou encerrar uma instância serverless. Não existe histórico persistido de leituras nessa rota.
+A migration `006_create_mabel_device_status.sql.template` define a leitura mais recente por `device_id`, com sensor, contador, uptime e `ultimo_contato`. A tabela nao tem FK para associacoes.
 
-Os modelos SQL versionados cobrem pets, histórico do pet, vacinas/catálogo, avatar e a nova associação ativa de dispositivo a pet; não incluem uma tabela de leituras Mabel. Isso descreve os arquivos do repositório, não o estado confirmado do banco externo. A migration de associação requer revisão e execução manual autorizada; não foi executada nesta tarefa.
+As migrations 005 e 006 sao templates e nao foram executadas; o schema ativo nao foi consultado. Limitacao futura: `uptime_ms` e `contador_deteccoes` nao ordenam perfeitamente leituras apos reinicializacoes da ESP32. O protocolo do firmware nao foi alterado.
 
 ## Próxima tarefa recomendada
 
-**Definir e implementar a persistência segura da telemetria e o vínculo autorizado dispositivo–pet**, começando pela decisão do modelo de associação e do ciclo de vida dos dispositivos. Não iniciar a migração até confirmar o schema implantado e obter aprovação para as alterações.
+**Revisar e aplicar as migrations 005 e 006 no banco aprovado** apos confirmar o schema ativo e obter autorizacao.
 
 Arquivos e superfícies a considerar após a decisão:
 
 - `backend/routes/mabel.js`: persistência da leitura, consulta e verificação de associação.
-- `backend/migrations/`: novo modelo SQL revisado para associação e histórico, se autorizado.
-- `backend/routes/mabel.test.js`: cobertura de autorização, pet sem vínculo, vínculo de outro usuário, gravação e leitura persistida.
+- `backend/migrations/005_create_mabel_pet_associations.sql.template` e `backend/migrations/006_create_mabel_device_status.sql.template`: templates ainda nao aplicados.
+- `backend/routes/mabel.test.js`: cobertura de autenticacao, acesso ao pet, gravacao e consulta persistidas.
 - `backend/routes/pets.js` ou uma nova rota administrativa/dispositivos: somente se a decisão incluir gerenciamento de associação pela aplicação.
 - `software/controle/`: interface de estado do dispositivo, somente se o escopo aprovado incluir essa superfície.
 - `firmware/esp32-mabel/esp32-mabel.ino`: alterar apenas se o modelo aprovado exigir campos ou comportamento adicional do dispositivo.
@@ -147,7 +147,7 @@ Critérios de conclusão recomendados:
 - O token de dispositivo deve ser configurado apenas nos ambientes apropriados do backend e no arquivo local ignorado do firmware. Não o registrar em logs ou enviar por HTTP em rede pública.
 - Confirmar ambiente e schema MySQL antes de qualquer operação. Não executar modelos/migrações em banco de produção sem revisão, autorização, plano de backup e procedimento de reversão.
 - Não presumir que as tabelas de sessão ou aplicação existem porque o servidor inicia localmente: a aplicação não faz criação automática de schema.
-- Na Vercel, configurar os segredos no ambiente correto, considerar que o pool e o `Map` são por instância e verificar TLS exigido pelo provedor de banco. O armazenamento em memória não serve como persistência serverless.
+- Na Vercel, configure segredos no ambiente correto, considere pools de banco por instancia e confirme a necessidade de TLS do provedor.
 - Não publicar nem alterar configurações de produção como parte da continuidade. Validar testes e ambiente de Preview antes de qualquer publicação, que exige autorização própria.
 
 ## Fora do escopo: site público e jogo

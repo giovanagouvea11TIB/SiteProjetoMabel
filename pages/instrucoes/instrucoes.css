@@ -146,6 +146,13 @@ body.dark-mode .hero h2{
     height: 6.2rem;
 }
 
+.video-thumbnail {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    border-radius: 1.5rem;
+}
+
 .user-card-item,
 .nav-item-icon,
 .notification-icon,
