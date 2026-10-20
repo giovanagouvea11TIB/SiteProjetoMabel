@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="../../styles/globals.css">
     <link rel="stylesheet" href="./controle.css">
+    <link rel="stylesheet" href="../demo/demo.css">
 </head>
 <body>
 
@@ -260,6 +261,17 @@
             </div>
         </section>
 
+        <section class="demo-section" id="controle-demo" data-demo-view="controle" aria-labelledby="controle-demo-titulo">
+            <div class="demo-header">
+                <div>
+                    <h2 id="controle-demo-titulo" class="demo-title">Sessões demonstrativas</h2>
+                    <p class="demo-subtitle">Exemplos fictícios para apresentação, separados dos dados reais.</p>
+                </div>
+                <button type="button" class="demo-toggle" id="controle-demo-toggle" data-demo-toggle
+                    aria-expanded="false" aria-controls="controle-demo-conteudo">Ver sessões demonstrativas</button>
+            </div>
+            <div class="demo-content" id="controle-demo-conteudo" hidden></div>
+        </section>
 
     </main>
 
@@ -285,5 +297,7 @@
     <script src="../../js/script.js"></script>
     <script src="./controle-state.js"></script>
     <script src="./controle.js"></script>
+    <script src="../demo/sessoes-demo.js"></script>
+    <script src="../demo/demo-ui.js"></script>
 </body>
 </html>

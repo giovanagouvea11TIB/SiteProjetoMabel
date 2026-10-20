@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" href="../../styles/globals.css">
     <link rel="stylesheet" href="./diario.css">
+    <link rel="stylesheet" href="../demo/demo.css">
 </head>
 <body>
 
@@ -206,6 +207,18 @@
                 </div>
             </section>
 
+            <section class="demo-section" id="diario-demo" data-demo-view="diario" aria-labelledby="diario-demo-titulo">
+                <div class="demo-header">
+                    <div>
+                        <h2 id="diario-demo-titulo" class="demo-title">Registros demonstrativos</h2>
+                        <p class="demo-subtitle">Exemplos fictícios para apresentação, separados dos dados reais.</p>
+                    </div>
+                    <button type="button" class="demo-toggle" id="diario-demo-toggle" data-demo-toggle
+                        aria-expanded="false" aria-controls="diario-demo-conteudo">Ver sessões demonstrativas</button>
+                </div>
+                <div class="demo-content" id="diario-demo-conteudo" hidden></div>
+            </section>
+
         </div>
     </main>
 
@@ -230,5 +243,7 @@
     <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
     <script src="./diario.js"></script>
+    <script src="../demo/sessoes-demo.js"></script>
+    <script src="../demo/demo-ui.js"></script>
 </body>
 </html>

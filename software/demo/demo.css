@@ -1,0 +1,566 @@
+/* ==========================================================================
+   Modo demonstração — sessões fictícias (Controle da Órtese e Diário de Evolução)
+   Usa os tokens --m-* definidos no CSS de cada página; aqui ficam só os estados.
+   ========================================================================== */
+
+body {
+    --demo-ok: #1E7A4C;
+    --demo-ok-bg: #E5F4EC;
+    --demo-ok-border: #B9E0C9;
+    --demo-pause: #8A5A00;
+    --demo-pause-bg: #FFF4D6;
+    --demo-pause-border: #F2DB9B;
+    --demo-cancel: #5C6166;
+    --demo-cancel-bg: #EEF0F1;
+    --demo-cancel-border: #D3D7DA;
+    --demo-bar: #D85707;
+
+    --tile-flask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D85707' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M9 3h6'/><path d='M10 3v6.5L4.6 18.4A1.75 1.75 0 0 0 6.1 21h11.8a1.75 1.75 0 0 0 1.5-2.6L14 9.5V3'/><path d='M7.5 15h9'/></svg>");
+    --demo-icon-check: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");
+    --demo-icon-pause: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M9 5v14'/><path d='M15 5v14'/></svg>");
+    --demo-icon-x: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='M18 6 6 18'/><path d='m6 6 12 12'/></svg>");
+    --demo-icon-flag: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z'/><path d='M4 22v-7'/></svg>");
+    --demo-icon-chevron: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+
+body.dark-mode {
+    --demo-ok: #7FD6A6;
+    --demo-ok-bg: #24423A;
+    --demo-ok-border: #2F5A4C;
+    --demo-pause: #F3CB6B;
+    --demo-pause-bg: #45402E;
+    --demo-pause-border: #635A3C;
+    --demo-cancel: #C3CAD0;
+    --demo-cancel-bg: #3A444D;
+    --demo-cancel-border: #4F5B65;
+    --demo-bar: #DF6A1E;
+}
+
+/* A seção ocupa a largura toda nas grades das duas páginas. */
+.dashboard-main > .demo-section,
+.main-container > .demo-section {
+    grid-column: 1 / -1;
+}
+
+.demo-section {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2.8rem 3rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius-lg);
+    background-color: var(--m-surface);
+    box-shadow: var(--m-shadow);
+}
+
+.demo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1.4rem 2rem;
+}
+
+.demo-title {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--m-text);
+}
+
+.demo-title::before {
+    content: "";
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1.2rem;
+    background: var(--m-accent-soft) var(--tile-flask) center / 2.2rem no-repeat;
+}
+
+.demo-subtitle {
+    margin-top: 0.4rem;
+    padding-left: 5.2rem;
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--m-text-muted);
+}
+
+.demo-toggle {
+    font: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-height: 4.4rem;
+    padding: 0.8rem 1.8rem;
+    border: 0.1rem solid var(--m-accent);
+    border-radius: 999rem;
+    background-color: var(--m-surface);
+    color: var(--m-accent-text);
+    font-size: 1.4rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.demo-toggle::after {
+    content: "";
+    width: 1.6rem;
+    height: 1.6rem;
+    background-color: currentColor;
+    -webkit-mask: var(--demo-icon-chevron) center / contain no-repeat;
+    mask: var(--demo-icon-chevron) center / contain no-repeat;
+    transition: transform 0.2s ease;
+}
+
+.demo-toggle[aria-expanded="true"]::after {
+    transform: rotate(180deg);
+}
+
+.demo-toggle:hover {
+    background-color: var(--m-accent-soft);
+}
+
+.demo-toggle:focus-visible {
+    outline: 0.3rem solid var(--m-accent);
+    outline-offset: 0.3rem;
+}
+
+.demo-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    min-width: 0;
+}
+
+/* Faixa obrigatória de identificação dos dados fictícios. */
+.demo-banner {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.4rem 1.2rem;
+    padding: 1.4rem 1.8rem;
+    border: 0.15rem dashed var(--m-accent);
+    border-radius: var(--m-radius);
+    background-color: var(--m-accent-soft);
+}
+
+.demo-banner::before {
+    content: "";
+    grid-row: span 2;
+    width: 2rem;
+    height: 2rem;
+    margin-top: 0.1rem;
+    background-color: var(--m-accent-text);
+    -webkit-mask: var(--demo-icon-flag) center / contain no-repeat;
+    mask: var(--demo-icon-flag) center / contain no-repeat;
+}
+
+.demo-banner-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--m-accent-text);
+}
+
+.demo-banner p {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    color: var(--m-text-soft);
+}
+
+.demo-pet {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    font-size: 1.5rem;
+    color: var(--m-text);
+}
+
+.demo-pet-label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--m-text-muted);
+}
+
+.demo-pet-name {
+    font-weight: 700;
+}
+
+/* ---------- Cartões de sessão e de registro ---------- */
+
+.demo-session-list,
+.demo-record-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 34rem), 1fr));
+    gap: 1.6rem;
+}
+
+.demo-session > article,
+.demo-record > article {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+    padding: 2rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface-soft);
+}
+
+.demo-session-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.demo-session-header h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--m-text);
+}
+
+.demo-session-when {
+    margin-top: 0.3rem;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--m-accent-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.demo-badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-height: 3rem;
+    padding: 0.4rem 1.2rem 0.4rem 1rem;
+    border: 0.1rem solid;
+    border-radius: 999rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.demo-badge::before {
+    content: "";
+    width: 1.4rem;
+    height: 1.4rem;
+    background-color: currentColor;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+    mask: var(--icon) center / contain no-repeat;
+}
+
+.demo-badge--concluida {
+    --icon: var(--demo-icon-check);
+    color: var(--demo-ok);
+    background-color: var(--demo-ok-bg);
+    border-color: var(--demo-ok-border);
+}
+
+.demo-badge--interrompida {
+    --icon: var(--demo-icon-pause);
+    color: var(--demo-pause);
+    background-color: var(--demo-pause-bg);
+    border-color: var(--demo-pause-border);
+}
+
+.demo-badge--cancelada {
+    --icon: var(--demo-icon-x);
+    color: var(--demo-cancel);
+    background-color: var(--demo-cancel-bg);
+    border-color: var(--demo-cancel-border);
+}
+
+.demo-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+    gap: 1.2rem 1.6rem;
+}
+
+.demo-field dt {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--m-text-muted);
+}
+
+.demo-field dd {
+    margin-top: 0.3rem;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--m-text);
+}
+
+.demo-reason {
+    margin-top: auto;
+    padding-top: 1.2rem;
+    border-top: 0.1rem solid var(--m-border);
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--m-text-soft);
+}
+
+/* Cinco motores: nome e barra de intensidade simulada. */
+.demo-motors-block {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.demo-motors-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--m-text-soft);
+}
+
+.demo-motors {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0.8rem;
+}
+
+.demo-motor {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.8rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius-sm);
+    background-color: var(--m-surface);
+    text-align: center;
+}
+
+.demo-motor-name {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--m-text);
+}
+
+.demo-motor-bar {
+    height: 0.6rem;
+    border-radius: 999rem;
+    background-color: var(--m-border-strong);
+    overflow: hidden;
+}
+
+.demo-motor-bar > span {
+    display: block;
+    width: var(--level, 0%);
+    height: 100%;
+    border-radius: inherit;
+    background-color: var(--demo-bar);
+}
+
+.demo-motor.is-idle {
+    border-style: dashed;
+    background-color: transparent;
+}
+
+.demo-motor.is-idle .demo-motor-name {
+    color: var(--m-text-muted);
+}
+
+/* ---------- Diário: resumo e gráfico ---------- */
+
+.demo-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+    gap: 1.2rem;
+}
+
+.demo-stat {
+    padding: 1.6rem 1.8rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface-soft);
+}
+
+.demo-stat dt {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--m-text-muted);
+}
+
+.demo-stat dd {
+    margin-top: 0.4rem;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--m-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.demo-chart {
+    min-width: 0;
+    padding: 2rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface);
+}
+
+.demo-chart figcaption {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1.2rem;
+}
+
+.demo-chart figcaption strong {
+    font-size: 1.5rem;
+    color: var(--m-text);
+}
+
+.demo-chart figcaption span {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--m-text-muted);
+}
+
+.demo-chart-frame {
+    position: relative;
+}
+
+.demo-chart-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.demo-chart-grid {
+    stroke: var(--m-border);
+    stroke-width: 1;
+}
+
+.demo-chart-baseline {
+    stroke: var(--m-border-strong);
+    stroke-width: 1.5;
+}
+
+.demo-chart-axis {
+    fill: var(--m-text-muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.demo-chart-axis--muted {
+    font-weight: 500;
+}
+
+.demo-chart-none {
+    fill: var(--m-text-muted);
+    font-size: 11px;
+    font-style: italic;
+}
+
+.demo-chart-bar {
+    fill: var(--demo-bar);
+}
+
+.demo-chart-hit {
+    fill: transparent;
+    cursor: default;
+}
+
+.demo-chart-hit:hover,
+.demo-chart-hit:focus-visible {
+    fill: var(--m-accent-soft);
+    fill-opacity: 0.5;
+    outline: none;
+}
+
+.demo-chart-hit:focus-visible {
+    stroke: var(--m-accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+}
+
+.demo-tooltip {
+    position: absolute;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    max-width: min(24rem, 56%);
+    padding: 1rem 1.2rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius-sm);
+    background-color: var(--m-surface);
+    box-shadow: var(--m-shadow);
+    transform: translateX(-50%);
+    pointer-events: none;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    color: var(--m-text-soft);
+}
+
+.demo-tooltip strong {
+    font-size: 1.3rem;
+    color: var(--m-text);
+}
+
+/* ---------- Responsividade ---------- */
+
+@media (max-width: 768px) {
+    .demo-section {
+        padding: 2rem 1.8rem;
+        border-radius: 2rem;
+    }
+
+    .demo-title {
+        font-size: 1.8rem;
+    }
+
+    .demo-title::before {
+        width: 3.6rem;
+        height: 3.6rem;
+        background-size: 2rem;
+    }
+
+    .demo-subtitle {
+        padding-left: 0;
+    }
+
+    .demo-session > article,
+    .demo-record > article {
+        padding: 1.6rem;
+    }
+
+    .demo-chart {
+        padding: 1.4rem 1rem;
+    }
+
+    .demo-stat dd {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .demo-toggle {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .demo-motors {
+        gap: 0.5rem;
+    }
+
+    .demo-motor {
+        padding: 0.6rem 0.4rem;
+    }
+}
