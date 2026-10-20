@@ -72,6 +72,64 @@ body {
     padding: 2rem 2.5rem;
 }
 
+.mabel-card {
+    grid-column: 1 / -1;
+    align-items: flex-start;
+    gap: 1.2rem;
+}
+
+.mabel-card h2 {
+    color: #111111;
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.mabel-description,
+.mabel-status {
+    color: #444444;
+    font-size: 1.35rem;
+    line-height: 1.5;
+}
+
+.mabel-card > label {
+    color: #222222;
+    font-size: 1.35rem;
+    font-weight: 600;
+}
+
+.mabel-card > input {
+    width: 100%;
+    max-width: 42rem;
+    border: 0.1rem solid #C9C9C9;
+    border-radius: 1rem;
+    padding: 1rem 1.2rem;
+    background: #FFFFFF;
+    color: #222222;
+    font: inherit;
+}
+
+.mabel-card > input:focus {
+    outline: 0.2rem solid rgba(216, 87, 7, 0.25);
+    border-color: #D85707;
+}
+
+.mabel-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+}
+
+.mabel-actions button {
+    align-self: auto;
+    min-height: 4rem;
+}
+
+.mabel-status[role="alert"] {
+    color: #A32616;
+}
+
 .pet-toolbar > label,
 .pet-edit-form > h2 {
     color: #111111;
@@ -943,5 +1001,20 @@ body.dark-mode .edit-btn:hover {
     .footerSocialIcon {
         width: 1.8rem;
         height: 1.8rem;
+    }
+}
+
+/* Rodapé: altura automática no celular e colunas empilhadas em telas estreitas (sem rolagem lateral). */
+@media (max-width: 768px) {
+    .footer {
+        height: auto;
+        min-height: 20.5rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

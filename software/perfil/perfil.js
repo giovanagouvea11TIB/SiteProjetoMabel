@@ -13,11 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const formError = document.getElementById('form-error');
     const saveButton = document.getElementById('save-pet-btn');
     const cancelButton = document.getElementById('cancel-edit-btn');
+    const mabelDeviceId = document.getElementById('mabel-device-id');
+    const mabelLinkButton = document.getElementById('mabel-link-btn');
+    const mabelUnlinkButton = document.getElementById('mabel-unlink-btn');
+    const mabelRefreshButton = document.getElementById('mabel-refresh-btn');
+    const mabelStatus = document.getElementById('mabel-status');
     const fields = form.elements;
 
     let pets = [];
     let selectedPetId = null;
     let editingPetId = null;
+    let mabelBinding = null;
+    let mabelRequestId = 0;
+    let mabelBusy = false;
 
     const apiUrl = (path) => window.location.port === '5500'
         ? `http://${window.location.hostname}:3000${path}`
@@ -132,6 +140,147 @@ document.addEventListener('DOMContentLoaded', () => {
         return result;
     }
 
+    function setMabelStatus(message, isError = false) {
+        mabelStatus.textContent = message;
+        mabelStatus.setAttribute('role', isError ? 'alert' : 'status');
+    }
+
+    function renderMabelActions() {
+        const hasPet = Boolean(selectedPetId);
+        mabelDeviceId.disabled = !hasPet || mabelBusy || Boolean(mabelBinding);
+        mabelLinkButton.disabled = !hasPet || mabelBusy || Boolean(mabelBinding);
+        mabelRefreshButton.disabled = !hasPet || mabelBusy;
+        mabelUnlinkButton.hidden = !mabelBinding;
+        mabelUnlinkButton.disabled = !hasPet || mabelBusy || !mabelBinding;
+    }
+
+    async function mabelRequest(path, options = {}) {
+        const { response, result } = await MabelApiResponse.fetchJson(fetch, apiUrl(path), {
+            credentials: window.location.port === '5500' ? 'include' : 'same-origin',
+            cache: 'no-store',
+            ...options
+        });
+        if (response.status === 401) {
+            window.location.assign('/pages/login/login.html');
+            throw new Error('Sua sessão expirou. Redirecionando para o login.');
+        }
+        if (!response.ok || result?.sucesso !== true) {
+            throw new Error(MabelApiResponse.errorMessage(
+                response,
+                result,
+                'Não foi possível consultar a integração Mabel.'
+            ));
+        }
+        return result;
+    }
+
+    async function refreshMabel() {
+        const requestId = ++mabelRequestId;
+        mabelBinding = null;
+        renderMabelActions();
+
+        if (!selectedPetId) {
+            mabelDeviceId.value = '';
+            setMabelStatus('Cadastre ou selecione um pet para gerenciar um dispositivo.');
+            return;
+        }
+
+        mabelBusy = true;
+        renderMabelActions();
+        setMabelStatus('Consultando vínculo e última leitura...');
+        try {
+            const result = await mabelRequest(
+                `/api/mabel/associacoes?pet_id=${encodeURIComponent(selectedPetId)}`
+            );
+            if (requestId !== mabelRequestId) return;
+            mabelBinding = result.associacao;
+            if (!mabelBinding) {
+                mabelDeviceId.value = '';
+                setMabelStatus('Nenhum dispositivo vinculado a este pet. Ainda não há leituras para exibir.');
+                return;
+            }
+
+            mabelDeviceId.value = mabelBinding.device_id;
+            const statusResult = await mabelRequest(
+                `/api/mabel/status?pet_id=${encodeURIComponent(selectedPetId)}`
+            );
+            if (requestId !== mabelRequestId) return;
+            if (!statusResult.tem_dados || !statusResult.dados) {
+                setMabelStatus(`Dispositivo ${mabelBinding.device_id} vinculado. Ainda não há leituras recebidas.`);
+                return;
+            }
+
+            const reading = statusResult.dados;
+            const receivedAt = new Date(reading.ultimo_contato);
+            const formattedAt = Number.isNaN(receivedAt.getTime())
+                ? reading.ultimo_contato
+                : receivedAt.toLocaleString('pt-BR');
+            setMabelStatus(
+                `Última leitura (${formattedAt}): sensor ${reading.sensor_detectou ? 'detectado' : 'não detectado'}; `
+                + `${reading.contador_deteccoes} detecções; uptime ${reading.uptime_ms} ms.`
+            );
+        } catch (error) {
+            if (requestId === mabelRequestId) {
+                setMabelStatus(error.message || 'Não foi possível consultar o dispositivo Mabel.', true);
+            }
+        } finally {
+            if (requestId === mabelRequestId) {
+                mabelBusy = false;
+                renderMabelActions();
+            }
+        }
+    }
+
+    mabelLinkButton.addEventListener('click', async () => {
+        if (!selectedPetId || mabelBinding || mabelBusy || !mabelDeviceId.reportValidity()) return;
+        const deviceId = mabelDeviceId.value.trim();
+        mabelBusy = true;
+        renderMabelActions();
+        setMabelStatus('Vinculando dispositivo...');
+        try {
+            await mabelRequest('/api/mabel/associacoes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pet_id: selectedPetId, device_id: deviceId })
+            });
+            setMabelStatus('Dispositivo vinculado com sucesso. Consultando a leitura disponível...');
+            await refreshMabel();
+        } catch (error) {
+            setMabelStatus(error.message || 'Não foi possível vincular o dispositivo.', true);
+        } finally {
+            mabelBusy = false;
+            renderMabelActions();
+        }
+    });
+
+    mabelUnlinkButton.addEventListener('click', async () => {
+        if (!selectedPetId || !mabelBinding || mabelBusy) return;
+        const confirmed = window.confirm(
+            `Confirma a desvinculação do dispositivo ${mabelBinding.device_id} deste pet?`
+        );
+        if (!confirmed) return;
+
+        mabelBusy = true;
+        renderMabelActions();
+        setMabelStatus('Desvinculando dispositivo...');
+        try {
+            await mabelRequest(
+                `/api/mabel/associacoes?pet_id=${encodeURIComponent(selectedPetId)}`,
+                { method: 'DELETE' }
+            );
+            mabelBinding = null;
+            mabelDeviceId.value = '';
+            setMabelStatus('Dispositivo desvinculado. Você pode associar outro identificador.');
+        } catch (error) {
+            setMabelStatus(error.message || 'Não foi possível desvincular o dispositivo.', true);
+        } finally {
+            mabelBusy = false;
+            renderMabelActions();
+        }
+    });
+
+    mabelRefreshButton.addEventListener('click', refreshMabel);
+
     async function loadPets(preferredId = selectedPetId) {
         setStatus('Carregando os pets...');
         selector.disabled = true;
@@ -156,6 +305,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }));
             renderPets(preferredId);
             setStatus('');
+            await refreshMabel();
             return true;
         } catch (error) {
             if (!window.location.pathname.endsWith('/login.html')) {
@@ -209,6 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         selectedPetId = selector.value;
         rememberSelectedPet(selectedPetId);
         renderSelectedPet();
+        refreshMabel();
     });
 
     addButton.addEventListener('click', () => beginEditing(null));

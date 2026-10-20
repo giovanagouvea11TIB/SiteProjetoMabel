@@ -185,6 +185,25 @@
                 </div>
             </section>
 
+            <section class="pet-card mabel-card" aria-labelledby="mabel-title">
+                <h2 id="mabel-title">Dispositivo Mabel</h2>
+                <p class="mabel-description">
+                    Gerencie o dispositivo associado ao pet selecionado e consulte a última leitura recebida.
+                </p>
+                <label for="mabel-device-id">Identificador configurado no ESP32</label>
+                <input id="mabel-device-id" type="text" maxlength="64" required
+                    pattern="[A-Za-z0-9._:\-]{1,64}" autocomplete="off"
+                    placeholder="Ex.: mabel-esp32-01" disabled>
+                <div class="mabel-actions">
+                    <button class="edit-btn" id="mabel-link-btn" type="button" disabled>Vincular dispositivo</button>
+                    <button class="cancel-btn" id="mabel-unlink-btn" type="button" hidden>Desvincular</button>
+                    <button class="cancel-btn" id="mabel-refresh-btn" type="button" disabled>Atualizar status</button>
+                </div>
+                <p class="mabel-status" id="mabel-status" role="status" aria-live="polite">
+                    Selecione um pet para consultar o vínculo.
+                </p>
+            </section>
+
             <p class="empty-state" id="empty-state" hidden>
                 Você ainda não cadastrou pets. Use “Adicionar pet” para criar um perfil.
             </p>

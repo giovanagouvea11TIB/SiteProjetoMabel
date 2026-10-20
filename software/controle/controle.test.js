@@ -56,6 +56,9 @@ test("a página de controle expõe os controles acessíveis e usa as rotas auten
         assert.match(html, new RegExp(`id="${id}"`), id);
     }
     assert.match(html, /id="motor-intensidade"[^>]*min="0"[^>]*max="100"/);
+    // O atributo pattern é compilado com a flag v: o hífen precisa estar escapado na classe.
+    const pattern = html.match(/id="controle-device-id"[\s\S]*?pattern="([^"]+)"/)[1];
+    assert.ok(new RegExp(`^(?:${pattern})$`, "v").test("mabel-esp32-01"));
     assert.match(html, /id="motor-status"[^>]*aria-live="polite"/);
     assert.match(html, /id="motor-erro"[^>]*role="alert"/);
     assert.match(html, /src="\.\/controle-state\.js"/);
