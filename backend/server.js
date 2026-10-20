@@ -15,6 +15,7 @@ const avaliacaoRouter = require("./routes/avaliacao");
 const petsRouter = require("./routes/pets");
 const vacinasRouter = require("./routes/vacinas");
 const { createMabelRouter } = require("./routes/mabel");
+const { createMabelMotorRouter } = require("./routes/mabel-motores");
 const { executeReadWithRetry } = require("./db");
 const { enviarEmail, registrarErroEmail } = require("./email");
 const { mensagemBoasVindas } = require("./mensagem");
@@ -61,6 +62,11 @@ app.use("/api/mabel", createMabelRouter({
     sessionMiddleware,
     executeReadWithRetry,
     executeWrite: (query, params) => pool.execute(query, params)
+}));
+app.use("/api/mabel", createMabelMotorRouter({
+    deviceToken: process.env.MABEL_DEVICE_TOKEN,
+    sessionMiddleware,
+    pool
 }));
 
 app.get("/api/teste-db", async (req, res) => {

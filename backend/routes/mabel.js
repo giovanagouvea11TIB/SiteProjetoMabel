@@ -493,6 +493,7 @@ function createMabelRouter({
 module.exports = {
     createMabelRouter,
     hasValidDeviceToken,
+    parsePositiveBigInt,
     validateDeviceId,
     validateTelemetry
 };

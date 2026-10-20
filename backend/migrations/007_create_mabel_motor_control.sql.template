@@ -1,0 +1,42 @@
+CREATE TABLE mabel_motor_commands (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    device_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    pet_id BIGINT NOT NULL,
+    usuario_id BIGINT NOT NULL,
+    ligado TINYINT(1) NOT NULL,
+    intensidade TINYINT UNSIGNED NOT NULL,
+    duracao_s SMALLINT UNSIGNED NOT NULL,
+    status VARCHAR(16) CHARACTER SET ascii COLLATE ascii_bin NOT NULL DEFAULT 'pendente',
+    motivo VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NULL,
+    solicitado_em TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    atualizado_em TIMESTAMP(3) NULL DEFAULT NULL,
+    PRIMARY KEY (id),
+    INDEX idx_mabel_motor_commands_device (device_id, id),
+    CONSTRAINT fk_mabel_motor_commands_pet
+        FOREIGN KEY (pet_id)
+        REFERENCES pets (id)
+        ON DELETE CASCADE,
+    CONSTRAINT chk_mabel_motor_commands_values CHECK (
+        (ligado = 1 AND intensidade BETWEEN 1 AND 100 AND duracao_s BETWEEN 5 AND 600)
+        OR (ligado = 0 AND intensidade = 0 AND duracao_s = 0)
+    ),
+    CONSTRAINT chk_mabel_motor_commands_status CHECK (
+        status IN ('pendente', 'aplicado', 'rejeitado', 'interrompido', 'expirado', 'substituido')
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE mabel_motor_state (
+    device_id VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+    ultimo_contato TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    command_id BIGINT NULL,
+    ligado TINYINT(1) NOT NULL DEFAULT 0,
+    intensidade TINYINT UNSIGNED NOT NULL DEFAULT 0,
+    fisico TINYINT(1) NOT NULL DEFAULT 0,
+    motivo VARCHAR(32) CHARACTER SET ascii COLLATE ascii_bin NULL,
+    confirmado_em TIMESTAMP(3) NULL DEFAULT NULL,
+    PRIMARY KEY (device_id),
+    CONSTRAINT chk_mabel_motor_state_values CHECK (
+        fisico IN (0, 1)
+        AND ((ligado = 1 AND intensidade BETWEEN 1 AND 100) OR (ligado = 0 AND intensidade = 0))
+    )
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

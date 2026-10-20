@@ -1,5 +1,10 @@
 @import url('../../styles/globals.css');
 
+/* ==========================================================================
+   Diário de Evolução — identidade Mabel
+   Mesmos tokens da tela de Controle; o modo escuro só troca os valores.
+   ========================================================================== */
+
 * {
     font-family: 'Montserrat', sans-serif !important;
     box-sizing: border-box;
@@ -12,154 +17,373 @@
 }
 
 body {
-    background-color: #F8DFC8;
+    --m-page: #FFFFFF;
+    --m-surface: #FFFFFF;
+    --m-surface-soft: #FFF8F2;
+    --m-cream-1: #FBECE2;
+    --m-cream-2: #F7DCC9;
+    --m-border: rgba(39, 48, 56, 0.08);
+    --m-border-strong: rgba(39, 48, 56, 0.18);
+    --m-text: #1F2328;
+    --m-text-soft: #4A4F55;
+    --m-text-muted: #6B6F75;
+    --m-accent: #D85707;
+    --m-accent-text: #B34604;
+    --m-accent-soft: #FDEBDD;
+    --m-danger: #B42318;
+    --m-danger-bg: #FDECEC;
+    --m-danger-border: #F5C2C0;
+    --m-disabled-bg: #EEE9E4;
+    --m-disabled-text: #7E7974;
+    --m-shadow: 0 0.1rem 0.2rem rgba(60, 35, 15, 0.04), 0 0.8rem 2.4rem rgba(60, 35, 15, 0.06);
+    --m-shadow-raised: 0 0.2rem 0.4rem rgba(60, 35, 15, 0.06), 0 1.2rem 3rem rgba(60, 35, 15, 0.1);
+    --m-focus: 0 0 0 0.3rem rgba(216, 87, 7, 0.38);
+    --m-radius-lg: 2.4rem;
+    --m-radius: 1.6rem;
+    --m-radius-sm: 1.2rem;
+    --m-chevron: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B6F75' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+
+    --tile-chart: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D85707' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M3 3v18h18'/><path d='m19 9-5 5-4-4-3 3'/></svg>");
+    --tile-list: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D85707' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M8 6h13'/><path d='M8 12h13'/><path d='M8 18h13'/><path d='M3 6h.01'/><path d='M3 12h.01'/><path d='M3 18h.01'/></svg>");
+    --tile-paw: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D85707' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='4' r='2'/><circle cx='18' cy='8' r='2'/><circle cx='20' cy='16' r='2'/><path d='M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z'/></svg>");
+    --icon-alert: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z'/><path d='M12 9v4'/><path d='M12 17h.01'/></svg>");
+    --icon-info: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='10'/><path d='M12 16v-4'/><path d='M12 8h.01'/></svg>");
+
+    background-color: var(--m-page);
+    color: var(--m-text);
     min-height: 100vh;
     display: flex;
     flex-direction: column;
 }
 
+body.dark-mode {
+    --m-page: #273038;
+    --m-surface: #313B44;
+    --m-surface-soft: #2B343C;
+    --m-cream-1: #333E47;
+    --m-cream-2: #273038;
+    --m-border: rgba(255, 255, 255, 0.08);
+    --m-border-strong: rgba(255, 255, 255, 0.2);
+    --m-text: #F4F1EC;
+    --m-text-soft: #D5D0C9;
+    --m-text-muted: #A9B1B8;
+    --m-accent-text: #FFA366;
+    --m-accent-soft: rgba(245, 150, 91, 0.16);
+    --m-danger: #FF9C94;
+    --m-danger-bg: #4A2B2E;
+    --m-danger-border: #6B3A3D;
+    --m-disabled-bg: #4A555F;
+    --m-disabled-text: #B4BCC3;
+    --m-shadow: 0 0.1rem 0.2rem rgba(0, 0, 0, 0.2), 0 0.8rem 2.4rem rgba(0, 0, 0, 0.18);
+    --m-shadow-raised: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.25), 0 1.2rem 3rem rgba(0, 0, 0, 0.25);
+    --m-chevron: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D5D0C9' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='m6 9 6 6 6-6'/></svg>");
+}
+
+/* ---------- Cabeçalho e animal selecionado ---------- */
+
 .user-hero {
-    background: linear-gradient(180deg, #FFFFFF 0%, #FCE8D8 100%);
-    padding: 4rem 2rem 2rem;
+    background: linear-gradient(180deg, var(--m-page) 0%, var(--m-cream-1) 100%);
+    padding: 4rem 2rem 6.5rem;
     display: flex;
     justify-content: center;
 }
 
 .user-hero-content {
     width: 100%;
-    max-width: 68rem;
-}
-
-.diary-pet-context {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 0.8rem 1.2rem;
-    margin-top: 1.4rem;
-    color: #333333;
-    font-size: 1.35rem;
-    font-weight: 600;
-}
-
-.diary-pet-context select {
-    min-width: min(100%, 24rem);
-    padding: 0.8rem 1rem;
-    border: 0.1rem solid #D8C9BD;
-    border-radius: 0.8rem;
-    background: #FFFFFF;
-    color: #222222;
-    font: inherit;
-}
-
-.diary-pet-context p {
-    flex-basis: 100%;
-    font-size: 1.2rem;
-    font-weight: 400;
-}
-
-.diary-pet-context p.is-error {
-    color: #8C2020;
-    font-weight: 600;
-}
-
-.diary-pet-context a {
-    color: #A74208;
-    font-size: 1.2rem;
-    text-underline-offset: 0.2em;
+    max-width: 96rem;
 }
 
 .user-hero h1 {
     font-size: 3.2rem;
     font-weight: 700;
-    color: #111111;
+    letter-spacing: -0.02em;
+    color: var(--m-text);
 }
+
+/* Cartão do animal: selo, rótulo, seletor e mensagem de estado. */
+.diary-pet-context {
+    display: grid;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    align-items: center;
+    gap: 0.6rem 1.4rem;
+    max-width: 62rem;
+    margin-top: 1.8rem;
+    padding: 1.4rem 1.8rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface);
+    box-shadow: var(--m-shadow);
+    color: var(--m-text);
+}
+
+.diary-pet-context::before {
+    content: "";
+    grid-row: span 3;
+    align-self: start;
+    width: 4.4rem;
+    height: 4.4rem;
+    border-radius: 1.4rem;
+    background: var(--m-accent-soft) var(--tile-paw) center / 2.2rem no-repeat;
+}
+
+.diary-pet-context label {
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--m-text-muted);
+}
+
+.diary-pet-context select {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    max-width: 28rem;
+    min-height: 4.4rem;
+    padding: 0.8rem 4.2rem 0.8rem 1.4rem;
+    border: 0.1rem solid var(--m-border-strong);
+    border-radius: var(--m-radius-sm);
+    background: var(--m-surface) var(--m-chevron) right 1.3rem center / 1.8rem no-repeat;
+    color: var(--m-text);
+    font: inherit;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.diary-pet-context select option {
+    background-color: var(--m-surface);
+    color: var(--m-text);
+}
+
+.diary-pet-context select:hover:not(:disabled) {
+    border-color: var(--m-accent);
+}
+
+.diary-pet-context select:focus-visible {
+    outline: none;
+    border-color: var(--m-accent);
+    box-shadow: var(--m-focus);
+}
+
+.diary-pet-context select:disabled {
+    background-color: var(--m-disabled-bg);
+    color: var(--m-disabled-text);
+    cursor: not-allowed;
+}
+
+.diary-pet-context p {
+    grid-column: 2 / -1;
+    font-size: 1.4rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--m-text-soft);
+}
+
+.diary-pet-context p.is-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    padding: 1rem 1.2rem;
+    border: 0.1rem solid var(--m-danger-border);
+    border-radius: var(--m-radius-sm);
+    background-color: var(--m-danger-bg);
+    color: var(--m-danger);
+    font-weight: 600;
+}
+
+.diary-pet-context p.is-error::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1.8rem;
+    height: 1.8rem;
+    margin-top: 0.1rem;
+    background-color: currentColor;
+    -webkit-mask: var(--icon-alert) center / contain no-repeat;
+    mask: var(--icon-alert) center / contain no-repeat;
+}
+
+.diary-pet-context a {
+    grid-column: 2 / -1;
+    justify-self: start;
+    display: inline-flex;
+    align-items: center;
+    min-height: 4rem;
+    padding: 0.6rem 1.6rem;
+    border-radius: 999rem;
+    background-color: var(--m-accent-soft);
+    color: var(--m-accent-text);
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.diary-pet-context a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+}
+
+.diary-pet-context a:focus-visible {
+    outline: 0.3rem solid var(--m-accent);
+    outline-offset: 0.2rem;
+}
+
+/* ---------- Área principal ---------- */
 
 .dashboard-main {
     flex: 1;
-    background: linear-gradient(180deg, #FCE8D8 0%, #F5CEB6 100%);
-    padding: 2rem 2rem 6rem;
+    background: linear-gradient(180deg, var(--m-cream-1) 0%, var(--m-cream-2) 100%);
+    border-radius: 3.5rem 3.5rem 0 0;
+    margin-top: -3.5rem;
+    padding: 3.5rem 2rem 6rem;
     display: flex;
     justify-content: center;
 }
 
 .main-container {
     width: 100%;
-    max-width: 68rem;
+    max-width: 96rem;
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 2.5rem;
-    align-items: start;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 2.4rem;
+    align-items: stretch;
 }
 
-.chart-card {
-    background-color: #FFFFFF;
-    border-radius: 2.2rem;
-    padding: 2.5rem 2rem 2rem;
+.chart-card,
+.sessions-list {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+    gap: 2rem;
+    padding: 2.8rem 3rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius-lg);
+    background-color: var(--m-surface);
+    box-shadow: var(--m-shadow);
 }
 
 .chart-card h2,
 .sessions-list h2 {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
     width: 100%;
-    color: #222222;
-    font-size: 1.8rem;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--m-text);
 }
 
+.chart-card h2::before,
+.sessions-list h2::before {
+    content: "";
+    flex-shrink: 0;
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1.2rem;
+    background: var(--m-accent-soft) var(--tile) center / 2.2rem no-repeat;
+}
+
+.chart-card { --tile: var(--tile-chart); }
+.sessions-list { --tile: var(--tile-list); }
+
+/* Gráficos futuros acompanham a largura do cartão. */
+.chart-card canvas,
+.chart-card svg,
+.chart-card img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+/* Estado sem registros: ilustração, mensagem principal e observação. */
 .history-empty-state {
+    flex: 1;
     width: 100%;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: center;
     gap: 1rem;
-    min-height: 25rem;
-    padding: 2rem;
-    border: 0.1rem dashed #D8C9BD;
-    border-radius: 1.4rem;
-    background: #FFFCF9;
-    color: #555555;
+    min-height: 26rem;
+    padding: 3rem 2.4rem;
+    border: 0.15rem dashed var(--m-border-strong);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface-soft);
     text-align: center;
 }
 
-.history-empty-state p {
-    font-size: 1.35rem;
-    line-height: 1.55;
+.history-empty-state::before {
+    content: "";
+    width: 6.4rem;
+    height: 6.4rem;
+    margin-bottom: 0.8rem;
+    border-radius: 50%;
+    background: var(--m-accent-soft) var(--tile) center / 3rem no-repeat;
 }
 
-.sessions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1.2rem;
-    background-color: #FFFFFF;
-    border-radius: 2rem;
-    padding: 2.5rem 2rem;
-    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.03);
+.history-empty-state p {
+    max-width: 38rem;
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--m-text);
 }
+
+/* A observação fica mais discreta, separada da mensagem principal. */
+.history-empty-state p + p {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-top: 0.4rem;
+    padding-top: 1.2rem;
+    border-top: 0.1rem solid var(--m-border);
+    font-size: 1.3rem;
+    font-weight: 400;
+    color: var(--m-text-muted);
+    text-align: left;
+}
+
+.history-empty-state p + p::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-top: 0.2rem;
+    background-color: currentColor;
+    -webkit-mask: var(--icon-info) center / contain no-repeat;
+    mask: var(--icon-info) center / contain no-repeat;
+}
+
+/* ==========================================================================
+   Navegação lateral e menu do aplicativo (mesma estrutura das outras telas)
+   ========================================================================== */
 
 .sidebar-right {
     position: fixed;
     right: 3rem;
     top: 13rem;
     z-index: 99;
-    
-    background-color: rgba(235, 235, 235, 0.85) !important;
-    
+    background-color: rgba(255, 255, 255, 0.82) !important;
     -webkit-backdrop-filter: blur(10px);
     backdrop-filter: blur(10px);
-    
-    border: 0.1rem solid rgba(200, 200, 200, 0.5);
+    border: 0.1rem solid var(--m-border);
     border-radius: 2rem;
-    padding: 1.8rem 1.6rem;
-    box-shadow: 0 0.4rem 1.5rem rgba(0, 0, 0, 0.1);
+    padding: 1.6rem 1.4rem;
+    box-shadow: var(--m-shadow-raised);
+}
+
+body.dark-mode .sidebar-right {
+    background-color: rgba(49, 59, 68, 0.9) !important;
 }
 
 .sidebar-right .sidebar-nav ul {
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 1.2rem;
+    gap: 0.6rem;
     margin: 0;
     padding: 0;
 }
@@ -170,17 +394,14 @@ body {
     justify-content: flex-start;
     text-align: left;
     gap: 1.2rem;
-    
     text-decoration: none;
-    color: var(--black);
-    font-family: 'Montserrat', sans-serif;
+    color: var(--m-text);
     font-size: 1.5rem;
     font-weight: 600;
-    
-    padding: 0.8rem 1.4rem;
+    padding: 1rem 1.4rem;
     border-radius: 1.2rem;
     white-space: nowrap;
-    transition: all 0.3s ease;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .sidebar-right .sidebar-nav .nav-icon {
@@ -188,89 +409,29 @@ body {
     height: 2.2rem;
     object-fit: contain;
     flex-shrink: 0;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
 }
 
 .sidebar-right .sidebar-nav a:hover,
 .sidebar-right .sidebar-nav a.active {
-    background-color: var(--burnt-orange);
-    color: var(--white);
-}
-
-.sidebar-right .sidebar-nav a:hover .nav-icon,
-.sidebar-right .sidebar-nav a.active .nav-icon {
-    transform: scale(1.1);
-}
-
-body.dark-mode .sidebar-right {
-    background-color: rgba(39, 48, 56, 0.85) !important;
-    border-color: rgba(255, 255, 255, 0.1);
-}
-
-body.dark-mode .sidebar-right .sidebar-nav a {
-    color: var(--white);
-}
-
-.sidebar-right .sidebar-nav a:hover,
-.sidebar-right .sidebar-nav a.active {
-    background-color: var(--white);
-    color: var(--burnt-orange);      
+    background-color: var(--m-accent-soft);
+    color: var(--m-accent-text);
     font-weight: 700;
 }
 
 .sidebar-right .sidebar-nav a:hover .nav-icon,
 .sidebar-right .sidebar-nav a.active .nav-icon {
-    transform: scale(1.1);
-    
-    filter: invert(41%) sepia(85%) saturate(2250%) hue-rotate(358deg) brightness(95%) contrast(98%);
+    transform: scale(1.08);
 }
 
-body.dark-mode .sidebar-right .sidebar-nav a:hover,
-body.dark-mode .sidebar-right .sidebar-nav a.active {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: var(--burnt-orange);
+.sidebar-right .sidebar-nav a:focus-visible {
+    outline: 0.3rem solid var(--m-accent);
+    outline-offset: 0.2rem;
 }
 
-
-body.dark-mode {
-    background-color: #273038;
-}
-
-body.dark-mode .user-hero {
-    background: linear-gradient(180deg, #3A454E 0%, #273038 100%);
-}
-
-body.dark-mode .user-hero h1 {
-    color: #FFFFFF;
-}
-
-body.dark-mode .dashboard-main {
-    background: #273038;
-}
-
-body.dark-mode .chart-card,
-body.dark-mode .sessions-list {
-    background-color: #FFFFFF;
-}
-
-body.dark-mode .chart-card h2,
-body.dark-mode .sessions-list h2 {
-    color: #333333;
-}
-
-body.dark-mode .diary-pet-context {
-    color: #FFFFFF;
-}
-
-body.dark-mode .diary-pet-context select {
-    background-color: #323D45;
-    border-color: #66747E;
-    color: #FFFFFF;
-}
-
-body.dark-mode .history-empty-state {
-    background: #F7F5F2;
-    color: #444444;
+.mobile-only-section,
+.navbar .sidebar-nav {
+    display: none !important;
 }
 
 .user-card-item,
@@ -303,19 +464,48 @@ body.dark-mode .history-empty-state {
     -webkit-tap-highlight-color: transparent;
 }
 
-.mobile-only-section,
-.navbar .sidebar-nav {
-    display: none !important;
+.hamburger-btn:focus-visible {
+    outline: 0.3rem solid var(--m-accent) !important;
+    outline-offset: 0.3rem;
+    border-radius: 0.6rem;
+}
+
+/* Com a barra lateral fixa visível, o conteúdo reserva espaço à direita para não ficar coberto. */
+@media (min-width: 769px) and (max-width: 1499px) {
+    .user-hero,
+    .dashboard-main {
+        padding-left: 3rem;
+        padding-right: 22rem;
+    }
+}
+
+/* Navbar mais compacta entre tablet e notebook, para o logo não encostar nos links. */
+@media (min-width: 769px) and (max-width: 1180px) {
+    .navbar {
+        padding: 0 3rem;
+        font-size: 1.7rem;
+    }
+
+    .nav-links {
+        gap: 2.4rem;
+        margin-right: 2rem;
+    }
+}
+
+/* Cartões empilhados quando a área útil fica estreita. */
+@media (max-width: 1100px) {
+    .main-container {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .history-empty-state {
+        min-height: 20rem;
+    }
 }
 
 @media (max-width: 768px) {
     body {
         overflow-x: hidden;
-    }
-
-    .mobile-only-section,
-    .navbar .sidebar-nav {
-        display: block !important;
     }
 
     .nav-actions .profile {
@@ -331,6 +521,7 @@ body.dark-mode .history-empty-state {
         height: 7rem;
     }
 
+    .mobile-only-section,
     .navbar .sidebar-nav {
         display: block !important;
     }
@@ -436,7 +627,6 @@ body.dark-mode .history-empty-state {
         font-size: 1.5rem;
         font-weight: 500;
         color: #2D2D2D;
-        font-family: 'Montserrat', sans-serif;
     }
 
     .notification-btn {
@@ -455,7 +645,7 @@ body.dark-mode .history-empty-state {
         object-fit: contain;
     }
 
-    .nav-item-icon, 
+    .nav-item-icon,
     .nav-icon {
         display: block;
         width: 2.4rem;
@@ -463,7 +653,7 @@ body.dark-mode .history-empty-state {
         object-fit: contain;
     }
 
-    .nav-links li a, 
+    .nav-links li a,
     .sidebar-nav-list li a {
         display: flex;
         align-items: center;
@@ -471,7 +661,6 @@ body.dark-mode .history-empty-state {
         font-size: 1.8rem;
         font-weight: 500;
         color: #2D2D2D;
-        font-family: 'Montserrat', sans-serif;
         padding: 0.4rem 0;
         text-decoration: none;
     }
@@ -496,7 +685,7 @@ body.dark-mode .history-empty-state {
         visibility: visible;
     }
 
-    body.dark-mode .nav-links, 
+    body.dark-mode .nav-links,
     body.dark-mode .sidebar-nav-list {
         background-color: #273038;
     }
@@ -507,67 +696,73 @@ body.dark-mode .history-empty-state {
     }
 
     body.dark-mode .user-name,
-    body.dark-mode .nav-links li a, 
+    body.dark-mode .nav-links li a,
     body.dark-mode .sidebar-nav-list li a {
         color: var(--white);
     }
 
+    /* Conteúdo em tablet e celular */
     .user-hero {
-        padding: 2.5rem 2rem 1.5rem;
-        background: transparent;
+        padding: 2.8rem 1.6rem 5rem;
     }
 
     .user-hero h1 {
         font-size: 2.4rem;
-        text-align: left;
+    }
+
+    .diary-pet-context {
+        margin-top: 1.4rem;
+        padding: 1.4rem;
+        gap: 0.6rem 1.2rem;
+    }
+
+    .diary-pet-context::before {
+        width: 4rem;
+        height: 4rem;
+        background-size: 2rem;
     }
 
     .dashboard-main {
-        background: transparent;
-        padding: 0;
+        padding: 2.4rem 1.6rem 4rem;
+        border-radius: 2.8rem 2.8rem 0 0;
+        margin-top: -2.8rem;
     }
 
     .main-container {
-        display: flex;
-        flex-direction: column;
-        gap: 0;
-        max-width: 100%;
+        gap: 1.6rem;
     }
 
-    .chart-card {
-        margin: 0 1.8rem 2.5rem 1.8rem;
-        border-radius: 1.8rem;
-        padding: 2rem 1.5rem 1.5rem;
-        box-shadow: 0 0.4rem 1.2rem rgba(0, 0, 0, 0.05);
+    .chart-card,
+    .sessions-list {
+        gap: 1.6rem;
+        padding: 2rem 1.8rem;
+        border-radius: 2rem;
+    }
+
+    .chart-card h2,
+    .sessions-list h2 {
+        font-size: 1.8rem;
+    }
+
+    .chart-card h2::before,
+    .sessions-list h2::before {
+        width: 3.6rem;
+        height: 3.6rem;
+        background-size: 2rem;
     }
 
     .history-empty-state {
-        min-height: 19rem;
-        padding: 1.5rem;
+        min-height: 0;
+        padding: 2.4rem 1.6rem;
     }
 
-    .sessions-list {
-        background-color: #FFFFFF;
-        border-top-left-radius: 3.5rem;
-        border-top-right-radius: 3.5rem;
-        padding: 3.5rem 2rem 4rem;
-        width: 100%;
-        gap: 2rem;
-    }
-
-    .sessions-list .history-empty-state {
-        background-color: #EFEFEF;
-    }
-
-    body.dark-mode .sessions-list {
-        background-color: #2D3740;
-    }
-
-    body.dark-mode .sessions-list .history-empty-state {
-        background-color: #F7F5F2;
+    .history-empty-state p {
+        font-size: 1.4rem;
     }
 
     .footer {
+        height: auto;
+        min-height: 20.5rem;
         padding: 3.5rem 2.5rem;
         flex-direction: row;
         justify-content: space-between;
@@ -612,5 +807,33 @@ body.dark-mode .history-empty-state {
     .footerSocialIcon {
         width: 1.8rem;
         height: 1.8rem;
+    }
+}
+
+/* Celulares: o seletor ocupa a linha inteira abaixo do rótulo. */
+@media (max-width: 480px) {
+    .diary-pet-context {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .diary-pet-context select {
+        grid-column: 2;
+        max-width: none;
+    }
+}
+
+@media (max-width: 420px) {
+    .footer {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation: none !important;
+        transition: none !important;
     }
 }

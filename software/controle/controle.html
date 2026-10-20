@@ -178,20 +178,78 @@
 
     <main class="dashboard-main">
         
-        <section class="card status-card">
+        <section class="card status-card" aria-labelledby="conexao-titulo">
             <div class="status-info">
-                <h2>Status de Conexão</h2>
-                <p class="subtitle">ESP32</p>
+                <h2 id="conexao-titulo">Status de Conexão</h2>
+                <p class="subtitle" id="controle-dispositivo">ESP32</p>
+                <p class="last-contact" id="controle-ultimo-contato"></p>
             </div>
-            
+
             <div class="status-indicators">
-                <span class="badge">Integração indisponível</span>
+                <span class="badge badge-offline" id="controle-conexao">Verificando...</span>
             </div>
         </section>
 
-        <section class="card stimulation-card">
-            <h2>Estimulação</h2>
-            <p>A integração de controle com o ESP32 não está disponível nesta aplicação. Intensidade e temporizador não podem ser definidos aqui.</p>
+        <section class="card device-card" aria-labelledby="dispositivo-titulo">
+            <h2 id="dispositivo-titulo" class="device-title">Pet e dispositivo</h2>
+            <label class="device-label" for="controle-pet">Pet</label>
+            <select id="controle-pet" class="device-select" disabled></select>
+
+            <div class="device-associate" id="controle-associar" hidden>
+                <label class="device-label" for="controle-device-id">Identificador configurado na ESP32</label>
+                <input id="controle-device-id" class="device-input" type="text" maxlength="64"
+                    pattern="[A-Za-z0-9._:-]{1,64}" autocomplete="off" placeholder="Ex.: mabel-esp32-01">
+                <button class="start-btn" id="controle-associar-btn" type="button">Associar dispositivo</button>
+            </div>
+            <button class="timer-btn" id="controle-desassociar-btn" type="button" hidden>Desassociar dispositivo</button>
+        </section>
+
+        <section class="card stimulation-card" aria-labelledby="estimulacao-titulo">
+            <h2 id="estimulacao-titulo">Estimulação</h2>
+            <p class="motor-note">
+                Os cinco motores recebem a mesma intensidade. O sensor de vibração apenas registra leituras e não liga os motores.
+            </p>
+
+            <div class="range-group">
+                <label for="motor-intensidade">
+                    Intensidade: <output id="motor-intensidade-valor" for="motor-intensidade">40%</output>
+                </label>
+                <div class="range-container">
+                    <input type="range" id="motor-intensidade" class="intensity-slider"
+                        min="0" max="100" step="1" value="40" disabled>
+                </div>
+            </div>
+
+            <div class="timer-subcard">
+                <div class="timer-left">
+                    <h3 id="duracao-titulo">Duração</h3>
+                    <p class="timer-display" id="motor-tempo">01:00</p>
+                    <div class="timer-options" role="group" aria-labelledby="duracao-titulo">
+                        <button type="button" class="timer-btn" data-duracao="30" aria-pressed="false" disabled>30 s</button>
+                        <button type="button" class="timer-btn" data-duracao="60" aria-pressed="false" disabled>1 min</button>
+                        <button type="button" class="timer-btn" data-duracao="120" aria-pressed="false" disabled>2 min</button>
+                        <button type="button" class="timer-btn" data-duracao="300" aria-pressed="false" disabled>5 min</button>
+                        <button type="button" class="timer-btn" data-duracao="600" aria-pressed="false" disabled>10 min</button>
+                    </div>
+                </div>
+                <div class="timer-right">
+                    <button type="button" class="pause-btn" id="motor-desligar-btn" disabled>Desligar</button>
+                    <button type="button" class="start-btn" id="motor-ligar-btn" disabled>Ligar motores</button>
+                </div>
+            </div>
+
+            <dl class="motor-states">
+                <div>
+                    <dt>Solicitado</dt>
+                    <dd id="motor-solicitado">—</dd>
+                </div>
+                <div>
+                    <dt>Confirmado pela ESP32</dt>
+                    <dd id="motor-confirmado">—</dd>
+                </div>
+            </dl>
+            <p class="motor-status" id="motor-status" role="status" aria-live="polite"></p>
+            <p class="motor-error" id="motor-erro" role="alert" hidden></p>
         </section>
 
         <section class="last-session-section">
@@ -201,6 +259,7 @@
                 <p>Não há sessões reais disponíveis para exibição. Esta aplicação ainda não persiste sessões associadas a um pet.</p>
             </div>
         </section>
+
 
     </main>
 
@@ -222,6 +281,9 @@
             </div>
     </div>
 
+    <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
+    <script src="./controle-state.js"></script>
+    <script src="./controle.js"></script>
 </body>
 </html>
