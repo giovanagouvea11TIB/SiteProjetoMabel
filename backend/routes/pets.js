@@ -5,6 +5,14 @@ const requireAuth = require("../middleware/require-auth");
 
 const router = express.Router();
 const MAX_SIGNED_BIGINT = 9223372036854775807n;
+const PET_WITH_SESSIONS_MESSAGE = "Este pet possui sessões registradas. A exclusão não pode ser realizada por esta operação.";
+// O MySQL usa a variante sem _2 quando a conta não pode ver os detalhes da chave estrangeira.
+const REFERENCED_ROW_CODES = new Set(["ER_ROW_IS_REFERENCED", "ER_ROW_IS_REFERENCED_2"]);
+const REFERENCED_ROW_ERRNOS = new Set([1217, 1451]);
+const HISTORY_UNVERIFIABLE_MESSAGE = "Não foi possível verificar o histórico de sessões deste pet. "
+    + "A exclusão foi bloqueada por segurança. Tente novamente mais tarde.";
+// Tabela de sessões ausente ou sem pet_id (migração 008 não aplicada): o histórico não pode ser verificado.
+const SESSION_SCHEMA_UNAVAILABLE_CODES = new Set(["ER_NO_SUCH_TABLE", "ER_BAD_FIELD_ERROR"]);
 const PET_FIELDS = new Set([
     "nome",
     "identificacao",
@@ -129,6 +137,39 @@ function handleDatabaseError(res, error, action) {
         `${action} perfil do pet`,
         "Não foi possível processar o perfil do pet."
     );
+}
+
+function isReferencedRowError(error) {
+    return REFERENCED_ROW_CODES.has(error?.code) || REFERENCED_ROW_ERRNOS.has(Number(error?.errno));
+}
+
+function sendPetWithSessions(res) {
+    return res.status(409).json({
+        sucesso: false,
+        mensagem: PET_WITH_SESSIONS_MESSAGE
+    });
+}
+
+function sendHistoryUnverifiable(res) {
+    return res.status(503).json({
+        sucesso: false,
+        mensagem: HISTORY_UNVERIFIABLE_MESSAGE
+    });
+}
+
+// Retorna null quando a estrutura de sessões não permite verificar o histórico; outras falhas são lançadas.
+async function petHasSessions(petId, usuarioId) {
+    try {
+        const [sessions] = await executeReadWithRetry(
+            "SELECT id FROM mabel_sessoes WHERE pet_id = ? AND usuario_id = ? LIMIT 1",
+            [petId, usuarioId],
+            "verificar sessões do pet"
+        );
+        return sessions.length > 0;
+    } catch (error) {
+        if (SESSION_SCHEMA_UNAVAILABLE_CODES.has(error?.code)) return null;
+        throw error;
+    }
 }
 
 router.get("/pet", async (req, res) => {
@@ -302,6 +343,23 @@ router.delete("/pet/:id", async (req, res) => {
     }
 
     try {
+        const [ownedPets] = await executeReadWithRetry(
+            "SELECT id FROM pets WHERE id = ? AND usuario_id = ? LIMIT 1",
+            [petId, usuarioId],
+            "verificar propriedade do pet"
+        );
+        if (ownedPets.length === 0) {
+            return res.status(404).json({
+                sucesso: false,
+                mensagem: "Pet não encontrado."
+            });
+        }
+
+        // As sessões nunca são apagadas junto com o pet; sem verificação possível, nada é excluído.
+        const hasSessions = await petHasSessions(petId, usuarioId);
+        if (hasSessions === null) return sendHistoryUnverifiable(res);
+        if (hasSessions) return sendPetWithSessions(res);
+
         const [result] = await pool.execute(
             "DELETE FROM pets WHERE id = ? AND usuario_id = ?",
             [petId, usuarioId]
@@ -319,6 +377,9 @@ router.delete("/pet/:id", async (req, res) => {
             mensagem: "Pet excluído com sucesso."
         });
     } catch (error) {
+        // ON DELETE RESTRICT recusa o DELETE inteiro: pet, sessões e comandos permanecem intactos.
+        // Isso também cobre uma sessão criada entre a verificação acima e a exclusão.
+        if (isReferencedRowError(error)) return sendPetWithSessions(res);
         return handleDatabaseError(res, error, "excluir");
     }
 });

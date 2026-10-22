@@ -178,7 +178,8 @@
     </section>
 
     <main class="dashboard-main">
-        
+        <p class="demo-environment-banner" id="ambiente-demonstracao" role="status" hidden><strong>AMBIENTE DE DEMONSTRAÇÃO</strong> — Os dados apresentados são fictícios. Nenhum comando é enviado à ESP32.</p>
+
         <section class="card status-card" aria-labelledby="conexao-titulo">
             <div class="status-info">
                 <h2 id="conexao-titulo">Status de Conexão</h2>
@@ -253,11 +254,19 @@
             <p class="motor-error" id="motor-erro" role="alert" hidden></p>
         </section>
 
-        <section class="last-session-section">
-            <h2 class="section-title">Histórico de sessões</h2>
+        <section class="last-session-section" aria-labelledby="historico-titulo">
+            <h2 class="section-title" id="historico-titulo">Histórico de sessões reais</h2>
 
             <div class="card session-card">
-                <p>Não há sessões reais disponíveis para exibição. Esta aplicação ainda não persiste sessões associadas a um pet.</p>
+                <p class="session-history-status" id="controle-historico-status" role="status" aria-live="polite">
+                    Não há sessões reais disponíveis para exibição.
+                </p>
+                <ol class="session-history-list" id="controle-historico-lista"
+                    aria-label="Sessões reais do pet selecionado" hidden></ol>
+                <small class="session-history-note">
+                    Uma sessão só aparece depois que a ESP32 confirma o comando de ligar.
+                    A duração exibida é a solicitada no comando, não a duração realizada.
+                </small>
             </div>
         </section>
 

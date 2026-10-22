@@ -184,27 +184,55 @@
 
     <main class="dashboard-main">
         <div class="main-container">
+            <p class="demo-environment-banner" id="ambiente-demonstracao" role="status" hidden><strong>AMBIENTE DE DEMONSTRAÇÃO</strong> — Os dados apresentados são fictícios. Nenhum comando é enviado à ESP32.</p>
 
             <section class="chart-card" aria-labelledby="diary-chart-title">
                 <h2 id="diary-chart-title">Histórico da órtese</h2>
-                <div class="history-empty-state" role="status" aria-live="polite">
+                <div class="history-empty-state" id="diary-summary-empty" role="status" aria-live="polite">
                     <p id="diary-chart-empty">
-                        O histórico de sessões e leituras ainda não está disponível.
+                        O histórico de sessões reais ainda não foi carregado.
                     </p>
                     <p>Dados digitais do sensor não representam uma medida clínica de intensidade.</p>
+                </div>
+                <div class="diary-summary" id="diary-summary" hidden>
+                    <p class="diary-summary-count" id="diary-summary-count"></p>
+                    <dl class="diary-stats" aria-label="Resumo das sessões reais carregadas">
+                        <div class="diary-stat">
+                            <dt>Sessões carregadas</dt>
+                            <dd id="diary-stat-total">0</dd>
+                        </div>
+                        <div class="diary-stat">
+                            <dt>Em simulação</dt>
+                            <dd id="diary-stat-simulacao">0</dd>
+                        </div>
+                        <div class="diary-stat">
+                            <dt>Acionamento físico declarado</dt>
+                            <dd id="diary-stat-fisico">0</dd>
+                        </div>
+                        <div class="diary-stat">
+                            <dt>Encerramento inferido</dt>
+                            <dd id="diary-stat-inferidas">0</dd>
+                        </div>
+                    </dl>
+                    <p class="diary-summary-note">
+                        Este resumo conta registros de uso da órtese. Ele não mede tremores nem avalia evolução clínica.
+                    </p>
                 </div>
             </section>
 
             <section class="sessions-list" aria-labelledby="diary-sessions-title">
-                <h2 id="diary-sessions-title">Sessões registradas</h2>
-                <div class="history-empty-state" role="status" aria-live="polite">
+                <h2 id="diary-sessions-title">Sessões reais registradas</h2>
+                <div class="history-empty-state" id="diary-sessions-empty-state" role="status" aria-live="polite">
                     <p id="diary-sessions-empty">
-                        Ainda não há sessões persistidas para este animal.
+                        Carregando as sessões reais deste animal...
                     </p>
                     <p id="diary-history-limitation">
-                        A integração atual não associa leituras do dispositivo a um animal nem mantém histórico persistente.
+                        Uma sessão só é registrada depois que a ESP32 confirma o comando de ligar.
+                        A duração indicada é a solicitada no comando, não a duração realizada.
                     </p>
                 </div>
+                <p class="diary-sessions-error" id="diary-sessions-error" role="alert" hidden></p>
+                <ol class="diary-session-list" id="diary-sessions-list" aria-label="Sessões reais do animal selecionado" hidden></ol>
             </section>
 
             <section class="demo-section" id="diario-demo" data-demo-view="diario" aria-labelledby="diario-demo-titulo">
@@ -242,6 +270,7 @@
 
     <script src="../../js/api-response.js"></script>
     <script src="../../js/script.js"></script>
+    <script src="../controle/controle-state.js"></script>
     <script src="./diario.js"></script>
     <script src="../demo/sessoes-demo.js"></script>
     <script src="../demo/demo-ui.js"></script>

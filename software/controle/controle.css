@@ -870,6 +870,136 @@ body.dark-mode {
     border-color: #F5E3B3;
 }
 
+/* Histórico de sessões reais (GET /api/mabel/sessoes). */
+.session-card .session-history-status.is-error {
+    --icon: var(--icon-alert);
+    padding: 1rem 1.4rem;
+    border: 0.1rem solid var(--m-danger-border);
+    border-radius: var(--m-radius-sm);
+    background-color: var(--m-danger-bg);
+    color: var(--m-danger);
+    font-weight: 600;
+}
+
+.session-card .session-history-status.is-error::before {
+    color: currentColor;
+}
+
+.session-history-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.session-history-item article {
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+    padding: 1.8rem 2rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface-soft);
+}
+
+.session-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.session-history-header h3 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--m-text);
+}
+
+.session-history-device {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 1.3rem;
+    color: var(--m-text-muted);
+    overflow-wrap: anywhere;
+}
+
+.session-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4rem 1.2rem;
+    border: 0.1rem solid var(--m-border-strong);
+    border-radius: 999rem;
+    background-color: var(--m-surface);
+    color: var(--m-text-soft);
+    font-size: 1.3rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.session-badge--ativa {
+    background-color: var(--m-success-bg);
+    border-color: var(--m-success-border);
+    color: var(--m-success);
+}
+
+.session-badge--interrompida {
+    background-color: var(--m-info-bg);
+    border-color: var(--m-info-border);
+    color: var(--m-info);
+}
+
+/* Encerramento apenas inferido: borda tracejada para não parecer uma confirmação. */
+.session-badge--sem-confirmacao,
+.session-badge--desconhecido {
+    border-style: dashed;
+    background-color: transparent;
+    color: var(--m-text-muted);
+}
+
+.session-history-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1rem 1.6rem;
+}
+
+.session-history-field dt {
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--m-text-muted);
+}
+
+.session-history-field dd {
+    margin-top: 0.2rem;
+    font-size: 1.4rem;
+    line-height: 1.45;
+    color: var(--m-text);
+}
+
+.session-history-field--simulacao dd {
+    color: var(--m-info);
+    font-weight: 600;
+}
+
+.session-history-field--fisico dd {
+    color: var(--m-accent-text);
+    font-weight: 600;
+}
+
+.session-history-field--desconhecido dd {
+    color: var(--m-text-muted);
+    font-style: italic;
+}
+
+.session-history-note {
+    display: block;
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: var(--m-text-muted);
+}
+
 /* ---------- Telas largas: status e dispositivo lado a lado ---------- */
 
 @media (min-width: 1200px) {

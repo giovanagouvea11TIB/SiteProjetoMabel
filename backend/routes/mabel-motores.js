@@ -16,6 +16,13 @@ const COMMAND_ID_PATTERN = /^[1-9]\d{0,18}$/;
 const CONFIRMATION_RESULTS = new Set(["aplicado", "rejeitado", "interrompido"]);
 const INTERRUPTION_REASONS = new Set(["duracao", "comunicacao", "reinicio", "recusado_servidor"]);
 const MOTORS_OFF = Object.freeze({ ligado: false, intensidade: 0, duracao_restante_ms: 0 });
+const SESSION_HISTORY_LIMIT = 50;
+// concluida/interrompida foram confirmadas pela ESP32; sem_confirmacao é só inferida pela falta de contato.
+const SESSION_ENDINGS = Object.freeze({
+    concluida: "confirmado",
+    interrompida: "confirmado",
+    sem_confirmacao: "inferido"
+});
 
 const SQL = {
     now: "SELECT UNIX_TIMESTAMP(CURRENT_TIMESTAMP(3)) * 1000 AS agora_ms",
@@ -37,7 +44,7 @@ const SQL = {
          ORDER BY id DESC
          LIMIT 1`,
     latestCommandId: "SELECT MAX(id) AS id FROM mabel_motor_commands WHERE device_id = ?",
-    commandById: `SELECT id, device_id, pet_id, ligado, intensidade, duracao_s, status, motivo,
+    commandById: `SELECT id, device_id, pet_id, usuario_id, ligado, intensidade, duracao_s, status, motivo,
                 UNIX_TIMESTAMP(solicitado_em) * 1000 AS solicitado_ms,
                 UNIX_TIMESTAMP(atualizado_em) * 1000 AS atualizado_ms
          FROM mabel_motor_commands
@@ -75,7 +82,54 @@ const SQL = {
                 UNIX_TIMESTAMP(confirmado_em) * 1000 AS confirmado_ms
          FROM mabel_motor_state
          WHERE device_id = ?
-         LIMIT 1`
+         LIMIT 1`,
+    sessionByCommand: `SELECT id
+         FROM mabel_sessoes
+         WHERE command_id = ?
+         LIMIT 1
+         FOR UPDATE`,
+    // inicio_em e termino_em são DATETIME (sem fuso): sessões vinculadas a comandos os gravam em UTC,
+    // com UTC_TIMESTAMP(), que trunca no segundo e nunca fica depois da confirmação.
+    // Os cinco motores recebem a mesma intensidade; fisico = 0 indica confirmação em simulação.
+    insertSession: `INSERT INTO mabel_sessoes
+            (usuario_id, pet_id, device_id, command_id, tipo_sessao, estado, intensidade_geral,
+             motor1, motor2, motor3, motor4, motor5, duracao_segundos, fisico, inicio_em)
+         VALUES (?, ?, ?, ?, 'real', 'ativa', ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP())`,
+    // Desligamento ou nova intensidade confirmados: o término é o instante da própria confirmação.
+    endPetSessionsNow: `UPDATE mabel_sessoes
+         SET estado = 'interrompida', termino_em = UTC_TIMESTAMP()
+         WHERE device_id = ? AND pet_id = ? AND estado = 'ativa'`,
+    // Sem horário: a ESP32 confirma que parou, mas não quando (reinício, ou sessão já sem confirmação).
+    endPetSessionsUntimed: `UPDATE mabel_sessoes
+         SET estado = 'interrompida'
+         WHERE device_id = ? AND pet_id = ? AND estado IN ('ativa', 'sem_confirmacao')`,
+    endCommandSessionNow: `UPDATE mabel_sessoes
+         SET estado = ?, termino_em = UTC_TIMESTAMP()
+         WHERE command_id = ? AND estado = 'ativa'`,
+    endCommandSessionUntimed: `UPDATE mabel_sessoes
+         SET estado = ?
+         WHERE command_id = ? AND estado IN ('ativa', 'sem_confirmacao')`,
+    // Inferência por lacuna de comunicação: não há confirmação da ESP32, então nada além do estado muda.
+    markSessionsUnconfirmed: `UPDATE mabel_sessoes
+         SET estado = 'sem_confirmacao'
+         WHERE device_id = ? AND pet_id = ? AND estado = 'ativa'`,
+    // Sessões vinculadas a comandos: o DATETIME é UTC e a diferença até a época é aritmética pura,
+    // independente do fuso da conexão. Sessões legadas (command_id NULL) mantêm a leitura no fuso
+    // da conexão, como antes. NULL continua NULL. Busca um registro além do limite apenas para
+    // indicar que há mais histórico.
+    sessionHistory: `SELECT id, device_id, command_id, tipo_sessao, estado, intensidade_geral,
+                motor1, motor2, motor3, motor4, motor5, duracao_segundos, fisico,
+                CASE WHEN command_id IS NULL THEN UNIX_TIMESTAMP(inicio_em)
+                     ELSE TIMESTAMPDIFF(SECOND, '1970-01-01 00:00:00', inicio_em)
+                END * 1000 AS inicio_ms,
+                CASE WHEN command_id IS NULL THEN UNIX_TIMESTAMP(termino_em)
+                     ELSE TIMESTAMPDIFF(SECOND, '1970-01-01 00:00:00', termino_em)
+                END * 1000 AS termino_ms,
+                UNIX_TIMESTAMP(criado_em) * 1000 AS criado_ms
+         FROM mabel_sessoes
+         WHERE pet_id = ? AND usuario_id = ?
+         ORDER BY criado_em DESC, id DESC
+         LIMIT ${SESSION_HISTORY_LIMIT + 1}`
 };
 
 function hasExactKeys(value, keys) {
@@ -223,6 +277,26 @@ function describeCommand(row, agoraMs) {
     };
 }
 
+// duracao_segundos é a duração solicitada no comando, não a realizada; dados ausentes ficam null.
+function describeSession(row) {
+    const nullableString = (value) => (value === null || value === undefined ? null : String(value));
+    return {
+        id: String(row.id),
+        tipo_sessao: row.tipo_sessao,
+        estado: row.estado,
+        encerramento: SESSION_ENDINGS[row.estado] || null,
+        device_id: row.device_id,
+        command_id: nullableString(row.command_id),
+        fisico: row.fisico === null || row.fisico === undefined ? null : Number(row.fisico) === 1,
+        intensidade_geral: Number(row.intensidade_geral),
+        motores: [row.motor1, row.motor2, row.motor3, row.motor4, row.motor5].map(Number),
+        duracao_solicitada_s: Number(row.duracao_segundos),
+        inicio_em: toIsoString(row.inicio_ms),
+        termino_em: toIsoString(row.termino_ms),
+        criado_em: toIsoString(row.criado_ms)
+    };
+}
+
 function isOnline(state, agoraMs) {
     if (!state) return false;
     const lastContactMs = Number(state.ultimo_contato_ms);
@@ -298,6 +372,55 @@ async function findLatestCommand(executor, association) {
 async function findMotorState(executor, deviceId) {
     const [row] = await selectRows(executor, SQL.motorState, [deviceId]);
     return row || null;
+}
+
+// Uma sessão só existe a partir da aplicação confirmada de um comando de ligar; confirmações
+// repetidas do mesmo comando encontram a sessão já registrada e não alteram nada.
+async function startSession(connection, row, fisico) {
+    const [existing] = await selectRows(connection, SQL.sessionByCommand, [row.id]);
+    if (existing) return;
+
+    await endPetSessions(connection, row.device_id, row.pet_id);
+    const intensidade = Number(row.intensidade);
+    await connection.execute(SQL.insertSession, [
+        row.usuario_id,
+        row.pet_id,
+        row.device_id,
+        row.id,
+        intensidade,
+        intensidade,
+        intensidade,
+        intensidade,
+        intensidade,
+        intensidade,
+        Number(row.duracao_s),
+        fisico ? 1 : 0
+    ]);
+}
+
+// Desligamento ou nova intensidade confirmados: a sessão ativa termina na própria confirmação;
+// uma sessão já sem confirmação parou antes, em horário desconhecido.
+async function endPetSessions(connection, deviceId, petId) {
+    await connection.execute(SQL.endPetSessionsNow, [deviceId, petId]);
+    await connection.execute(SQL.endPetSessionsUntimed, [deviceId, petId]);
+}
+
+// Duração esgotada é informada pela ESP32 no próprio instante do término; comunicação e
+// reinício só são informados depois, então o horário real da parada fica desconhecido.
+async function endCommandSession(connection, commandId, motivo) {
+    if (motivo === "duracao") {
+        await connection.execute(SQL.endCommandSessionNow, ["concluida", commandId]);
+        await connection.execute(SQL.endCommandSessionUntimed, ["concluida", commandId]);
+    } else if (motivo === "comunicacao" || motivo === "reinicio") {
+        await connection.execute(SQL.endCommandSessionUntimed, ["interrompida", commandId]);
+    }
+}
+
+// Sem contato por OFFLINE_AFTER_MS, a ESP32 já desligou por segurança (o firmware para após 10 s
+// sem resposta de /config e não retoma o comando); a sessão passa a ser apenas inferida como encerrada.
+async function markUnconfirmedSessions(executor, association, state, agoraMs) {
+    if (!state || isOnline(state, agoraMs)) return;
+    await executor.execute(SQL.markSessionsUnconfirmed, [association.deviceId, association.petId]);
 }
 
 const ERROR_RESPONSES = {
@@ -456,6 +579,7 @@ function createMabelMotorRouter({
 
             const agoraMs = await readNow(pool);
             const state = await findMotorState(pool, association.deviceId);
+            await markUnconfirmedSessions(pool, association, state, agoraMs);
             return res.json({
                 sucesso: true,
                 tem_associacao: true,
@@ -471,6 +595,36 @@ function createMabelMotorRouter({
         }
     }));
 
+    router.get("/sessoes", (req, res, next) => withWebSession(req, res, next, async (usuarioId) => {
+        const petId = parsePositiveBigInt(req.query.pet_id);
+        if (!petId) return res.status(400).json({ sucesso: false, mensagem: "Informe um pet_id válido." });
+        if (!requirePool(res)) return;
+
+        try {
+            const [pet] = await selectRows(pool, SQL.ownedPet, [petId, usuarioId]);
+            if (!pet) throw codedError("MABEL_PET_NOT_FOUND");
+
+            // Consulta pelo pet e pelo usuário, não pelo dispositivo associado agora.
+            const rows = await selectRows(pool, SQL.sessionHistory, [petId, usuarioId]);
+            res.set("Cache-Control", "private, no-store");
+            return res.json({
+                sucesso: true,
+                pet_id: String(petId),
+                limite: SESSION_HISTORY_LIMIT,
+                mais_registros: rows.length > SESSION_HISTORY_LIMIT,
+                sessoes: rows.slice(0, SESSION_HISTORY_LIMIT).map(describeSession)
+            });
+        } catch (error) {
+            if (error?.code === "ER_NO_SUCH_TABLE" || error?.code === "ER_BAD_FIELD_ERROR") {
+                return res.status(503).json({
+                    sucesso: false,
+                    mensagem: "O histórico de sessões ainda não está disponível. A estrutura do banco precisa ser preparada."
+                });
+            }
+            return handleError(res, error, next);
+        }
+    }));
+
     router.get("/config", async (req, res, next) => {
         if (!requireDevice(req, res)) return;
         const deviceIdError = validateDeviceId(req.query.device_id);
@@ -482,9 +636,15 @@ function createMabelMotorRouter({
             const comando = await withTransaction(pool, async (connection) => {
                 const association = await findAssociation(connection, SQL.associationByDevice, deviceId);
                 if (!association) throw codedError("MABEL_NO_DEVICE_ASSOCIATION");
+                const agoraMs = await readNow(connection);
+                await markUnconfirmedSessions(
+                    connection,
+                    association,
+                    await findMotorState(connection, deviceId),
+                    agoraMs
+                );
                 await connection.execute(SQL.heartbeat, [deviceId]);
 
-                const agoraMs = await readNow(connection);
                 const row = await findLatestCommand(connection, association);
                 const described = describeCommand(row, agoraMs);
                 if (described && row.status === "pendente" && described.estado === "expirado") {
@@ -528,6 +688,12 @@ function createMabelMotorRouter({
                     confirmation.deviceId
                 );
                 if (!association) throw codedError("MABEL_NO_DEVICE_ASSOCIATION");
+                await markUnconfirmedSessions(
+                    connection,
+                    association,
+                    await findMotorState(connection, confirmation.deviceId),
+                    await readNow(connection)
+                );
 
                 let commandState = null;
                 if (confirmation.commandId) {
@@ -557,6 +723,11 @@ function createMabelMotorRouter({
                             throw codedError("MABEL_STATE_MISMATCH");
                         }
                         await connection.execute(SQL.applyCommand, [row.id]);
+                        if (comando.ligado) {
+                            await startSession(connection, row, confirmation.fisico);
+                        } else {
+                            await endPetSessions(connection, row.device_id, row.pet_id);
+                        }
                         commandState = "aplicado";
                     } else {
                         const [update] = await connection.execute(SQL.finishCommand, [
@@ -564,8 +735,13 @@ function createMabelMotorRouter({
                             confirmation.motivo,
                             row.id
                         ]);
+                        if (confirmation.resultado === "interrompido") {
+                            await endCommandSession(connection, row.id, confirmation.motivo);
+                        }
                         commandState = update.affectedRows === 1 ? confirmation.resultado : comando.estado;
                     }
+                } else if (confirmation.motivo === "reinicio") {
+                    await connection.execute(SQL.endPetSessionsUntimed, [confirmation.deviceId, association.petId]);
                 }
 
                 await connection.execute(SQL.upsertState, [

@@ -357,6 +357,188 @@ body.dark-mode {
     mask: var(--icon-info) center / contain no-repeat;
 }
 
+/* ---------- Sessões reais (GET /api/mabel/sessoes) ---------- */
+
+.diary-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+}
+
+.diary-summary-count {
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.55;
+    color: var(--m-text);
+}
+
+.diary-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.2rem;
+}
+
+.diary-stat {
+    padding: 1.4rem 1.6rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface-soft);
+}
+
+.diary-stat dt {
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--m-text-muted);
+}
+
+.diary-stat dd {
+    margin-top: 0.4rem;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--m-accent-text);
+}
+
+.diary-summary-note,
+.diary-sessions-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    font-size: 1.3rem;
+    line-height: 1.5;
+}
+
+.diary-summary-note {
+    padding-top: 1.2rem;
+    border-top: 0.1rem solid var(--m-border);
+    color: var(--m-text-muted);
+}
+
+.diary-summary-note::before,
+.diary-sessions-error::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1.6rem;
+    height: 1.6rem;
+    margin-top: 0.2rem;
+    background-color: currentColor;
+    -webkit-mask: var(--icon-info) center / contain no-repeat;
+    mask: var(--icon-info) center / contain no-repeat;
+}
+
+.diary-sessions-error {
+    padding: 1rem 1.2rem;
+    border: 0.1rem solid var(--m-danger-border);
+    border-radius: var(--m-radius-sm);
+    background-color: var(--m-danger-bg);
+    color: var(--m-danger);
+    font-weight: 600;
+}
+
+.diary-sessions-error::before {
+    -webkit-mask-image: var(--icon-alert);
+    mask-image: var(--icon-alert);
+}
+
+.diary-session-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.diary-record article {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 1.6rem 1.8rem;
+    border: 0.1rem solid var(--m-border);
+    border-radius: var(--m-radius);
+    background-color: var(--m-surface-soft);
+}
+
+.diary-record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+}
+
+.diary-record-header h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--m-text);
+}
+
+.diary-record-device {
+    display: block;
+    margin-top: 0.2rem;
+    font-size: 1.25rem;
+    color: var(--m-text-muted);
+    overflow-wrap: anywhere;
+}
+
+.diary-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3rem 1rem;
+    border: 0.1rem solid var(--m-border-strong);
+    border-radius: 999rem;
+    background-color: var(--m-surface);
+    color: var(--m-text-soft);
+    font-size: 1.2rem;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.diary-badge--ativa,
+.diary-badge--interrompida {
+    background-color: var(--m-accent-soft);
+    border-color: transparent;
+    color: var(--m-accent-text);
+}
+
+/* Encerramento apenas inferido: borda tracejada para não parecer uma confirmação. */
+.diary-badge--sem-confirmacao,
+.diary-badge--desconhecido {
+    border-style: dashed;
+    background-color: transparent;
+    color: var(--m-text-muted);
+}
+
+.diary-record-fields {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+    gap: 0.8rem 1.4rem;
+}
+
+.diary-record-field dt {
+    font-size: 1.15rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--m-text-muted);
+}
+
+.diary-record-field dd {
+    margin-top: 0.2rem;
+    font-size: 1.35rem;
+    line-height: 1.45;
+    color: var(--m-text);
+}
+
+.diary-record-field--simulacao dd,
+.diary-record-field--fisico dd {
+    color: var(--m-accent-text);
+    font-weight: 600;
+}
+
+.diary-record-field--desconhecido dd {
+    color: var(--m-text-muted);
+    font-style: italic;
+}
+
 /* ==========================================================================
    Navegação lateral e menu do aplicativo (mesma estrutura das outras telas)
    ========================================================================== */

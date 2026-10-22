@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node backend/server.js",
-    "test": "node --test backend/database-runtime.test.js backend/deployment.test.js backend/api-route-rewrite.test.js backend/routes/mabel.test.js backend/routes/mabel-motores.test.js backend/routes/vacinas.test.js backend/routes/avatar.test.js backend/routes/pets.test.js software/home/home.test.js software/perfil/perfil.test.js software/controle/controle.test.js software/demo/sessoes-demo.test.js software/vacina/vaccine-state.test.js js/api-response.test.js firmware/esp32-mabel/firmware-source.test.js firmware/esp32-mabel/motor-logic.test.js",
+    "test": "node --test backend/database-runtime.test.js backend/deployment.test.js backend/api-route-rewrite.test.js backend/routes/mabel.test.js backend/routes/mabel-motores.test.js backend/routes/vacinas.test.js backend/routes/avatar.test.js backend/routes/pets.test.js software/home/home.test.js software/perfil/perfil.test.js software/controle/controle.test.js software/diario/diario.test.js software/demo/sessoes-demo.test.js software/vacina/vaccine-state.test.js js/api-response.test.js firmware/esp32-mabel/firmware-source.test.js firmware/esp32-mabel/motor-logic.test.js",
     "test:db": "node --test backend/mabel-motores.mysql.test.js"
   },
   "repository": {

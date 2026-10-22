@@ -564,3 +564,27 @@ body.dark-mode {
         padding: 0.6rem 0.4rem;
     }
 }
+
+/* ---------- Faixa do ambiente de demonstração (API simulada local) ---------- */
+
+/* Ocupa a largura inteira das grades do Controle e do Diário; só aparece com a API simulada. */
+.demo-environment-banner {
+    grid-column: 1 / -1;
+    width: 100%;
+    margin: 0;
+    padding: 1.4rem 1.8rem;
+    border: 0.2rem dashed var(--demo-pause-border);
+    border-radius: 1.6rem;
+    background-color: var(--demo-pause-bg);
+    color: var(--demo-pause);
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+
+.demo-environment-banner strong {
+    font-weight: 800;
+    letter-spacing: 0.04em;
+}

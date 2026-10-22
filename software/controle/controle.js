@@ -18,6 +18,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const confirmed = document.getElementById("motor-confirmado");
     const statusMessage = document.getElementById("motor-status");
     const errorMessage = document.getElementById("motor-erro");
+    const historyStatus = document.getElementById("controle-historico-status");
+    const historyList = document.getElementById("controle-historico-lista");
+    const demoBanner = document.getElementById("ambiente-demonstracao");
 
     const POLL_INTERVAL_MS = 3000;
     let pets = [];
@@ -30,6 +33,10 @@ document.addEventListener("DOMContentLoaded", () => {
     let refreshId = 0;
     let pollTimer = null;
     let countdownEndsAt = null;
+    let historyRequestId = 0;
+    let historyPetId = null;
+    let historySignature = null;
+    let statusUnavailable = false;
 
     const apiUrl = (path) => window.location.port === "5500"
         ? `http://${window.location.hostname}:3000${path}`
@@ -103,14 +110,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    // countdownEndsAt só é definido ou apagado por renderStatus, a partir do servidor. Ao chegar a zero,
+    // a contagem fica em 00:00 até o servidor informar o encerramento; ela nunca reinicia sozinha.
     function renderTimer() {
         if (countdownEndsAt !== null) {
-            const remaining = countdownEndsAt - Date.now();
-            if (remaining > 0) {
-                timer.textContent = State.formatCountdown(remaining);
-                return;
-            }
-            countdownEndsAt = null;
+            timer.textContent = State.formatCountdown(Math.max(0, countdownEndsAt - Date.now()));
+            return;
         }
         timer.textContent = State.formatCountdown(selectedDurationS * 1000);
     }
@@ -131,8 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
         turnOnButton.disabled = !canOperate || !motorStatus.online || Number(intensity.value) < 1;
     }
 
+    // Sem estado do pet selecionado (consulta em andamento ou com falha), nada do pet anterior é exibido.
+    function connectionState() {
+        if (motorStatus || !selectedPetId) return State.describeConnection(motorStatus);
+        return { online: false, label: statusUnavailable ? "Estado indisponível" : "Verificando..." };
+    }
+
     function renderStatus() {
-        const state = State.describeConnection(motorStatus);
+        const state = connectionState();
         connection.textContent = state.label;
         connection.classList.toggle("badge-connected", state.online);
         connection.classList.toggle("badge-offline", !state.online);
@@ -149,10 +160,119 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         requested.textContent = motorStatus?.tem_associacao ? State.describeRequested(solicitado) : "—";
         confirmed.textContent = motorStatus?.tem_associacao ? State.describeConfirmed(motorStatus.confirmado) : "—";
-        countdownEndsAt = solicitado?.ativo ? Date.now() + solicitado.duracao_restante_ms : null;
+        // O cronômetro só corre depois que a ESP32 confirma ter ligado os motores com este mesmo comando;
+        // um comando apenas pendente não é apresentado como acionamento em andamento.
+        const confirmado = motorStatus?.confirmado || null;
+        const confirmedRunning = Boolean(
+            solicitado?.ativo
+            && solicitado.estado === "aplicado"
+            && confirmado?.ligado
+            && confirmado.command_id === solicitado.command_id
+        );
+        countdownEndsAt = confirmedRunning ? Date.now() + solicitado.duracao_restante_ms : null;
         setError(actionError || State.commandProblem(solicitado));
         renderTimer();
         renderControls();
+    }
+
+    function element(tag, className, text) {
+        const node = document.createElement(tag);
+        if (className) node.className = className;
+        if (text !== undefined) node.textContent = text;
+        return node;
+    }
+
+    function setHistoryStatus(message, isError = false) {
+        historyStatus.textContent = message;
+        historyStatus.classList.toggle("is-error", isError);
+    }
+
+    function clearHistory(message) {
+        historyPetId = null;
+        historyList.replaceChildren();
+        historyList.hidden = true;
+        setHistoryStatus(message);
+    }
+
+    function historyField(label, value, tone) {
+        const item = element("div", tone ? `session-history-field session-history-field--${tone}` : "session-history-field");
+        item.append(element("dt", "", label), element("dd", "", value));
+        return item;
+    }
+
+    function historyItem(session) {
+        const view = State.describeSession(session);
+        const titleId = `controle-sessao-${historyList.childElementCount}`;
+        const header = element("header", "session-history-header");
+        const heading = element("div");
+        const title = element("h3", "", view.quando);
+        title.id = titleId;
+        heading.append(title, element("span", "session-history-device", view.dispositivo));
+        header.append(heading, element("span", `session-badge session-badge--${view.estado.tone}`, view.estado.label));
+
+        const fields = element("dl", "session-history-fields");
+        fields.append(
+            historyField("Intensidade geral", view.intensidade),
+            historyField("Duração solicitada", view.duracao),
+            historyField("Modo", view.modo.label, view.modo.tone),
+            historyField("Encerramento", view.encerramento),
+            historyField("Término registrado", view.termino)
+        );
+
+        const article = element("article");
+        article.setAttribute("aria-labelledby", titleId);
+        article.append(header, fields);
+        const item = element("li", "session-history-item");
+        item.append(article);
+        return item;
+    }
+
+    function renderHistory(petId, history) {
+        historyPetId = petId;
+        historyList.replaceChildren();
+        for (const session of history.sessoes) historyList.append(historyItem(session));
+        historyList.hidden = history.sessoes.length === 0;
+        setHistoryStatus(State.describeSessionCount(history.sessoes.length, history.maisRegistros));
+    }
+
+    async function loadHistory() {
+        const currentRequest = ++historyRequestId;
+        const petId = selectedPetId;
+        if (!petId) {
+            clearHistory(pets.length ? "Selecione um pet para ver as sessões reais." : "Nenhum pet cadastrado.");
+            return;
+        }
+        // Os registros de outro pet nunca ficam visíveis enquanto a nova consulta carrega.
+        if (historyPetId !== petId) clearHistory("Carregando o histórico de sessões reais...");
+        try {
+            const result = await request(`/api/mabel/sessoes?pet_id=${encodeURIComponent(petId)}`);
+            if (currentRequest !== historyRequestId || petId !== selectedPetId) return;
+            const history = State.parseSessionHistory(result, petId);
+            if (!history) throw new Error("A resposta do histórico de sessões é inválida.");
+            renderHistory(petId, history);
+        } catch (error) {
+            if (currentRequest !== historyRequestId || petId !== selectedPetId) return;
+            const message = error.message || "Não foi possível carregar o histórico de sessões.";
+            if (historyPetId === petId) {
+                setHistoryStatus(`${message} Exibindo os últimos registros carregados.`, true);
+            } else {
+                clearHistory("");
+                setHistoryStatus(message, true);
+            }
+        }
+    }
+
+    // O histórico só é consultado de novo quando o comando, a confirmação ou a conexão mudam.
+    function statusSignature(status) {
+        return JSON.stringify([
+            status?.tem_associacao,
+            status?.device_id,
+            status?.online,
+            status?.solicitado?.command_id,
+            status?.solicitado?.estado,
+            status?.confirmado?.command_id,
+            status?.confirmado?.confirmado_em
+        ]);
     }
 
     async function refresh() {
@@ -166,9 +286,15 @@ document.addEventListener("DOMContentLoaded", () => {
             const result = await request(`/api/mabel/motores?pet_id=${encodeURIComponent(selectedPetId)}`);
             if (currentRefresh !== refreshId) return;
             motorStatus = result;
+            statusUnavailable = false;
             renderStatus();
+            const signature = statusSignature(result);
+            if (historySignature !== null && signature !== historySignature) loadHistory();
+            historySignature = signature;
         } catch (error) {
             if (currentRefresh !== refreshId) return;
+            statusUnavailable = true;
+            if (!motorStatus) renderStatus();
             setError(error.message || "Não foi possível consultar o estado dos motores.");
         }
     }
@@ -205,13 +331,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     async function loadPets() {
         setStatus("Carregando os pets...");
+        demoBanner.hidden = true;
         try {
             const result = await request("/api/perfil/pet");
             if (!Array.isArray(result.pets)) throw new Error("A lista de pets retornada pelo servidor é inválida.");
             pets = result.pets.map((pet) => ({ id: String(pet.id), nome: pet.nome }));
+            demoBanner.hidden = !State.isDemoEnvironment(result, window.location);
         } catch (error) {
             setError(error.message || "Não foi possível carregar os pets.");
             setStatus("");
+            clearHistory("");
+            setHistoryStatus("O histórico de sessões depende da lista de pets, que não pôde ser carregada.", true);
             renderControls();
             return;
         }
@@ -221,6 +351,8 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedPetId = pets.some((pet) => pet.id === preferred) ? preferred : pets[0]?.id || null;
         if (selectedPetId) petSelect.value = selectedPetId;
         setStatus(pets.length ? "" : "Cadastre um pet no Perfil Pet para controlar a órtese.");
+        historySignature = null;
+        loadHistory();
         await refresh();
         schedulePolling();
     }
@@ -229,8 +361,13 @@ document.addEventListener("DOMContentLoaded", () => {
         selectedPetId = petSelect.value || null;
         rememberSelectedPet(selectedPetId);
         motorStatus = null;
+        statusUnavailable = false;
         actionError = null;
+        historySignature = null;
         setStatus("");
+        // Limpa conexão, comandos, cronômetro e botões do pet anterior antes da nova consulta.
+        renderStatus();
+        loadHistory();
         refresh();
         schedulePolling();
     });

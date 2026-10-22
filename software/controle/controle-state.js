@@ -24,6 +24,16 @@
         substituido: "substituído por um comando mais recente"
     };
 
+    // Histórico de sessões reais (GET /api/mabel/sessoes), compartilhado por Controle e Diário.
+    const SESSION_STATES = {
+        ativa: { label: "Ativa", tone: "ativa" },
+        concluida: { label: "Concluída", tone: "concluida" },
+        interrompida: { label: "Interrompida", tone: "interrompida" },
+        sem_confirmacao: { label: "Sem confirmação de término", tone: "sem-confirmacao" }
+    };
+    const SESSION_ENDINGS = new Set(["confirmado", "inferido"]);
+    const DEMO_HOSTS = new Set(["127.0.0.1", "localhost"]);
+
     function reasonLabel(motivo) {
         return REASON_LABELS[motivo] || motivo || "";
     }
@@ -118,8 +128,110 @@
         return null;
     }
 
+    function formatDateTime(isoString) {
+        if (typeof isoString !== "string") return null;
+        const date = new Date(isoString);
+        return Number.isNaN(date.getTime())
+            ? null
+            : date.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
+    }
+
+    function isNullableString(value) {
+        return value === null || typeof value === "string";
+    }
+
+    function isValidSession(session) {
+        return Boolean(session)
+            && typeof session.id === "string"
+            && typeof session.estado === "string"
+            && typeof session.device_id === "string"
+            && Number.isFinite(session.intensidade_geral)
+            && Number.isFinite(session.duracao_solicitada_s)
+            && (session.fisico === null || typeof session.fisico === "boolean")
+            && (session.encerramento === null || SESSION_ENDINGS.has(session.encerramento))
+            && [session.command_id, session.inicio_em, session.termino_em, session.criado_em].every(isNullableString);
+    }
+
+    // Retorna null quando a resposta não é do pet consultado ou não segue o formato esperado.
+    function parseSessionHistory(result, petId) {
+        if (
+            !result
+            || result.pet_id !== String(petId)
+            || typeof result.mais_registros !== "boolean"
+            || !Array.isArray(result.sessoes)
+            || !result.sessoes.every(isValidSession)
+        ) {
+            return null;
+        }
+        return { sessoes: result.sessoes, maisRegistros: result.mais_registros };
+    }
+
+    function describeSessionCount(count, maisRegistros) {
+        if (count === 0) return "Nenhuma sessão real registrada para este pet.";
+        if (maisRegistros) {
+            return `Exibindo as ${count} sessões reais mais recentes. Há registros anteriores que não foram carregados.`;
+        }
+        return count === 1 ? "1 sessão real registrada." : `${count} sessões reais registradas.`;
+    }
+
+    function describeSessionMode(fisico) {
+        if (fisico === true) return { label: "Acionamento físico (declarado pela ESP32)", tone: "fisico" };
+        if (fisico === false) return { label: "Simulação: nenhum motor foi acionado", tone: "simulacao" };
+        return { label: "Modo não informado", tone: "desconhecido" };
+    }
+
+    function describeSessionEnding(session) {
+        if (session.encerramento === "confirmado") return "Confirmado pela ESP32";
+        if (session.encerramento === "inferido") {
+            return "Inferido pela perda de comunicação; a ESP32 não confirmou";
+        }
+        return session.estado === "ativa" ? "Aguardando a confirmação de término" : "Não informado";
+    }
+
+    // Textos prontos para exibição; a duração é sempre a solicitada, nunca a realizada.
+    function describeSession(session) {
+        const inicio = formatDateTime(session.inicio_em);
+        const criado = formatDateTime(session.criado_em);
+        const termino = formatDateTime(session.termino_em);
+        return {
+            quando: inicio || (criado ? `Registrada em ${criado}` : "Data não registrada"),
+            estado: SESSION_STATES[session.estado]
+                || { label: `Estado não reconhecido (${session.estado})`, tone: "desconhecido" },
+            modo: describeSessionMode(session.fisico),
+            encerramento: describeSessionEnding(session),
+            termino: termino || (session.estado === "ativa" ? "Ainda não informado" : "Horário não registrado"),
+            intensidade: `${session.intensidade_geral}% nos cinco motores`,
+            duracao: `${formatDuration(session.duracao_solicitada_s)} (solicitada)`,
+            dispositivo: `ESP32 · ${session.device_id}`
+        };
+    }
+
+    // A API simulada (tools/demo-api) marca as respostas com demonstracao: true. A faixa só aparece
+    // com essa marca E com a página servida pelo Live Server local; a produção nunca atende os dois.
+    function isDemoEnvironment(result, location) {
+        return result?.demonstracao === true
+            && location?.port === "5500"
+            && DEMO_HOSTS.has(location?.hostname);
+    }
+
+    function summarizeSessions(sessoes) {
+        return {
+            total: sessoes.length,
+            simulacao: sessoes.filter((session) => session.fisico === false).length,
+            fisico: sessoes.filter((session) => session.fisico === true).length,
+            inferidas: sessoes.filter((session) => session.encerramento === "inferido").length
+        };
+    }
+
     return {
         DURATION_OPTIONS_S,
+        formatDateTime,
+        parseSessionHistory,
+        describeSessionCount,
+        describeSessionMode,
+        describeSession,
+        summarizeSessions,
+        isDemoEnvironment,
         formatDuration,
         formatCountdown,
         validateTurnOn,
